@@ -1,6 +1,6 @@
 {
-  "name": "aleksandra-mission-control",
-  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "out",
   "cleanUrls": true,
   "trailingSlash": false
 }
