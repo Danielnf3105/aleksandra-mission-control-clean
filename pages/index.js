@@ -4,17 +4,18 @@ import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
 import RealTimeMonitoring from '../components/RealTimeMonitoring';
 import ContentPipelineStatus from '../components/ContentPipelineStatus';
+import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v4.3',
-    totalSystems: 14,
-    activeAgents: 3,
-    systemHealth: 97.1,
-    uptime: '99.4%',
+    version: 'v5.0',
+    totalSystems: 15,
+    activeAgents: 9,
+    systemHealth: 97.8,
+    uptime: '99.6%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'OPERATIONAL'
+    missionPhase: 'ADVANCED_COLLABORATION'
   });
 
   useEffect(() => {
@@ -32,10 +33,11 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'network', name: 'Agent Collaboration', icon: '🌐', color: 'text-purple-400' },
     { id: 'content', name: 'Content Pipeline', icon: '🎬', color: 'text-yellow-400' },
     { id: 'agents', name: 'Agent Intelligence', icon: '🤖', color: 'text-blue-400' },
-    { id: 'orchestration', name: 'System Orchestration', icon: '🌐', color: 'text-green-400' },
-    { id: 'overview', name: 'Mission Overview', icon: '🎯', color: 'text-purple-400' }
+    { id: 'orchestration', name: 'System Orchestration', icon: '🛡️', color: 'text-green-400' },
+    { id: 'overview', name: 'Mission Overview', icon: '🎯', color: 'text-indigo-400' }
   ];
 
   return (
@@ -108,7 +110,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Content Pipeline (NEW) */}
+        {/* Agent Collaboration Network (NEW) */}
+        {currentView === 'network' && <AgentCollaborationNetwork />}
+        
+        {/* Content Pipeline */}
         {currentView === 'content' && <ContentPipelineStatus />}
         
         {/* Agent Intelligence */}
