@@ -3,15 +3,16 @@ import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
 import RealTimeMonitoring from '../components/RealTimeMonitoring';
+import ContentPipelineStatus from '../components/ContentPipelineStatus';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v4.2',
-    totalSystems: 13,
+    version: 'v4.3',
+    totalSystems: 14,
     activeAgents: 3,
-    systemHealth: 96.8,
-    uptime: '99.3%',
+    systemHealth: 97.1,
+    uptime: '99.4%',
     lastUpdate: new Date().toLocaleTimeString(),
     missionPhase: 'OPERATIONAL'
   });
@@ -31,6 +32,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'content', name: 'Content Pipeline', icon: '🎬', color: 'text-yellow-400' },
     { id: 'agents', name: 'Agent Intelligence', icon: '🤖', color: 'text-blue-400' },
     { id: 'orchestration', name: 'System Orchestration', icon: '🌐', color: 'text-green-400' },
     { id: 'overview', name: 'Mission Overview', icon: '🎯', color: 'text-purple-400' }
@@ -103,8 +105,11 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Real-Time Monitoring (NEW) */}
+        {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
+        
+        {/* Content Pipeline (NEW) */}
+        {currentView === 'content' && <ContentPipelineStatus />}
         
         {/* Agent Intelligence */}
         {currentView === 'agents' && <AgentMetrics />}
