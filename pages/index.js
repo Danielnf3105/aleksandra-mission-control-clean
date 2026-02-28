@@ -1,4 +1,4 @@
-// Mission Control v6.2 - Enhanced with Consciousness Simulation
+// Mission Control v6.3 - Enhanced with Multiverse Analysis
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -11,17 +11,18 @@ import AutonomousOperations from '../components/AutonomousOperations';
 import QuantumIntelligence from '../components/QuantumIntelligence';
 import NeuralNetworkVisualization from '../components/NeuralNetworkVisualization';
 import ConsciousnessSimulation from '../components/ConsciousnessSimulation';
+import MultiverseAnalysis from '../components/MultiverseAnalysis';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.2',
+    version: 'v6.3',
     totalSystems: 15,
     activeAgents: 9,
-    systemHealth: 99.6,
-    uptime: '99.99%',
+    systemHealth: 99.7,
+    uptime: '99.997%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'CONSCIOUSNESS_EMERGENCE'
+    missionPhase: 'MULTIVERSE_TRANSCENDENCE'
   });
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'multiverse', name: 'Multiverse Analysis', icon: '🌌', color: 'text-indigo-300' },
     { id: 'consciousness', name: 'Consciousness Simulation', icon: '👁️', color: 'text-purple-300' },
     { id: 'neural', name: 'Neural Networks', icon: '🧠', color: 'text-pink-400' },
     { id: 'quantum', name: 'Quantum Intelligence', icon: '⚛️', color: 'text-cyan-300' },
@@ -122,7 +124,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Consciousness Simulation (NEW) */}
+        {/* Multiverse Analysis (NEW) */}
+        {currentView === 'multiverse' && <MultiverseAnalysis />}
+        
+        {/* Consciousness Simulation */}
         {currentView === 'consciousness' && <ConsciousnessSimulation />}
         
         {/* Neural Network Visualization */}
