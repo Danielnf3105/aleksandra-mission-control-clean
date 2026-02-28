@@ -1,4 +1,4 @@
-// Mission Control v6.0 - Enhanced with Quantum Intelligence
+// Mission Control v6.1 - Enhanced with Neural Network Visualization
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -9,17 +9,18 @@ import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnaly
 import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import AutonomousOperations from '../components/AutonomousOperations';
 import QuantumIntelligence from '../components/QuantumIntelligence';
+import NeuralNetworkVisualization from '../components/NeuralNetworkVisualization';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.0',
+    version: 'v6.1',
     totalSystems: 15,
     activeAgents: 9,
-    systemHealth: 99.2,
-    uptime: '99.97%',
+    systemHealth: 99.4,
+    uptime: '99.98%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'QUANTUM_INTELLIGENCE'
+    missionPhase: 'NEURAL_INTELLIGENCE'
   });
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'neural', name: 'Neural Networks', icon: '🧠', color: 'text-pink-400' },
     { id: 'quantum', name: 'Quantum Intelligence', icon: '⚛️', color: 'text-cyan-300' },
     { id: 'autonomous', name: 'Autonomous Operations', icon: '🤖', color: 'text-emerald-400' },
     { id: 'predictive', name: 'Predictive Intelligence', icon: '🔮', color: 'text-violet-400' },
@@ -118,7 +120,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Quantum Intelligence (NEW) */}
+        {/* Neural Network Visualization (NEW) */}
+        {currentView === 'neural' && <NeuralNetworkVisualization />}
+        
+        {/* Quantum Intelligence */}
         {currentView === 'quantum' && <QuantumIntelligence />}
         
         {/* Autonomous Operations */}
