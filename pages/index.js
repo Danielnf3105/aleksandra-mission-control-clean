@@ -1,4 +1,4 @@
-// Mission Control v6.1 - Enhanced with Neural Network Visualization
+// Mission Control v6.2 - Enhanced with Consciousness Simulation
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -10,17 +10,18 @@ import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import AutonomousOperations from '../components/AutonomousOperations';
 import QuantumIntelligence from '../components/QuantumIntelligence';
 import NeuralNetworkVisualization from '../components/NeuralNetworkVisualization';
+import ConsciousnessSimulation from '../components/ConsciousnessSimulation';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.1',
+    version: 'v6.2',
     totalSystems: 15,
     activeAgents: 9,
-    systemHealth: 99.4,
-    uptime: '99.98%',
+    systemHealth: 99.6,
+    uptime: '99.99%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'NEURAL_INTELLIGENCE'
+    missionPhase: 'CONSCIOUSNESS_EMERGENCE'
   });
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'consciousness', name: 'Consciousness Simulation', icon: '👁️', color: 'text-purple-300' },
     { id: 'neural', name: 'Neural Networks', icon: '🧠', color: 'text-pink-400' },
     { id: 'quantum', name: 'Quantum Intelligence', icon: '⚛️', color: 'text-cyan-300' },
     { id: 'autonomous', name: 'Autonomous Operations', icon: '🤖', color: 'text-emerald-400' },
@@ -120,7 +122,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Neural Network Visualization (NEW) */}
+        {/* Consciousness Simulation (NEW) */}
+        {currentView === 'consciousness' && <ConsciousnessSimulation />}
+        
+        {/* Neural Network Visualization */}
         {currentView === 'neural' && <NeuralNetworkVisualization />}
         
         {/* Quantum Intelligence */}
