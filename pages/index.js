@@ -1,4 +1,4 @@
-// Mission Control v5.2 - Enhanced with Predictive Intelligence
+// Mission Control v5.3 - Enhanced with Autonomous Operations
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -7,17 +7,18 @@ import ContentPipelineStatus from '../components/ContentPipelineStatus';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnalytics';
 import PredictiveIntelligence from '../components/PredictiveIntelligence';
+import AutonomousOperations from '../components/AutonomousOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v5.2',
+    version: 'v5.3',
     totalSystems: 15,
     activeAgents: 9,
-    systemHealth: 98.5,
-    uptime: '99.8%',
+    systemHealth: 98.8,
+    uptime: '99.9%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'PREDICTIVE_INTELLIGENCE'
+    missionPhase: 'AUTONOMOUS_OPERATIONS'
   });
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'autonomous', name: 'Autonomous Operations', icon: '🤖', color: 'text-emerald-400' },
     { id: 'predictive', name: 'Predictive Intelligence', icon: '🔮', color: 'text-violet-400' },
     { id: 'analytics', name: 'Performance Analytics', icon: '📊', color: 'text-cyan-400' },
     { id: 'network', name: 'Agent Collaboration', icon: '🌐', color: 'text-purple-400' },
@@ -114,7 +116,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Predictive Intelligence (NEW) */}
+        {/* Autonomous Operations (NEW) */}
+        {currentView === 'autonomous' && <AutonomousOperations />}
+        
+        {/* Predictive Intelligence */}
         {currentView === 'predictive' && <PredictiveIntelligence />}
         
         {/* Advanced Performance Analytics */}
