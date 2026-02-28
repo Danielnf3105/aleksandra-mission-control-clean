@@ -1,4 +1,4 @@
-// Mission Control v5.3 - Enhanced with Autonomous Operations
+// Mission Control v6.0 - Enhanced with Quantum Intelligence
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -8,17 +8,18 @@ import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnalytics';
 import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import AutonomousOperations from '../components/AutonomousOperations';
+import QuantumIntelligence from '../components/QuantumIntelligence';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v5.3',
+    version: 'v6.0',
     totalSystems: 15,
     activeAgents: 9,
-    systemHealth: 98.8,
-    uptime: '99.9%',
+    systemHealth: 99.2,
+    uptime: '99.97%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'AUTONOMOUS_OPERATIONS'
+    missionPhase: 'QUANTUM_INTELLIGENCE'
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'quantum', name: 'Quantum Intelligence', icon: '⚛️', color: 'text-cyan-300' },
     { id: 'autonomous', name: 'Autonomous Operations', icon: '🤖', color: 'text-emerald-400' },
     { id: 'predictive', name: 'Predictive Intelligence', icon: '🔮', color: 'text-violet-400' },
     { id: 'analytics', name: 'Performance Analytics', icon: '📊', color: 'text-cyan-400' },
@@ -116,7 +118,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Autonomous Operations (NEW) */}
+        {/* Quantum Intelligence (NEW) */}
+        {currentView === 'quantum' && <QuantumIntelligence />}
+        
+        {/* Autonomous Operations */}
         {currentView === 'autonomous' && <AutonomousOperations />}
         
         {/* Predictive Intelligence */}
