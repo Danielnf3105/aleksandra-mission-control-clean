@@ -1,4 +1,4 @@
-// Mission Control v4.4 - Enhanced with Advanced Performance Analytics
+// Mission Control v5.2 - Enhanced with Predictive Intelligence
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -6,17 +6,18 @@ import RealTimeMonitoring from '../components/RealTimeMonitoring';
 import ContentPipelineStatus from '../components/ContentPipelineStatus';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnalytics';
+import PredictiveIntelligence from '../components/PredictiveIntelligence';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('realtime');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v5.1',
+    version: 'v5.2',
     totalSystems: 15,
     activeAgents: 9,
-    systemHealth: 98.2,
-    uptime: '99.7%',
+    systemHealth: 98.5,
+    uptime: '99.8%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'ADVANCED_ANALYTICS'
+    missionPhase: 'PREDICTIVE_INTELLIGENCE'
   });
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function MissionControl() {
 
   const views = [
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
+    { id: 'predictive', name: 'Predictive Intelligence', icon: '🔮', color: 'text-violet-400' },
     { id: 'analytics', name: 'Performance Analytics', icon: '📊', color: 'text-cyan-400' },
     { id: 'network', name: 'Agent Collaboration', icon: '🌐', color: 'text-purple-400' },
     { id: 'content', name: 'Content Pipeline', icon: '🎬', color: 'text-yellow-400' },
@@ -112,7 +114,10 @@ export default function MissionControl() {
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
-        {/* Advanced Performance Analytics (NEW) */}
+        {/* Predictive Intelligence (NEW) */}
+        {currentView === 'predictive' && <PredictiveIntelligence />}
+        
+        {/* Advanced Performance Analytics */}
         {currentView === 'analytics' && <AdvancedPerformanceAnalytics />}
         
         {/* Agent Collaboration Network */}
