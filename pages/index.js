@@ -1,4 +1,4 @@
-// Mission Control v7.5 - Phase 12: Quantum-AI Hybrid Computing & Quantum Advantage
+// Mission Control v7.6 - Phase 13: Autonomous Physical AI Systems & Embodied Intelligence
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -24,17 +24,18 @@ import AGISingularityMonitoring from '../components/AGISingularityMonitoring';
 import QuantumNeuralInterface from '../components/QuantumNeuralInterface';
 import HolographicSpatialComputing from '../components/HolographicSpatialComputing';
 import QuantumAIHybridComputing from '../components/QuantumAIHybridComputing';
+import AutonomousPhysicalAI from '../components/AutonomousPhysicalAI';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('quantum-ai-hybrid');
+  const [currentView, setCurrentView] = useState('autonomous-physical-ai');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v7.5',
-    totalSystems: 26,
+    version: 'v7.6',
+    totalSystems: 27,
     activeAgents: 24,
     systemHealth: 99.97,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'QUANTUM_AI_HYBRID_COMPUTING_PHASE_12'
+    missionPhase: 'AUTONOMOUS_PHYSICAL_AI_PHASE_13'
   });
 
   useEffect(() => {
@@ -141,7 +142,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 12: Quantum-AI Hybrid Computing & Quantum Advantage (NEW) */}
+        {/* Phase 13: Autonomous Physical AI Systems & Embodied Intelligence (NEW) */}
+        {currentView === 'autonomous-physical-ai' && <AutonomousPhysicalAI />}
+        
+        {/* Phase 12: Quantum-AI Hybrid Computing & Quantum Advantage */}
         {currentView === 'quantum-ai-hybrid' && <QuantumAIHybridComputing />}
         
         {/* Phase 11: Holographic Spatial Computing & Mixed Reality */}
