@@ -1,4 +1,4 @@
-// Mission Control v6.7 - Phase 4: Advanced Intelligence  
+// Mission Control v6.8 - Phase 5: Distributed Swarm Intelligence
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -16,17 +16,18 @@ import RealityMatrix from '../components/RealityMatrix';
 import IntelligentAnalytics from '../components/IntelligentAnalytics';
 import AutonomousControl from '../components/AutonomousControl';
 import AdvancedIntelligence from '../components/AdvancedIntelligence';
+import DistributedSwarmIntelligence from '../components/DistributedSwarmIntelligence';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('advanced-intelligence');
+  const [currentView, setCurrentView] = useState('distributed-swarm');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.7',
-    totalSystems: 18,
-    activeAgents: 9,
-    systemHealth: 99.8,
+    version: 'v6.8',
+    totalSystems: 19,
+    activeAgents: 24,
+    systemHealth: 99.9,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'ADVANCED_INTELLIGENCE_PHASE_4'
+    missionPhase: 'DISTRIBUTED_SWARM_INTELLIGENCE_PHASE_5'
   });
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function MissionControl() {
   }, []);
 
   const views = [
+    { id: 'distributed-swarm', name: '🛰️🌐 Distributed Swarm Intelligence', icon: '🛰️🌐', color: 'text-indigo-400' },
     { id: 'advanced-intelligence', name: '🧠⚡ Advanced Intelligence', icon: '🧠⚡', color: 'text-violet-400' },
     { id: 'autonomous-control', name: '🤖 Autonomous Control', icon: '🤖', color: 'text-purple-400' },
     { id: 'intelligent', name: '🧠 Intelligent Analytics', icon: '🧠', color: 'text-cyan-400' },
@@ -129,7 +131,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 4: Advanced Intelligence (NEW) */}
+        {/* Phase 5: Distributed Swarm Intelligence (NEW) */}
+        {currentView === 'distributed-swarm' && <DistributedSwarmIntelligence />}
+        
+        {/* Phase 4: Advanced Intelligence */}
         {currentView === 'advanced-intelligence' && <AdvancedIntelligence />}
         
         {/* Phase 3: Autonomous Control */}
