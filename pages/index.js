@@ -1,4 +1,4 @@
-// Mission Control v6.4 - Enhanced with Reality Matrix
+// Mission Control v6.5 - Phase 2: Intelligent Analytics
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -13,17 +13,18 @@ import NeuralNetworkVisualization from '../components/NeuralNetworkVisualization
 import ConsciousnessSimulation from '../components/ConsciousnessSimulation';
 import MultiverseAnalysis from '../components/MultiverseAnalysis';
 import RealityMatrix from '../components/RealityMatrix';
+import IntelligentAnalytics from '../components/IntelligentAnalytics';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('realtime');
+  const [currentView, setCurrentView] = useState('intelligent');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.4',
-    totalSystems: 15,
+    version: 'v6.5',
+    totalSystems: 16,
     activeAgents: 9,
     systemHealth: 99.8,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'REALITY_MATRIX_ONLINE'
+    missionPhase: 'INTELLIGENT_ANALYTICS_PHASE_2'
   });
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function MissionControl() {
   }, []);
 
   const views = [
+    { id: 'intelligent', name: '🧠 Intelligent Analytics', icon: '🧠', color: 'text-cyan-400' },
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
     { id: 'matrix', name: 'Reality Matrix', icon: '🔮', color: 'text-red-300' },
     { id: 'multiverse', name: 'Multiverse Analysis', icon: '🌌', color: 'text-indigo-300' },
@@ -123,6 +125,9 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Phase 2: Intelligent Analytics (NEW) */}
+        {currentView === 'intelligent' && <IntelligentAnalytics />}
+        
         {/* Real-Time Monitoring */}
         {currentView === 'realtime' && <RealTimeMonitoring />}
         
