@@ -1,4 +1,4 @@
-// Mission Control v6.5 - Phase 2: Intelligent Analytics
+// Mission Control v6.6 - Phase 3: Autonomous Control
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -14,17 +14,18 @@ import ConsciousnessSimulation from '../components/ConsciousnessSimulation';
 import MultiverseAnalysis from '../components/MultiverseAnalysis';
 import RealityMatrix from '../components/RealityMatrix';
 import IntelligentAnalytics from '../components/IntelligentAnalytics';
+import AutonomousControl from '../components/AutonomousControl';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('intelligent');
+  const [currentView, setCurrentView] = useState('autonomous-control');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.5',
-    totalSystems: 16,
+    version: 'v6.6',
+    totalSystems: 17,
     activeAgents: 9,
     systemHealth: 99.8,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'INTELLIGENT_ANALYTICS_PHASE_2'
+    missionPhase: 'AUTONOMOUS_CONTROL_PHASE_3'
   });
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function MissionControl() {
   }, []);
 
   const views = [
+    { id: 'autonomous-control', name: '🤖 Autonomous Control', icon: '🤖', color: 'text-purple-400' },
     { id: 'intelligent', name: '🧠 Intelligent Analytics', icon: '🧠', color: 'text-cyan-400' },
     { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
     { id: 'matrix', name: 'Reality Matrix', icon: '🔮', color: 'text-red-300' },
@@ -125,7 +127,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 2: Intelligent Analytics (NEW) */}
+        {/* Phase 3: Autonomous Control (NEW) */}
+        {currentView === 'autonomous-control' && <AutonomousControl />}
+        
+        {/* Phase 2: Intelligent Analytics */}
         {currentView === 'intelligent' && <IntelligentAnalytics />}
         
         {/* Real-Time Monitoring */}
