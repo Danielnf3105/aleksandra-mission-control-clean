@@ -1,4 +1,4 @@
-// Mission Control v6.9 - Phase 6: Intelligent Digital Twin Interface
+// Mission Control v7.0 - Phase 7: Physical AI & Spatial Computing Interface
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -18,17 +18,18 @@ import AutonomousControl from '../components/AutonomousControl';
 import AdvancedIntelligence from '../components/AdvancedIntelligence';
 import DistributedSwarmIntelligence from '../components/DistributedSwarmIntelligence';
 import IntelligentDigitalTwin from '../components/IntelligentDigitalTwin';
+import PhysicalAISpatialInterface from '../components/PhysicalAISpatialInterface';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('digital-twin');
+  const [currentView, setCurrentView] = useState('physical-ai');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v6.9',
-    totalSystems: 20,
+    version: 'v7.0',
+    totalSystems: 21,
     activeAgents: 24,
-    systemHealth: 99.94,
+    systemHealth: 99.97,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'INTELLIGENT_DIGITAL_TWIN_PHASE_6'
+    missionPhase: 'PHYSICAL_AI_SPATIAL_COMPUTING_PHASE_7'
   });
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export default function MissionControl() {
   }, []);
 
   const views = [
+    { id: 'physical-ai', name: '🏗️🌐 Physical AI & Spatial Computing', icon: '🏗️🌐', color: 'text-blue-400' },
     { id: 'digital-twin', name: '🔮🧬 Intelligent Digital Twin', icon: '🔮🧬', color: 'text-emerald-400' },
     { id: 'distributed-swarm', name: '🛰️🌐 Distributed Swarm Intelligence', icon: '🛰️🌐', color: 'text-indigo-400' },
     { id: 'advanced-intelligence', name: '🧠⚡ Advanced Intelligence', icon: '🧠⚡', color: 'text-violet-400' },
@@ -133,7 +135,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 6: Intelligent Digital Twin Interface (NEW) */}
+        {/* Phase 7: Physical AI & Spatial Computing Interface (NEW) */}
+        {currentView === 'physical-ai' && <PhysicalAISpatialInterface />}
+        
+        {/* Phase 6: Intelligent Digital Twin Interface */}
         {currentView === 'digital-twin' && <IntelligentDigitalTwin />}
         
         {/* Phase 5: Distributed Swarm Intelligence */}
