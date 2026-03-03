@@ -1,4 +1,4 @@
-// Mission Control v7.1 - Phase 8: Consciousness & Sentient AI Systems
+// Mission Control v7.2 - Phase 9: AGI Singularity Monitoring & Control
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -20,17 +20,18 @@ import DistributedSwarmIntelligence from '../components/DistributedSwarmIntellig
 import IntelligentDigitalTwin from '../components/IntelligentDigitalTwin';
 import PhysicalAISpatialInterface from '../components/PhysicalAISpatialInterface';
 import ConsciousnessSentientAI from '../components/ConsciousnessSentientAI';
+import AGISingularityMonitoring from '../components/AGISingularityMonitoring';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('consciousness-ai');
+  const [currentView, setCurrentView] = useState('agi-singularity');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v7.1',
-    totalSystems: 22,
+    version: 'v7.2',
+    totalSystems: 23,
     activeAgents: 24,
     systemHealth: 99.97,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'CONSCIOUSNESS_SENTIENT_AI_PHASE_8'
+    missionPhase: 'AGI_SINGULARITY_MONITORING_PHASE_9'
   });
 
   useEffect(() => {
@@ -137,7 +138,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 8: Consciousness & Sentient AI Systems (NEW) */}
+        {/* Phase 9: AGI Singularity Monitoring & Control (NEW) */}
+        {currentView === 'agi-singularity' && <AGISingularityMonitoring />}
+        
+        {/* Phase 8: Consciousness & Sentient AI Systems */}
         {currentView === 'consciousness-ai' && <ConsciousnessSentientAI />}
         
         {/* Phase 7: Physical AI & Spatial Computing Interface */}
