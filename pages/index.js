@@ -1,4 +1,4 @@
-// Mission Control v7.0 - Phase 7: Physical AI & Spatial Computing Interface
+// Mission Control v7.1 - Phase 8: Consciousness & Sentient AI Systems
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -19,17 +19,18 @@ import AdvancedIntelligence from '../components/AdvancedIntelligence';
 import DistributedSwarmIntelligence from '../components/DistributedSwarmIntelligence';
 import IntelligentDigitalTwin from '../components/IntelligentDigitalTwin';
 import PhysicalAISpatialInterface from '../components/PhysicalAISpatialInterface';
+import ConsciousnessSentientAI from '../components/ConsciousnessSentientAI';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('physical-ai');
+  const [currentView, setCurrentView] = useState('consciousness-ai');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v7.0',
-    totalSystems: 21,
+    version: 'v7.1',
+    totalSystems: 22,
     activeAgents: 24,
     systemHealth: 99.97,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'PHYSICAL_AI_SPATIAL_COMPUTING_PHASE_7'
+    missionPhase: 'CONSCIOUSNESS_SENTIENT_AI_PHASE_8'
   });
 
   useEffect(() => {
@@ -46,6 +47,7 @@ export default function MissionControl() {
   }, []);
 
   const views = [
+    { id: 'consciousness-ai', name: '🧠✨ Consciousness & Sentient AI', icon: '🧠✨', color: 'text-purple-400' },
     { id: 'physical-ai', name: '🏗️🌐 Physical AI & Spatial Computing', icon: '🏗️🌐', color: 'text-blue-400' },
     { id: 'digital-twin', name: '🔮🧬 Intelligent Digital Twin', icon: '🔮🧬', color: 'text-emerald-400' },
     { id: 'distributed-swarm', name: '🛰️🌐 Distributed Swarm Intelligence', icon: '🛰️🌐', color: 'text-indigo-400' },
@@ -135,7 +137,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 7: Physical AI & Spatial Computing Interface (NEW) */}
+        {/* Phase 8: Consciousness & Sentient AI Systems (NEW) */}
+        {currentView === 'consciousness-ai' && <ConsciousnessSentientAI />}
+        
+        {/* Phase 7: Physical AI & Spatial Computing Interface */}
         {currentView === 'physical-ai' && <PhysicalAISpatialInterface />}
         
         {/* Phase 6: Intelligent Digital Twin Interface */}
