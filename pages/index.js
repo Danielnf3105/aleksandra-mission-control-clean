@@ -1,4 +1,4 @@
-// Mission Control v7.4 - Phase 11: Holographic Spatial Computing & Mixed Reality
+// Mission Control v7.5 - Phase 12: Quantum-AI Hybrid Computing & Quantum Advantage
 import { useState, useEffect } from 'react';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
@@ -23,17 +23,18 @@ import ConsciousnessSentientAI from '../components/ConsciousnessSentientAI';
 import AGISingularityMonitoring from '../components/AGISingularityMonitoring';
 import QuantumNeuralInterface from '../components/QuantumNeuralInterface';
 import HolographicSpatialComputing from '../components/HolographicSpatialComputing';
+import QuantumAIHybridComputing from '../components/QuantumAIHybridComputing';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('holographic-spatial');
+  const [currentView, setCurrentView] = useState('quantum-ai-hybrid');
   const [systemStatus, setSystemStatus] = useState({
-    version: 'v7.4',
-    totalSystems: 25,
+    version: 'v7.5',
+    totalSystems: 26,
     activeAgents: 24,
     systemHealth: 99.97,
     uptime: '99.999%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'HOLOGRAPHIC_SPATIAL_COMPUTING_PHASE_11'
+    missionPhase: 'QUANTUM_AI_HYBRID_COMPUTING_PHASE_12'
   });
 
   useEffect(() => {
@@ -140,7 +141,10 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 11: Holographic Spatial Computing & Mixed Reality (NEW) */}
+        {/* Phase 12: Quantum-AI Hybrid Computing & Quantum Advantage (NEW) */}
+        {currentView === 'quantum-ai-hybrid' && <QuantumAIHybridComputing />}
+        
+        {/* Phase 11: Holographic Spatial Computing & Mixed Reality */}
         {currentView === 'holographic-spatial' && <HolographicSpatialComputing />}
         
         {/* Phase 10: Quantum Neural Interface & Brain Streaming */}
