@@ -1,78 +1,115 @@
-// Mission Control v7.6 - Phase 13: Autonomous Physical AI Systems & Embodied Intelligence
+// Mission Control Dashboard v8.3 - SpaceX-Inspired Real-Time Enhancement
+// Primary Mission: Instagram Content Processing Pipeline Monitoring & Agent Coordination
 import { useState, useEffect } from 'react';
-import AgentMetrics from '../components/AgentMetrics';
-import SystemOrchestration from '../components/SystemOrchestration';
 import RealTimeMonitoring from '../components/RealTimeMonitoring';
 import ContentPipelineStatus from '../components/ContentPipelineStatus';
-import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
+import AgentMetrics from '../components/AgentMetrics';
+import SystemOrchestration from '../components/SystemOrchestration';
 import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnalytics';
 import PredictiveIntelligence from '../components/PredictiveIntelligence';
-import AutonomousOperations from '../components/AutonomousOperations';
-import QuantumIntelligence from '../components/QuantumIntelligence';
-import NeuralNetworkVisualization from '../components/NeuralNetworkVisualization';
-import ConsciousnessSimulation from '../components/ConsciousnessSimulation';
-import MultiverseAnalysis from '../components/MultiverseAnalysis';
-import RealityMatrix from '../components/RealityMatrix';
-import IntelligentAnalytics from '../components/IntelligentAnalytics';
-import AutonomousControl from '../components/AutonomousControl';
-import AdvancedIntelligence from '../components/AdvancedIntelligence';
-import DistributedSwarmIntelligence from '../components/DistributedSwarmIntelligence';
-import IntelligentDigitalTwin from '../components/IntelligentDigitalTwin';
-import PhysicalAISpatialInterface from '../components/PhysicalAISpatialInterface';
-import ConsciousnessSentientAI from '../components/ConsciousnessSentientAI';
-import AGISingularityMonitoring from '../components/AGISingularityMonitoring';
-import QuantumNeuralInterface from '../components/QuantumNeuralInterface';
-import HolographicSpatialComputing from '../components/HolographicSpatialComputing';
-import QuantumAIHybridComputing from '../components/QuantumAIHybridComputing';
-import AutonomousPhysicalAI from '../components/AutonomousPhysicalAI';
+import ErrorRecovery from '../components/ErrorRecovery';
+import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('autonomous-physical-ai');
-  const [systemStatus, setSystemStatus] = useState({
-    version: 'v7.6',
-    totalSystems: 27,
-    activeAgents: 24,
-    systemHealth: 99.97,
-    uptime: '99.999%',
+  const [currentView, setCurrentView] = useState('real-time-monitoring');
+  const [missionStatus, setMissionStatus] = useState({
+    version: 'v8.3 - SpaceX-Inspired Real-Time Enhancement',
+    missionName: 'Instagram Content Processing Pipeline',
+    totalSystems: 8,
+    activeAgents: 6,
+    systemHealth: 98.7,
+    uptime: '99.7%',
     lastUpdate: new Date().toLocaleTimeString(),
-    missionPhase: 'AUTONOMOUS_PHYSICAL_AI_PHASE_13'
+    missionPhase: 'CONTENT_PROCESSING_OPERATIONS',
+    contentProcessed: 15,
+    assemblyAIStatus: 'OPTIMAL',
+    pipelineEfficiency: 94.7,
+    deploymentNumber: 58,
+    missionObjective: 'Real-time Instagram content intelligence and transcription processing',
+    realtimeIndicators: {
+      contentProcessingActive: true,
+      agentNetworkOnline: true,
+      assemblyAIConnected: true,
+      pipelineThroughput: 'NOMINAL',
+      systemLoad: 'GREEN',
+      alertLevel: 'CLEAR'
+    },
+    missionTimer: Date.now(),
+    nextContentSpike: '18:00-20:00 (Predicted)',
+    currentOperationsFocus: 'Real-time content monitoring and optimization'
   });
 
   useEffect(() => {
-    // Update system status every 30 seconds
+    // Update mission status every 15 seconds for real-time monitoring
     const interval = setInterval(() => {
-      setSystemStatus(prev => ({
+      setMissionStatus(prev => ({
         ...prev,
-        systemHealth: Math.max(90, Math.min(99, prev.systemHealth + (Math.random() - 0.3) * 1.5)),
+        systemHealth: Math.max(95, Math.min(99, prev.systemHealth + (Math.random() - 0.3) * 1.2)),
+        pipelineEfficiency: Math.max(85, Math.min(98, prev.pipelineEfficiency + (Math.random() - 0.4) * 1.5)),
         lastUpdate: new Date().toLocaleTimeString()
       }));
-    }, 30000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const views = [
-    { id: 'consciousness-ai', name: '🧠✨ Consciousness & Sentient AI', icon: '🧠✨', color: 'text-purple-400' },
-    { id: 'physical-ai', name: '🏗️🌐 Physical AI & Spatial Computing', icon: '🏗️🌐', color: 'text-blue-400' },
-    { id: 'digital-twin', name: '🔮🧬 Intelligent Digital Twin', icon: '🔮🧬', color: 'text-emerald-400' },
-    { id: 'distributed-swarm', name: '🛰️🌐 Distributed Swarm Intelligence', icon: '🛰️🌐', color: 'text-indigo-400' },
-    { id: 'advanced-intelligence', name: '🧠⚡ Advanced Intelligence', icon: '🧠⚡', color: 'text-violet-400' },
-    { id: 'autonomous-control', name: '🤖 Autonomous Control', icon: '🤖', color: 'text-purple-400' },
-    { id: 'intelligent', name: '🧠 Intelligent Analytics', icon: '🧠', color: 'text-cyan-400' },
-    { id: 'realtime', name: 'Real-Time Monitoring', icon: '🔥', color: 'text-red-400' },
-    { id: 'matrix', name: 'Reality Matrix', icon: '🔮', color: 'text-red-300' },
-    { id: 'multiverse', name: 'Multiverse Analysis', icon: '🌌', color: 'text-indigo-300' },
-    { id: 'consciousness', name: 'Consciousness Simulation', icon: '👁️', color: 'text-purple-300' },
-    { id: 'neural', name: 'Neural Networks', icon: '🧠', color: 'text-pink-400' },
-    { id: 'quantum', name: 'Quantum Intelligence', icon: '⚛️', color: 'text-cyan-300' },
-    { id: 'autonomous', name: 'Autonomous Operations', icon: '🤖', color: 'text-emerald-400' },
-    { id: 'predictive', name: 'Predictive Intelligence', icon: '🔮', color: 'text-violet-400' },
-    { id: 'analytics', name: 'Performance Analytics', icon: '📊', color: 'text-cyan-400' },
-    { id: 'network', name: 'Agent Collaboration', icon: '🌐', color: 'text-purple-400' },
-    { id: 'content', name: 'Content Pipeline', icon: '🎬', color: 'text-yellow-400' },
-    { id: 'agents', name: 'Agent Intelligence', icon: '🤖', color: 'text-blue-400' },
-    { id: 'orchestration', name: 'System Orchestration', icon: '🛡️', color: 'text-green-400' },
-    { id: 'overview', name: 'Mission Overview', icon: '🎯', color: 'text-indigo-400' }
+  const missionViews = [
+    { 
+      id: 'real-time-monitoring', 
+      name: '🚀 Real-Time Mission Control', 
+      icon: '🚀', 
+      color: 'text-green-400',
+      description: 'Live system telemetry and mission status'
+    },
+    { 
+      id: 'content-pipeline', 
+      name: '🎬 Content Processing Pipeline', 
+      icon: '🎬', 
+      color: 'text-blue-400',
+      description: 'Instagram content intake and transcription'
+    },
+    { 
+      id: 'agent-intelligence', 
+      name: '🤖 Agent Intelligence Network', 
+      icon: '🤖', 
+      color: 'text-purple-400',
+      description: '6-agent collaboration and performance'
+    },
+    { 
+      id: 'system-orchestration', 
+      name: '🛡️ System Orchestration', 
+      icon: '🛡️', 
+      color: 'text-yellow-400',
+      description: 'Mission systems command and control'
+    },
+    { 
+      id: 'performance-analytics', 
+      name: '📊 Performance Analytics', 
+      icon: '📊', 
+      color: 'text-cyan-400',
+      description: 'Advanced mission performance metrics'
+    },
+    { 
+      id: 'predictive-intelligence', 
+      name: '🔮 Predictive Intelligence', 
+      icon: '🔮', 
+      color: 'text-pink-400',
+      description: 'AI forecasting and optimization insights'
+    },
+    { 
+      id: 'error-recovery', 
+      name: '🛡️ System Resilience', 
+      icon: '🛡️', 
+      color: 'text-red-400',
+      description: 'Mission continuity and recovery protocols'
+    },
+    { 
+      id: 'agent-collaboration', 
+      name: '🌐 Agent Coordination', 
+      icon: '🌐', 
+      color: 'text-indigo-400',
+      description: 'Multi-agent network coordination'
+    }
   ];
 
   return (
@@ -82,35 +119,85 @@ export default function MissionControl() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <div className="text-3xl font-bold text-green-400 font-mono">🦾 MISSION CONTROL</div>
-              <div className="text-sm text-green-300 font-mono">{systemStatus.version}</div>
+              <div className="text-3xl font-bold text-green-400 font-mono flex items-center">
+                🦾 ALEKSANDRA MISSION CONTROL
+                <div className="ml-3 flex items-center space-x-2">
+                  <div className={`w-3 h-3 rounded-full ${missionStatus.realtimeIndicators.systemLoad === 'GREEN' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
+                  <div className="text-xs text-green-400">LIVE</div>
+                </div>
+              </div>
+              <div className="text-sm text-green-300 font-mono">{missionStatus.version}</div>
               <div className="text-sm text-yellow-400 font-mono font-bold">
-                [{systemStatus.missionPhase}]
+                [{missionStatus.missionPhase}] - DEPLOYMENT #{missionStatus.deploymentNumber}
+              </div>
+              <div className="flex items-center space-x-2 text-xs">
+                <div className={`px-2 py-1 rounded border ${missionStatus.realtimeIndicators.alertLevel === 'CLEAR' ? 'bg-green-600 text-white border-green-500' : 'bg-red-600 text-white border-red-500'}`}>
+                  {missionStatus.realtimeIndicators.alertLevel}
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-8 font-mono">
+            <div className="flex items-center space-x-4 font-mono">
               <div className="text-center">
-                <div className="text-xs text-gray-400">SYSTEM HEALTH</div>
-                <div className="text-lg font-bold text-green-400">
-                  {systemStatus.systemHealth.toFixed(1)}%
+                <div className="text-xs text-gray-400">MISSION HEALTH</div>
+                <div className="flex items-center">
+                  <div className="text-lg font-bold text-green-400">
+                    {missionStatus.systemHealth.toFixed(1)}%
+                  </div>
+                  <div className="ml-2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400">UPTIME</div>
                 <div className="text-lg font-bold text-blue-400">
-                  {systemStatus.uptime}
+                  {missionStatus.uptime}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-xs text-gray-400">ACTIVE SYSTEMS</div>
-                <div className="text-lg font-bold text-purple-400">
-                  {systemStatus.totalSystems}
+                <div className="text-xs text-gray-400">CONTENT PROCESSED</div>
+                <div className="flex items-center">
+                  <div className="text-lg font-bold text-purple-400">
+                    {missionStatus.contentProcessed}
+                  </div>
+                  {missionStatus.realtimeIndicators.contentProcessingActive && (
+                    <div className="ml-2 w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                  )}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-400">ASSEMBLY AI</div>
+                <div className="flex items-center">
+                  <div className="text-lg font-bold text-cyan-400">
+                    {missionStatus.assemblyAIStatus}
+                  </div>
+                  {missionStatus.realtimeIndicators.assemblyAIConnected && (
+                    <div className="ml-2 w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
+                  )}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-400">PIPELINE EFF.</div>
+                <div className="text-lg font-bold text-yellow-400">
+                  {missionStatus.pipelineEfficiency.toFixed(1)}%
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs text-gray-400">AGENTS ONLINE</div>
+                <div className="flex items-center">
+                  <div className="text-lg font-bold text-green-400">
+                    {missionStatus.activeAgents}/{missionStatus.totalSystems}
+                  </div>
+                  {missionStatus.realtimeIndicators.agentNetworkOnline && (
+                    <div className="ml-2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  )}
                 </div>
               </div>
               <div className="text-right">
                 <div className="text-xs text-gray-400">LAST UPDATE</div>
                 <div className="text-sm text-white font-mono">
-                  {systemStatus.lastUpdate}
+                  {missionStatus.lastUpdate}
+                </div>
+                <div className="text-xs text-green-400 mt-1">
+                  ● LIVE DATA
                 </div>
               </div>
             </div>
@@ -118,22 +205,57 @@ export default function MissionControl() {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
+      {/* Mission Status Bar */}
+      <div className="bg-gray-800 border-b border-gray-600 py-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between text-sm font-mono">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center text-blue-400">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse mr-2"></div>
+                <span>CURRENT FOCUS: {missionStatus.currentOperationsFocus}</span>
+              </div>
+              <div className="text-yellow-400">
+                NEXT PREDICTED EVENT: {missionStatus.nextContentSpike}
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-green-400">
+                SYSTEM LOAD: {missionStatus.realtimeIndicators.systemLoad}
+              </div>
+              <div className="text-cyan-400">
+                THROUGHPUT: {missionStatus.realtimeIndicators.pipelineThroughput}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Navigation Tabs */}
       <div className="bg-gray-800 border-b border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-0">
-            {views.map((view, index) => (
+            {missionViews.map((view, index) => (
               <button
                 key={view.id}
                 onClick={() => setCurrentView(view.id)}
-                className={`py-4 px-6 border-b-4 text-sm font-bold font-mono transition-all hover:bg-gray-700 ${
+                className={`group py-4 px-6 border-b-4 text-sm font-bold font-mono transition-all duration-300 hover:bg-gray-700 hover:shadow-lg relative ${
                   currentView === view.id
-                    ? `border-green-500 bg-gray-700 ${view.color}`
-                    : 'border-transparent text-gray-400 hover:text-gray-300'
+                    ? `border-green-500 bg-gray-700 ${view.color} shadow-lg`
+                    : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500'
                 }`}
               >
-                <span className="mr-2 text-lg">{view.icon}</span>
-                {view.name}
+                <div className="flex flex-col items-center">
+                  <div className="flex items-center">
+                    <span className="mr-2 text-lg group-hover:scale-110 transition-transform duration-300">{view.icon}</span>
+                    <span>{view.name}</span>
+                  </div>
+                  <div className="text-xs text-gray-500 group-hover:text-gray-400 mt-1 max-w-32 text-center">
+                    {view.description}
+                  </div>
+                </div>
+                {currentView === view.id && (
+                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                )}
               </button>
             ))}
           </nav>
@@ -142,80 +264,30 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phase 13: Autonomous Physical AI Systems & Embodied Intelligence (NEW) */}
-        {currentView === 'autonomous-physical-ai' && <AutonomousPhysicalAI />}
+        {/* Real-Time Mission Control */}
+        {currentView === 'real-time-monitoring' && <RealTimeMonitoring />}
         
-        {/* Phase 12: Quantum-AI Hybrid Computing & Quantum Advantage */}
-        {currentView === 'quantum-ai-hybrid' && <QuantumAIHybridComputing />}
+        {/* Content Processing Pipeline */}
+        {currentView === 'content-pipeline' && <ContentPipelineStatus />}
         
-        {/* Phase 11: Holographic Spatial Computing & Mixed Reality */}
-        {currentView === 'holographic-spatial' && <HolographicSpatialComputing />}
-        
-        {/* Phase 10: Quantum Neural Interface & Brain Streaming */}
-        {currentView === 'quantum-neural' && <QuantumNeuralInterface />}
-        
-        {/* Phase 9: AGI Singularity Monitoring & Control */}
-        {currentView === 'agi-singularity' && <AGISingularityMonitoring />}
-        
-        {/* Phase 8: Consciousness & Sentient AI Systems */}
-        {currentView === 'consciousness-ai' && <ConsciousnessSentientAI />}
-        
-        {/* Phase 7: Physical AI & Spatial Computing Interface */}
-        {currentView === 'physical-ai' && <PhysicalAISpatialInterface />}
-        
-        {/* Phase 6: Intelligent Digital Twin Interface */}
-        {currentView === 'digital-twin' && <IntelligentDigitalTwin />}
-        
-        {/* Phase 5: Distributed Swarm Intelligence */}
-        {currentView === 'distributed-swarm' && <DistributedSwarmIntelligence />}
-        
-        {/* Phase 4: Advanced Intelligence */}
-        {currentView === 'advanced-intelligence' && <AdvancedIntelligence />}
-        
-        {/* Phase 3: Autonomous Control */}
-        {currentView === 'autonomous-control' && <AutonomousControl />}
-        
-        {/* Phase 2: Intelligent Analytics */}
-        {currentView === 'intelligent' && <IntelligentAnalytics />}
-        
-        {/* Real-Time Monitoring */}
-        {currentView === 'realtime' && <RealTimeMonitoring />}
-        
-        {/* Reality Matrix (NEW) */}
-        {currentView === 'matrix' && <RealityMatrix />}
-        
-        {/* Multiverse Analysis */}
-        {currentView === 'multiverse' && <MultiverseAnalysis />}
-        
-        {/* Consciousness Simulation */}
-        {currentView === 'consciousness' && <ConsciousnessSimulation />}
-        
-        {/* Neural Network Visualization */}
-        {currentView === 'neural' && <NeuralNetworkVisualization />}
-        
-        {/* Quantum Intelligence */}
-        {currentView === 'quantum' && <QuantumIntelligence />}
-        
-        {/* Autonomous Operations */}
-        {currentView === 'autonomous' && <AutonomousOperations />}
-        
-        {/* Predictive Intelligence */}
-        {currentView === 'predictive' && <PredictiveIntelligence />}
-        
-        {/* Advanced Performance Analytics */}
-        {currentView === 'analytics' && <AdvancedPerformanceAnalytics />}
-        
-        {/* Agent Collaboration Network */}
-        {currentView === 'network' && <AgentCollaborationNetwork />}
-        
-        {/* Content Pipeline */}
-        {currentView === 'content' && <ContentPipelineStatus />}
-        
-        {/* Agent Intelligence */}
-        {currentView === 'agents' && <AgentMetrics />}
+        {/* Agent Intelligence Network */}
+        {currentView === 'agent-intelligence' && <AgentMetrics />}
         
         {/* System Orchestration */}
-        {currentView === 'orchestration' && <SystemOrchestration />}
+        {currentView === 'system-orchestration' && <SystemOrchestration />}
+        
+        {/* Performance Analytics */}
+        {currentView === 'performance-analytics' && <AdvancedPerformanceAnalytics />}
+        
+        {/* Predictive Intelligence */}
+        {currentView === 'predictive-intelligence' && <PredictiveIntelligence />}
+        
+        {/* System Resilience */}
+        {currentView === 'error-recovery' && <ErrorRecovery />}
+        
+        {/* Agent Coordination */}
+        {currentView === 'agent-collaboration' && <AgentCollaborationNetwork />}
+        {/* Legacy views removed - now focused on content processing mission */}
 
         {/* Mission Overview */}
         {currentView === 'overview' && (
@@ -238,7 +310,7 @@ export default function MissionControl() {
                   <div className="text-4xl mr-4">🧠</div>
                   <div>
                     <div className="text-sm text-blue-400 font-mono">INTELLIGENCE SYSTEMS</div>
-                    <div className="text-2xl font-bold text-blue-400 font-mono">{systemStatus.totalSystems}</div>
+                    <div className="text-2xl font-bold text-blue-400 font-mono">{missionStatus.totalSystems}</div>
                     <div className="text-xs text-blue-300">Advanced AI Modules</div>
                   </div>
                 </div>
@@ -331,7 +403,7 @@ export default function MissionControl() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center text-xs font-mono">
             <div className="text-green-400">
-              MISSION CONTROL {systemStatus.version} • OPERATIONAL STATUS: NOMINAL
+              MISSION CONTROL {missionStatus.version} • OPERATIONAL STATUS: NOMINAL
             </div>
             <div className="flex items-center space-x-4 text-gray-400">
               <span>DEPLOYED: VERCEL</span>

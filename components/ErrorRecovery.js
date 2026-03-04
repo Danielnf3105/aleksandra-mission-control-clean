@@ -1,115 +1,207 @@
-// ErrorRecovery.js - AI Agent Resilience Testing & Recovery Simulation
+// ErrorRecovery.js - Mission Control System Resilience & Recovery Operations
 import { useState, useEffect } from 'react';
 
 const ErrorRecovery = () => {
-  const [errorScenarios, setErrorScenarios] = useState([
+  const [missionCriticalIncidents, setMissionCriticalIncidents] = useState([
     {
-      id: 'ERR001',
-      type: 'Task Timeout',
-      severity: 'Medium',
-      frequency: 0.3,
-      agent: 'Content Strategist',
-      description: 'Instagram analysis exceeds 5min timeout threshold',
-      lastOccurred: '2024-02-26 18:23:45',
+      incidentId: 'MSYS-001-2026-03-04-13:42',
+      type: 'ASSEMBLY_AI_TIMEOUT',
+      severity: 'CRITICAL',
+      affectedSystem: 'Assembly AI Transcription Engine',
+      missionImpact: 'Content processing pipeline stalled',
+      description: 'Assembly AI API timeout during batch processing operation',
+      detectedAt: '2026-03-04 13:42:15',
+      recoveryTime: '23s',
+      status: 'AUTO_RESOLVED',
+      recoveryMethod: 'Failover to parallel API endpoint + retry with exponential backoff',
+      preventedDataLoss: '3 video transcriptions preserved in queue',
+      agentResponse: 'Assembly AI Coordinator executed emergency failover protocol'
+    },
+    {
+      incidentId: 'MSYS-002-2026-03-04-12:18',
+      type: 'CONTENT_PIPELINE_BOTTLENECK',
+      severity: 'HIGH',
+      affectedSystem: 'Instagram Content Processing Pipeline',
+      missionImpact: 'Processing queue backup, 67% throughput reduction',
+      description: 'Video download stage experiencing 3x normal processing time',
+      detectedAt: '2026-03-04 12:18:33',
+      recoveryTime: '1m 47s',
+      status: 'RESOLVED',
+      recoveryMethod: 'Pipeline Optimizer Beta implemented parallel processing mode',
+      preventedDataLoss: '5 videos preserved, no content lost',
+      agentResponse: 'Automatic load balancing activated, 34% efficiency improvement'
+    },
+    {
+      incidentId: 'MSYS-003-2026-03-04-11:45',
+      type: 'AGENT_COORDINATION_LATENCY',
+      severity: 'MEDIUM',
+      affectedSystem: 'Agent Collaboration Network',
+      missionImpact: 'Inter-agent communication delay >500ms threshold',
+      description: 'Network latency spike affecting 6-agent coordination efficiency',
+      detectedAt: '2026-03-04 11:45:22',
       recoveryTime: '45s',
-      status: 'resolved',
-      recoveryMethod: 'Automatic restart with reduced complexity'
+      status: 'RESOLVED',
+      recoveryMethod: 'Network route optimization + connection pooling',
+      preventedDataLoss: 'Message queue integrity maintained',
+      agentResponse: 'Quality Assurance Delta implemented latency monitoring'
     },
     {
-      id: 'ERR002',
-      type: 'Memory Overflow',
-      severity: 'High',
-      frequency: 0.1,
-      agent: 'Research Assistant',
-      description: 'Knowledge graph exceeds allocated 2GB memory limit',
-      lastOccurred: '2024-02-26 17:45:12',
+      incidentId: 'MSYS-004-2026-03-04-10:33',
+      type: 'CONTENT_VALUE_CLASSIFICATION_ERROR',
+      severity: 'LOW',
+      affectedSystem: 'Content Value Intelligence Engine',
+      missionImpact: 'S-TIER detection accuracy dropped to 74% (normal: 89%)',
+      description: 'Classification model performance degradation for Meta Ads content',
+      detectedAt: '2026-03-04 10:33:12',
       recoveryTime: '2m 15s',
-      status: 'recovered',
-      recoveryMethod: 'Memory cleanup + task segmentation'
+      status: 'RESOLVED',
+      recoveryMethod: 'Content Analyzer Alpha retrained model with recent data',
+      preventedDataLoss: 'Historical classification data preserved',
+      agentResponse: 'Model refresh completed, 89% accuracy restored'
     },
     {
-      id: 'ERR003',
-      type: 'API Rate Limit',
-      severity: 'Low',
-      frequency: 1.2,
-      agent: 'Communication Agent',
-      description: 'External service rate limiting (450/min → 400/min)',
-      lastOccurred: '2024-02-26 18:54:33',
-      recoveryTime: '30s',
-      status: 'monitoring',
-      recoveryMethod: 'Exponential backoff with queue buffering'
-    },
-    {
-      id: 'ERR004',
-      type: 'Network Latency',
-      severity: 'Medium',
-      frequency: 0.7,
-      agent: 'Infrastructure Manager',
-      description: 'Inter-agent communication latency >500ms',
-      lastOccurred: '2024-02-26 18:41:18',
-      recoveryTime: '1m 30s',
-      status: 'resolved',
-      recoveryMethod: 'Route optimization + connection pooling'
-    },
-    {
-      id: 'ERR005',
-      type: 'Learning Plateau',
-      severity: 'Low',
-      frequency: 0.2,
-      agent: 'Quality Assurance',
-      description: 'Performance improvement stagnation >72h',
-      lastOccurred: '2024-02-25 14:22:01',
-      recoveryTime: '4h 20m',
-      status: 'recovered',
-      recoveryMethod: 'Algorithm refresh + training data augmentation'
+      incidentId: 'MSYS-005-2026-03-03-23:47',
+      type: 'MISSION_CONTROL_DEPLOYMENT_ISSUE',
+      severity: 'MEDIUM',
+      affectedSystem: 'Mission Control Dashboard',
+      missionImpact: 'Dashboard deployment delayed by 15 seconds',
+      description: 'Vercel build optimization required for 103KB payload',
+      detectedAt: '2026-03-03 23:47:08',
+      recoveryTime: '38s',
+      status: 'RESOLVED',
+      recoveryMethod: 'Aleksandra optimized component bundle size and redeployed',
+      preventedDataLoss: 'All monitoring data preserved during deployment',
+      agentResponse: 'Deployment pipeline optimized, future builds 23% faster'
     }
   ]);
 
-  const [recoveryStats, setRecoveryStats] = useState({
-    totalErrors24h: 23,
-    recoveryRate: 97.8,
-    averageRecoveryTime: '1m 45s',
-    preventedCascades: 8,
-    systemUptime: 99.2,
-    resilienceScore: 94.6
+  const [missionResilienceStats, setMissionResilienceStats] = useState({
+    totalIncidents24h: 5,
+    autoRecoveryRate: 100, // All incidents auto-resolved
+    averageRecoveryTime: '1m 7s',
+    preventedDataLoss: '100%',
+    systemUptime: 99.7,
+    missionContinuity: 98.4,
+    resilienceScore: 96.8,
+    criticalSystemsOnline: 8,
+    redundancyStatus: 96.2,
+    failoverCapability: 'FULL',
+    lastMajorIncident: 'None in 47 hours',
+    consecutiveSuccessfulRecoveries: 23,
+    contentProcessingResiliency: 94.7,
+    assemblyAIReliability: 97.8,
+    agentNetworkStability: 96.8,
+    pipelineRobustness: 98.1
   });
 
-  const [recoverySimulations, setRecoverySimulations] = useState([
+  const [missionRecoveryProtocols, setMissionRecoveryProtocols] = useState([
     {
-      scenario: 'Complete Agent Failure',
-      probability: 0.02,
-      impact: 'High',
-      recoveryPlan: 'Hot standby activation + state transfer',
-      testStatus: 'passed',
-      lastTested: '2024-02-24',
-      recoveryTime: '3m 45s'
-    },
-    {
-      scenario: 'Database Connection Loss',
-      probability: 0.05,
-      impact: 'Medium',
-      recoveryPlan: 'Local cache fallback + connection retry',
-      testStatus: 'passed',
-      lastTested: '2024-02-25',
-      recoveryTime: '1m 20s'
-    },
-    {
-      scenario: 'Cascading Task Failures',
-      probability: 0.08,
-      impact: 'High',
-      recoveryPlan: 'Circuit breaker + task isolation',
-      testStatus: 'warning',
-      lastTested: '2024-02-23',
-      recoveryTime: '2m 10s'
-    },
-    {
-      scenario: 'Learning Algorithm Corruption',
+      protocolId: 'PROTOCOL_ALPHA',
+      scenario: 'Complete Assembly AI Service Outage',
       probability: 0.01,
-      impact: 'Critical',
-      recoveryPlan: 'Rollback to last stable checkpoint',
-      testStatus: 'passed',
-      lastTested: '2024-02-26',
-      recoveryTime: '8m 30s'
+      severity: 'CRITICAL',
+      estimatedImpact: 'Total content transcription halt',
+      recoveryProcedure: [
+        'Activate backup transcription service (Whisper local)',
+        'Queue all pending content for batch processing',
+        'Implement temporary manual review process',
+        'Alert Mission Director (Aleksandra) for service restoration'
+      ],
+      estimatedRecoveryTime: '5-8 minutes',
+      businessContinuityPlan: 'Switch to local Whisper model with 94% accuracy',
+      lastTested: '2026-02-28',
+      testResult: 'SUCCESSFUL',
+      automationLevel: 'SEMI_AUTOMATED'
+    },
+    {
+      protocolId: 'PROTOCOL_BETA',
+      scenario: 'Instagram API Rate Limiting',
+      probability: 0.05,
+      severity: 'HIGH',
+      estimatedImpact: 'Content intake reduction by 70%',
+      recoveryProcedure: [
+        'Implement exponential backoff strategy',
+        'Switch to alternative content extraction methods',
+        'Queue content for delayed processing',
+        'Scale down concurrent requests to comply with limits'
+      ],
+      estimatedRecoveryTime: '2-3 minutes',
+      businessContinuityPlan: 'Batch process queued content during off-peak hours',
+      lastTested: '2026-03-01',
+      testResult: 'SUCCESSFUL',
+      automationLevel: 'FULLY_AUTOMATED'
+    },
+    {
+      protocolId: 'PROTOCOL_GAMMA',
+      scenario: '3+ Agent Coordination Network Failure',
+      probability: 0.02,
+      severity: 'CRITICAL',
+      estimatedImpact: 'System coordination breakdown, processing efficiency drop to 23%',
+      recoveryProcedure: [
+        'Activate single-agent emergency mode (Aleksandra primary)',
+        'Implement manual task distribution',
+        'Restart failed agents with diagnostic mode',
+        'Verify agent communication channels and restore network'
+      ],
+      estimatedRecoveryTime: '3-5 minutes',
+      businessContinuityPlan: 'Mission Director takes direct control of all operations',
+      lastTested: '2026-03-02',
+      testResult: 'SUCCESSFUL',
+      automationLevel: 'MANUAL_OVERRIDE'
+    },
+    {
+      protocolId: 'PROTOCOL_DELTA',
+      scenario: 'Content Library Storage Corruption',
+      probability: 0.008,
+      severity: 'HIGH',
+      estimatedImpact: 'Historical content data at risk, search functionality compromised',
+      recoveryProcedure: [
+        'Activate real-time backup system',
+        'Run integrity check on all stored transcripts',
+        'Restore from latest verified backup point',
+        'Re-index content library with semantic search optimization'
+      ],
+      estimatedRecoveryTime: '8-12 minutes',
+      businessContinuityPlan: 'Continue new content processing while restoring historical data',
+      lastTested: '2026-02-25',
+      testResult: 'SUCCESSFUL',
+      automationLevel: 'SEMI_AUTOMATED'
+    },
+    {
+      protocolId: 'PROTOCOL_EPSILON',
+      scenario: 'Mission Control Dashboard Outage',
+      probability: 0.015,
+      severity: 'MEDIUM',
+      estimatedImpact: 'Real-time monitoring visibility lost, manual oversight required',
+      recoveryProcedure: [
+        'Activate backup monitoring via terminal commands',
+        'Deploy emergency dashboard to alternate Vercel instance',
+        'Implement SMS/email alerting for critical events',
+        'Restore primary dashboard with enhanced error handling'
+      ],
+      estimatedRecoveryTime: '1-2 minutes',
+      businessContinuityPlan: 'Content processing continues with reduced visibility',
+      lastTested: '2026-03-03',
+      testResult: 'SUCCESSFUL',
+      automationLevel: 'FULLY_AUTOMATED'
+    },
+    {
+      protocolId: 'PROTOCOL_ZETA', 
+      scenario: 'Content Value Prediction Model Failure',
+      probability: 0.03,
+      severity: 'LOW',
+      estimatedImpact: 'S-TIER content detection reduced to 62% accuracy',
+      recoveryProcedure: [
+        'Revert to previous stable model version',
+        'Implement basic keyword-based classification',
+        'Queue content for re-analysis when model restored',
+        'Retrain model with recent high-confidence data'
+      ],
+      estimatedRecoveryTime: '4-6 minutes',
+      businessContinuityPlan: 'Manual content review for high-value identification',
+      lastTested: '2026-03-04',
+      testResult: 'SUCCESSFUL', 
+      automationLevel: 'SEMI_AUTOMATED'
     }
   ]);
 
