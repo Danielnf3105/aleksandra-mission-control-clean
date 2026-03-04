@@ -1,4 +1,4 @@
-// Mission Control Dashboard v8.3 - SpaceX-Inspired Real-Time Enhancement
+// Mission Control Dashboard v8.5 - Modern UI Enhancement with Vibrant Data Visualization
 // Primary Mission: Instagram Content Processing Pipeline Monitoring & Agent Coordination
 import { useState, useEffect } from 'react';
 import RealTimeMonitoring from '../components/RealTimeMonitoring';
@@ -13,7 +13,7 @@ import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
   const [missionStatus, setMissionStatus] = useState({
-    version: 'v8.3 - SpaceX-Inspired Real-Time Enhancement',
+    version: 'v8.5 - Modern UI Enhancement with Vibrant Data Visualization',
     missionName: 'Instagram Content Processing Pipeline',
     totalSystems: 8,
     activeAgents: 6,
@@ -24,7 +24,7 @@ export default function MissionControl() {
     contentProcessed: 15,
     assemblyAIStatus: 'OPTIMAL',
     pipelineEfficiency: 94.7,
-    deploymentNumber: 58,
+    deploymentNumber: 60,
     missionObjective: 'Real-time Instagram content intelligence and transcription processing',
     realtimeIndicators: {
       contentProcessingActive: true,
@@ -36,7 +36,15 @@ export default function MissionControl() {
     },
     missionTimer: Date.now(),
     nextContentSpike: '18:00-20:00 (Predicted)',
-    currentOperationsFocus: 'Real-time content monitoring and optimization'
+    currentOperationsFocus: 'Continuous improvement cycle - Real-time monitoring and optimization',
+    lastImprovementCycle: new Date().toLocaleString('en-US', { 
+      timeZone: 'Europe/Lisbon',
+      month: 'short', 
+      day: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit'
+    }),
+    improvementCycleActive: true
   });
 
   useEffect(() => {
@@ -113,17 +121,17 @@ export default function MissionControl() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Mission Control Header */}
-      <div className="bg-black border-b-2 border-green-500">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      {/* Enhanced Mission Control Header */}
+      <div className="bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-gradient-to-r from-green-400 via-cyan-500 to-blue-500 shadow-lg shadow-green-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-4">
-              <div className="text-3xl font-bold text-green-400 font-mono flex items-center">
+              <div className="text-3xl font-bold bg-gradient-to-r from-green-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent font-mono flex items-center">
                 🦾 ALEKSANDRA MISSION CONTROL
                 <div className="ml-3 flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${missionStatus.realtimeIndicators.systemLoad === 'GREEN' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                  <div className="text-xs text-green-400">LIVE</div>
+                  <div className={`w-3 h-3 rounded-full ${missionStatus.realtimeIndicators.systemLoad === 'GREEN' ? 'bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse shadow-lg shadow-green-400/50' : 'bg-gradient-to-r from-red-400 to-rose-500 animate-pulse shadow-lg shadow-red-400/50'}`}></div>
+                  <div className="text-xs text-green-400 font-bold tracking-wider">LIVE</div>
                 </div>
               </div>
               <div className="text-sm text-green-300 font-mono">{missionStatus.version}</div>
@@ -140,54 +148,54 @@ export default function MissionControl() {
               <div className="text-center">
                 <div className="text-xs text-gray-400">MISSION HEALTH</div>
                 <div className="flex items-center">
-                  <div className="text-lg font-bold text-green-400">
+                  <div className="text-lg font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
                     {missionStatus.systemHealth.toFixed(1)}%
                   </div>
-                  <div className="ml-2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="ml-2 w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400">UPTIME</div>
-                <div className="text-lg font-bold text-blue-400">
+                <div className="text-lg font-bold bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
                   {missionStatus.uptime}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400">CONTENT PROCESSED</div>
                 <div className="flex items-center">
-                  <div className="text-lg font-bold text-purple-400">
+                  <div className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
                     {missionStatus.contentProcessed}
                   </div>
                   {missionStatus.realtimeIndicators.contentProcessingActive && (
-                    <div className="ml-2 w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
+                    <div className="ml-2 w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full animate-bounce shadow-lg shadow-purple-400/50"></div>
                   )}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400">ASSEMBLY AI</div>
                 <div className="flex items-center">
-                  <div className="text-lg font-bold text-cyan-400">
+                  <div className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-teal-500 bg-clip-text text-transparent">
                     {missionStatus.assemblyAIStatus}
                   </div>
                   {missionStatus.realtimeIndicators.assemblyAIConnected && (
-                    <div className="ml-2 w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
+                    <div className="ml-2 w-2 h-2 bg-gradient-to-r from-cyan-400 to-teal-500 rounded-full animate-pulse shadow-lg shadow-cyan-400/50"></div>
                   )}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400">PIPELINE EFF.</div>
-                <div className="text-lg font-bold text-yellow-400">
+                <div className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
                   {missionStatus.pipelineEfficiency.toFixed(1)}%
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-xs text-gray-400">AGENTS ONLINE</div>
                 <div className="flex items-center">
-                  <div className="text-lg font-bold text-green-400">
+                  <div className="text-lg font-bold bg-gradient-to-r from-green-400 to-lime-500 bg-clip-text text-transparent">
                     {missionStatus.activeAgents}/{missionStatus.totalSystems}
                   </div>
                   {missionStatus.realtimeIndicators.agentNetworkOnline && (
-                    <div className="ml-2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div className="ml-2 w-2 h-2 bg-gradient-to-r from-green-400 to-lime-500 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
                   )}
                 </div>
               </div>
@@ -205,14 +213,14 @@ export default function MissionControl() {
         </div>
       </div>
 
-      {/* Mission Status Bar */}
-      <div className="bg-gray-800 border-b border-gray-600 py-2">
+      {/* Enhanced Mission Status Bar */}
+      <div className="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 border-b border-gray-600 py-2 shadow-inner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between text-sm font-mono">
             <div className="flex items-center space-x-6">
-              <div className="flex items-center text-blue-400">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse mr-2"></div>
-                <span>CURRENT FOCUS: {missionStatus.currentOperationsFocus}</span>
+              <div className="flex items-center bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full animate-pulse mr-2 shadow-lg shadow-blue-400/50"></div>
+                <span className="text-blue-400">CURRENT FOCUS: {missionStatus.currentOperationsFocus}</span>
               </div>
               <div className="text-yellow-400">
                 NEXT PREDICTED EVENT: {missionStatus.nextContentSpike}
@@ -225,6 +233,12 @@ export default function MissionControl() {
               <div className="text-cyan-400">
                 THROUGHPUT: {missionStatus.realtimeIndicators.pipelineThroughput}
               </div>
+              {missionStatus.improvementCycleActive && (
+                <div className="flex items-center text-purple-400">
+                  <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full animate-pulse mr-2 shadow-lg shadow-purple-400/50"></div>
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent font-bold">IMPROVEMENT CYCLE: ACTIVE</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
