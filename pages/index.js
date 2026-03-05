@@ -20,6 +20,7 @@ import MobileDashboardView from '../components/MobileDashboardView';
 import RealTimeNotificationCenter from '../components/RealTimeNotificationCenter';
 import WorkflowAutomationCenter from '../components/WorkflowAutomationCenter';
 import PerformanceAnalyticsCenter from '../components/PerformanceAnalyticsCenter';
+import ContentProcessingCenter from '../components/ContentProcessingCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -525,6 +526,13 @@ export default function MissionControl() {
       description: 'Advanced analytics, cost management, and optimization'
     },
     { 
+      id: 'content-processing', 
+      name: '🎬 Content Processing', 
+      icon: '🎬', 
+      color: 'text-pink-400',
+      description: 'Instagram video transcription and content analysis'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -817,6 +825,9 @@ export default function MissionControl() {
         
         {/* Performance Analytics Center */}
         {currentView === 'performance-analytics' && <PerformanceAnalyticsCenter />}
+        
+        {/* Content Processing Center */}
+        {currentView === 'content-processing' && <ContentProcessingCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
