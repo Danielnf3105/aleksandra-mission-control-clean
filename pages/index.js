@@ -11,6 +11,7 @@ import ErrorRecovery from '../components/ErrorRecovery';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
+import MissionControlTerminal from '../components/MissionControlTerminal';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -460,6 +461,13 @@ export default function MissionControl() {
       description: 'Real-time system and process monitoring'
     },
     { 
+      id: 'terminal', 
+      name: '💻 Command Terminal', 
+      icon: '💻', 
+      color: 'text-lime-400',
+      description: 'Interactive mission control command interface'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -723,6 +731,9 @@ export default function MissionControl() {
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
+        
+        {/* Mission Control Terminal */}
+        {currentView === 'terminal' && <MissionControlTerminal />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
