@@ -24,6 +24,7 @@ import ContentProcessingCenter from '../components/ContentProcessingCenter';
 import AgentOrchestrationCenter from '../components/AgentOrchestrationCenter';
 import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter';
 import APIManagementCenter from '../components/APIManagementCenter';
+import DataMonitoringCenter from '../components/DataMonitoringCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -557,6 +558,13 @@ export default function MissionControl() {
       description: 'API monitoring, microservices, and incident management'
     },
     { 
+      id: 'data-monitoring', 
+      name: '📡 Data Monitoring', 
+      icon: '📡', 
+      color: 'text-teal-400',
+      description: 'Real-time sensor monitoring and IoT-style telemetry'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -861,6 +869,9 @@ export default function MissionControl() {
         
         {/* API Management Center */}
         {currentView === 'api-management' && <APIManagementCenter />}
+        
+        {/* Data Monitoring Center */}
+        {currentView === 'data-monitoring' && <DataMonitoringCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
