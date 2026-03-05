@@ -23,6 +23,7 @@ import PerformanceAnalyticsCenter from '../components/PerformanceAnalyticsCenter
 import ContentProcessingCenter from '../components/ContentProcessingCenter';
 import AgentOrchestrationCenter from '../components/AgentOrchestrationCenter';
 import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter';
+import APIManagementCenter from '../components/APIManagementCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -549,6 +550,13 @@ export default function MissionControl() {
       description: 'Infrastructure monitoring, CI/CD, and automation'
     },
     { 
+      id: 'api-management', 
+      name: '🔗 API Management', 
+      icon: '🔗', 
+      color: 'text-emerald-400',
+      description: 'API monitoring, microservices, and incident management'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -850,6 +858,9 @@ export default function MissionControl() {
         
         {/* Infrastructure & DevOps Center */}
         {currentView === 'infrastructure-devops' && <InfrastructureDevOpsCenter />}
+        
+        {/* API Management Center */}
+        {currentView === 'api-management' && <APIManagementCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
