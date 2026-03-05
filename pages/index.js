@@ -27,6 +27,8 @@ import APIManagementCenter from '../components/APIManagementCenter';
 import DataMonitoringCenter from '../components/DataMonitoringCenter';
 import AIPredictiveCenter from '../components/AIPredictiveCenter';
 import SpaceMissionCenter from '../components/SpaceMissionCenter';
+import CyberSecuritySOC from '../components/CyberSecuritySOC';
+import MilitaryTacticalTOC from '../components/MilitaryTacticalTOC';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -581,6 +583,20 @@ export default function MissionControl() {
       description: 'NASA/SpaceX-inspired space operations control'
     },
     { 
+      id: 'cyber-security-soc', 
+      name: '🛡️ Cyber Security SOC', 
+      icon: '🛡️', 
+      color: 'text-red-400',
+      description: 'Enterprise security operations center & threat intelligence'
+    },
+    { 
+      id: 'military-tactical-toc', 
+      name: '⚔️ Military Tactical TOC', 
+      icon: '⚔️', 
+      color: 'text-orange-400',
+      description: 'Military tactical operations center & C4ISR command dashboard'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -894,6 +910,12 @@ export default function MissionControl() {
         
         {/* Space Mission Center */}
         {currentView === 'space-mission' && <SpaceMissionCenter />}
+        
+        {/* Cyber Security SOC */}
+        {currentView === 'cyber-security-soc' && <CyberSecuritySOC />}
+        
+        {/* Military Tactical TOC */}
+        {currentView === 'military-tactical-toc' && <MilitaryTacticalTOC />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
