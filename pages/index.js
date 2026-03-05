@@ -43,6 +43,7 @@ import SmartCityOperations from '../components/SmartCityOperations';
 import HealthcareOperations from '../components/HealthcareOperations';
 import AgriculturalOperations from '../components/AgriculturalOperations';
 import RetailOperations from '../components/RetailOperations';
+import OilGasOperations from '../components/OilGasOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -709,6 +710,13 @@ export default function MissionControl() {
       description: 'Retail operations control center & omnichannel management system'
     },
     { 
+      id: 'oil-gas-operations', 
+      name: '🛢️ Oil & Gas Operations', 
+      icon: '🛢️', 
+      color: 'text-amber-500',
+      description: 'Oil & gas operations control center & integrated energy management'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1070,6 +1078,9 @@ export default function MissionControl() {
         
         {/* Retail Operations */}
         {currentView === 'retail-operations' && <RetailOperations />}
+        
+        {/* Oil & Gas Operations */}
+        {currentView === 'oil-gas-operations' && <OilGasOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
