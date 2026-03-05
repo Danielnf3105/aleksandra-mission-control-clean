@@ -36,6 +36,7 @@ import MaritimeTrafficVTS from '../components/MaritimeTrafficVTS';
 import RailwayTrafficControl from '../components/RailwayTrafficControl';
 import NuclearPowerControl from '../components/NuclearPowerControl';
 import FinancialTradingFloor from '../components/FinancialTradingFloor';
+import DataCenterOperations from '../components/DataCenterOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -653,6 +654,13 @@ export default function MissionControl() {
       description: 'Financial trading control center & risk management system'
     },
     { 
+      id: 'data-center-operations', 
+      name: '🏢 Data Center Operations', 
+      icon: '🏢', 
+      color: 'text-cyan-400',
+      description: 'Data center NOC/DCIM infrastructure management control center'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -993,6 +1001,9 @@ export default function MissionControl() {
         
         {/* Financial Trading Floor */}
         {currentView === 'financial-trading-floor' && <FinancialTradingFloor />}
+        
+        {/* Data Center Operations */}
+        {currentView === 'data-center-operations' && <DataCenterOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
