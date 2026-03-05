@@ -40,6 +40,7 @@ import DataCenterOperations from '../components/DataCenterOperations';
 import ManufacturingOperations from '../components/ManufacturingOperations';
 import LogisticsOperations from '../components/LogisticsOperations';
 import SmartCityOperations from '../components/SmartCityOperations';
+import HealthcareOperations from '../components/HealthcareOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -685,6 +686,13 @@ export default function MissionControl() {
       description: 'Smart city operations control center & urban infrastructure monitoring'
     },
     { 
+      id: 'healthcare-operations', 
+      name: '🏥 Healthcare Operations', 
+      icon: '🏥', 
+      color: 'text-pink-400',
+      description: 'Healthcare operations control center & hospital management system'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1037,6 +1045,9 @@ export default function MissionControl() {
         
         {/* Smart City Operations */}
         {currentView === 'smart-city-operations' && <SmartCityOperations />}
+        
+        {/* Healthcare Operations */}
+        {currentView === 'healthcare-operations' && <HealthcareOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
