@@ -14,6 +14,7 @@ import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
 import CollaborativeControlCenter from '../components/CollaborativeControlCenter';
+import SecurityOperationsCenter from '../components/SecurityOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -484,6 +485,13 @@ export default function MissionControl() {
       description: 'Real-time team collaboration and orchestration'
     },
     { 
+      id: 'security-operations', 
+      name: '🛡️ Security Operations', 
+      icon: '🛡️', 
+      color: 'text-red-400',
+      description: 'AI security monitoring and threat detection'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -756,6 +764,9 @@ export default function MissionControl() {
         
         {/* Collaborative Control Center */}
         {currentView === 'collaborative-control' && <CollaborativeControlCenter />}
+        
+        {/* Security Operations Center */}
+        {currentView === 'security-operations' && <SecurityOperationsCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
