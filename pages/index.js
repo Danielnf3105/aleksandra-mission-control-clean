@@ -29,6 +29,7 @@ import AIPredictiveCenter from '../components/AIPredictiveCenter';
 import SpaceMissionCenter from '../components/SpaceMissionCenter';
 import CyberSecuritySOC from '../components/CyberSecuritySOC';
 import MilitaryTacticalTOC from '../components/MilitaryTacticalTOC';
+import EmergencyOperationsEOC from '../components/EmergencyOperationsEOC';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -597,6 +598,13 @@ export default function MissionControl() {
       description: 'Military tactical operations center & C4ISR command dashboard'
     },
     { 
+      id: 'emergency-operations-eoc', 
+      name: '🚨 Emergency Operations EOC', 
+      icon: '🚨', 
+      color: 'text-yellow-400',
+      description: 'FEMA emergency operations center & incident command system'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -916,6 +924,9 @@ export default function MissionControl() {
         
         {/* Military Tactical TOC */}
         {currentView === 'military-tactical-toc' && <MilitaryTacticalTOC />}
+        
+        {/* Emergency Operations EOC */}
+        {currentView === 'emergency-operations-eoc' && <EmergencyOperationsEOC />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
