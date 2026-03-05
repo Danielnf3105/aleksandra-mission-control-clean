@@ -32,6 +32,7 @@ import MilitaryTacticalTOC from '../components/MilitaryTacticalTOC';
 import EmergencyOperationsEOC from '../components/EmergencyOperationsEOC';
 import AirTrafficControlATC from '../components/AirTrafficControlATC';
 import ElectricGridSCADA from '../components/ElectricGridSCADA';
+import MaritimeTrafficVTS from '../components/MaritimeTrafficVTS';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -621,6 +622,13 @@ export default function MissionControl() {
       description: 'Electric power grid control center & SCADA monitoring system'
     },
     { 
+      id: 'maritime-traffic-vts', 
+      name: '🚢 Maritime Traffic VTS', 
+      icon: '🚢', 
+      color: 'text-teal-400',
+      description: 'USCG vessel traffic service & maritime control center'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -949,6 +957,9 @@ export default function MissionControl() {
         
         {/* Electric Grid SCADA */}
         {currentView === 'electric-grid-scada' && <ElectricGridSCADA />}
+        
+        {/* Maritime Traffic VTS */}
+        {currentView === 'maritime-traffic-vts' && <MaritimeTrafficVTS />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
