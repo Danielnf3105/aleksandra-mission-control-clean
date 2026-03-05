@@ -22,6 +22,7 @@ import WorkflowAutomationCenter from '../components/WorkflowAutomationCenter';
 import PerformanceAnalyticsCenter from '../components/PerformanceAnalyticsCenter';
 import ContentProcessingCenter from '../components/ContentProcessingCenter';
 import AgentOrchestrationCenter from '../components/AgentOrchestrationCenter';
+import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -541,6 +542,13 @@ export default function MissionControl() {
       description: 'Multi-agent collaboration and workflow management'
     },
     { 
+      id: 'infrastructure-devops', 
+      name: '🏗️ Infrastructure & DevOps', 
+      icon: '🏗️', 
+      color: 'text-amber-400',
+      description: 'Infrastructure monitoring, CI/CD, and automation'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -839,6 +847,9 @@ export default function MissionControl() {
         
         {/* Agent Orchestration Center */}
         {currentView === 'agent-orchestration' && <AgentOrchestrationCenter />}
+        
+        {/* Infrastructure & DevOps Center */}
+        {currentView === 'infrastructure-devops' && <InfrastructureDevOpsCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
