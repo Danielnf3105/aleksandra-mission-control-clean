@@ -30,6 +30,7 @@ import SpaceMissionCenter from '../components/SpaceMissionCenter';
 import CyberSecuritySOC from '../components/CyberSecuritySOC';
 import MilitaryTacticalTOC from '../components/MilitaryTacticalTOC';
 import EmergencyOperationsEOC from '../components/EmergencyOperationsEOC';
+import AirTrafficControlATC from '../components/AirTrafficControlATC';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -605,6 +606,13 @@ export default function MissionControl() {
       description: 'FEMA emergency operations center & incident command system'
     },
     { 
+      id: 'air-traffic-control-atc', 
+      name: '✈️ Air Traffic Control ATC', 
+      icon: '✈️', 
+      color: 'text-cyan-400',
+      description: 'FAA air traffic control tower & terminal flight data manager'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -927,6 +935,9 @@ export default function MissionControl() {
         
         {/* Emergency Operations EOC */}
         {currentView === 'emergency-operations-eoc' && <EmergencyOperationsEOC />}
+        
+        {/* Air Traffic Control ATC */}
+        {currentView === 'air-traffic-control-atc' && <AirTrafficControlATC />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
