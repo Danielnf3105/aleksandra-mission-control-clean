@@ -21,6 +21,7 @@ import RealTimeNotificationCenter from '../components/RealTimeNotificationCenter
 import WorkflowAutomationCenter from '../components/WorkflowAutomationCenter';
 import PerformanceAnalyticsCenter from '../components/PerformanceAnalyticsCenter';
 import ContentProcessingCenter from '../components/ContentProcessingCenter';
+import AgentOrchestrationCenter from '../components/AgentOrchestrationCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -533,6 +534,13 @@ export default function MissionControl() {
       description: 'Instagram video transcription and content analysis'
     },
     { 
+      id: 'agent-orchestration', 
+      name: '🤖 Agent Orchestration', 
+      icon: '🤖', 
+      color: 'text-indigo-400',
+      description: 'Multi-agent collaboration and workflow management'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -828,6 +836,9 @@ export default function MissionControl() {
         
         {/* Content Processing Center */}
         {currentView === 'content-processing' && <ContentProcessingCenter />}
+        
+        {/* Agent Orchestration Center */}
+        {currentView === 'agent-orchestration' && <AgentOrchestrationCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
