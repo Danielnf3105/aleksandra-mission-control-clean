@@ -31,6 +31,7 @@ import CyberSecuritySOC from '../components/CyberSecuritySOC';
 import MilitaryTacticalTOC from '../components/MilitaryTacticalTOC';
 import EmergencyOperationsEOC from '../components/EmergencyOperationsEOC';
 import AirTrafficControlATC from '../components/AirTrafficControlATC';
+import ElectricGridSCADA from '../components/ElectricGridSCADA';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -613,6 +614,13 @@ export default function MissionControl() {
       description: 'FAA air traffic control tower & terminal flight data manager'
     },
     { 
+      id: 'electric-grid-scada', 
+      name: '⚡ Electric Grid SCADA', 
+      icon: '⚡', 
+      color: 'text-amber-400',
+      description: 'Electric power grid control center & SCADA monitoring system'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -938,6 +946,9 @@ export default function MissionControl() {
         
         {/* Air Traffic Control ATC */}
         {currentView === 'air-traffic-control-atc' && <AirTrafficControlATC />}
+        
+        {/* Electric Grid SCADA */}
+        {currentView === 'electric-grid-scada' && <ElectricGridSCADA />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
