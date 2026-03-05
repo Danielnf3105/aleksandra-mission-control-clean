@@ -44,6 +44,7 @@ import HealthcareOperations from '../components/HealthcareOperations';
 import AgriculturalOperations from '../components/AgriculturalOperations';
 import RetailOperations from '../components/RetailOperations';
 import OilGasOperations from '../components/OilGasOperations';
+import TelecomOperations from '../components/TelecomOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -717,6 +718,13 @@ export default function MissionControl() {
       description: 'Oil & gas operations control center & integrated energy management'
     },
     { 
+      id: 'telecom-operations', 
+      name: '📡 Telecommunications NOC', 
+      icon: '📡', 
+      color: 'text-cyan-400',
+      description: 'Telecommunications network operations center & 5G infrastructure'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1081,6 +1089,9 @@ export default function MissionControl() {
         
         {/* Oil & Gas Operations */}
         {currentView === 'oil-gas-operations' && <OilGasOperations />}
+        
+        {/* Telecommunications NOC */}
+        {currentView === 'telecom-operations' && <TelecomOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
