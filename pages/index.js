@@ -15,6 +15,8 @@ import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
 import CollaborativeControlCenter from '../components/CollaborativeControlCenter';
 import SecurityOperationsCenter from '../components/SecurityOperationsCenter';
+import MobileResponsiveLayout from '../components/MobileResponsiveLayout';
+import MobileDashboardView from '../components/MobileDashboardView';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -492,6 +494,13 @@ export default function MissionControl() {
       description: 'AI security monitoring and threat detection'
     },
     { 
+      id: 'mobile-dashboard', 
+      name: '📱 Mobile Overview', 
+      icon: '📱', 
+      color: 'text-teal-400',
+      description: 'Mobile-optimized mission control overview'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -543,6 +552,11 @@ export default function MissionControl() {
   ];
 
   return (
+    <MobileResponsiveLayout 
+      currentView={currentView} 
+      setCurrentView={setCurrentView} 
+      missionViews={missionViews}
+    >
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
       {/* Enhanced Mission Control Header */}
       <div className="bg-gradient-to-r from-black via-gray-900 to-black border-b-2 border-gradient-to-r from-green-400 via-cyan-500 to-blue-500 shadow-lg shadow-green-500/20">
@@ -768,6 +782,9 @@ export default function MissionControl() {
         {/* Security Operations Center */}
         {currentView === 'security-operations' && <SecurityOperationsCenter />}
         
+        {/* Mobile Dashboard View */}
+        {currentView === 'mobile-dashboard' && <MobileDashboardView />}
+        
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
         
@@ -917,5 +934,6 @@ export default function MissionControl() {
         </div>
       </div>
     </div>
+    </MobileResponsiveLayout>
   );
 }
