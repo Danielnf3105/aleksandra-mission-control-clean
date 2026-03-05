@@ -17,6 +17,7 @@ import CollaborativeControlCenter from '../components/CollaborativeControlCenter
 import SecurityOperationsCenter from '../components/SecurityOperationsCenter';
 import MobileResponsiveLayout from '../components/MobileResponsiveLayout';
 import MobileDashboardView from '../components/MobileDashboardView';
+import RealTimeNotificationCenter from '../components/RealTimeNotificationCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -501,6 +502,13 @@ export default function MissionControl() {
       description: 'Mobile-optimized mission control overview'
     },
     { 
+      id: 'notification-center', 
+      name: '🔔 Notification Center', 
+      icon: '🔔', 
+      color: 'text-amber-400',
+      description: 'AI-powered real-time alerts and notifications'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -784,6 +792,9 @@ export default function MissionControl() {
         
         {/* Mobile Dashboard View */}
         {currentView === 'mobile-dashboard' && <MobileDashboardView />}
+        
+        {/* Real-Time Notification Center */}
+        {currentView === 'notification-center' && <RealTimeNotificationCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
