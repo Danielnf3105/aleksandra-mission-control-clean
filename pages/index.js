@@ -9,6 +9,7 @@ import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnaly
 import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import ErrorRecovery from '../components/ErrorRecovery';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
+import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -444,6 +445,13 @@ export default function MissionControl() {
       description: 'Live system telemetry and mission status'
     },
     { 
+      id: 'workspace-monitoring', 
+      name: '🏠 Workspace Monitoring', 
+      icon: '🏠', 
+      color: 'text-orange-400',
+      description: 'Daniel\'s workspace and project tracking'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -701,6 +709,9 @@ export default function MissionControl() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Real-Time Mission Control */}
         {currentView === 'real-time-monitoring' && <RealTimeMonitoring />}
+        
+        {/* Workspace Monitoring */}
+        {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
