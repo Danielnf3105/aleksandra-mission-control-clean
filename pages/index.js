@@ -13,6 +13,7 @@ import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
+import CollaborativeControlCenter from '../components/CollaborativeControlCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -476,6 +477,13 @@ export default function MissionControl() {
       description: 'Advanced analytics and data insights'
     },
     { 
+      id: 'collaborative-control', 
+      name: '🤝 Collaborative Control', 
+      icon: '🤝', 
+      color: 'text-rose-400',
+      description: 'Real-time team collaboration and orchestration'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -745,6 +753,9 @@ export default function MissionControl() {
         
         {/* Data Visualization Center */}
         {currentView === 'data-visualization' && <DataVisualizationCenter />}
+        
+        {/* Collaborative Control Center */}
+        {currentView === 'collaborative-control' && <CollaborativeControlCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
