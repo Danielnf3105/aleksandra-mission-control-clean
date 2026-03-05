@@ -41,6 +41,7 @@ import ManufacturingOperations from '../components/ManufacturingOperations';
 import LogisticsOperations from '../components/LogisticsOperations';
 import SmartCityOperations from '../components/SmartCityOperations';
 import HealthcareOperations from '../components/HealthcareOperations';
+import AgriculturalOperations from '../components/AgriculturalOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -693,6 +694,13 @@ export default function MissionControl() {
       description: 'Healthcare operations control center & hospital management system'
     },
     { 
+      id: 'agricultural-operations', 
+      name: '🚜 Agricultural Operations', 
+      icon: '🚜', 
+      color: 'text-green-500',
+      description: 'Agricultural operations control center & precision farming management'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1048,6 +1056,9 @@ export default function MissionControl() {
         
         {/* Healthcare Operations */}
         {currentView === 'healthcare-operations' && <HealthcareOperations />}
+        
+        {/* Agricultural Operations */}
+        {currentView === 'agricultural-operations' && <AgriculturalOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
