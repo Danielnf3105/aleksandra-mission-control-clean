@@ -18,6 +18,7 @@ import SecurityOperationsCenter from '../components/SecurityOperationsCenter';
 import MobileResponsiveLayout from '../components/MobileResponsiveLayout';
 import MobileDashboardView from '../components/MobileDashboardView';
 import RealTimeNotificationCenter from '../components/RealTimeNotificationCenter';
+import WorkflowAutomationCenter from '../components/WorkflowAutomationCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -509,6 +510,13 @@ export default function MissionControl() {
       description: 'AI-powered real-time alerts and notifications'
     },
     { 
+      id: 'workflow-automation', 
+      name: '⚙️ Workflow Automation', 
+      icon: '⚙️', 
+      color: 'text-orange-400',
+      description: 'Enterprise process automation and orchestration'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -795,6 +803,9 @@ export default function MissionControl() {
         
         {/* Real-Time Notification Center */}
         {currentView === 'notification-center' && <RealTimeNotificationCenter />}
+        
+        {/* Workflow Automation Center */}
+        {currentView === 'workflow-automation' && <WorkflowAutomationCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
