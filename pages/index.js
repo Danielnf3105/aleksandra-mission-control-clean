@@ -37,6 +37,7 @@ import RailwayTrafficControl from '../components/RailwayTrafficControl';
 import NuclearPowerControl from '../components/NuclearPowerControl';
 import FinancialTradingFloor from '../components/FinancialTradingFloor';
 import DataCenterOperations from '../components/DataCenterOperations';
+import ManufacturingOperations from '../components/ManufacturingOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -661,6 +662,13 @@ export default function MissionControl() {
       description: 'Data center NOC/DCIM infrastructure management control center'
     },
     { 
+      id: 'manufacturing-operations', 
+      name: '🏭 Manufacturing Operations', 
+      icon: '🏭', 
+      color: 'text-orange-400',
+      description: 'Manufacturing operations control center & production line monitoring'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1004,6 +1012,9 @@ export default function MissionControl() {
         
         {/* Data Center Operations */}
         {currentView === 'data-center-operations' && <DataCenterOperations />}
+        
+        {/* Manufacturing Operations */}
+        {currentView === 'manufacturing-operations' && <ManufacturingOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
