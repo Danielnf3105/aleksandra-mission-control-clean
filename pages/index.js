@@ -39,6 +39,7 @@ import FinancialTradingFloor from '../components/FinancialTradingFloor';
 import DataCenterOperations from '../components/DataCenterOperations';
 import ManufacturingOperations from '../components/ManufacturingOperations';
 import LogisticsOperations from '../components/LogisticsOperations';
+import SmartCityOperations from '../components/SmartCityOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -677,6 +678,13 @@ export default function MissionControl() {
       description: 'Logistics operations control center & supply chain monitoring'
     },
     { 
+      id: 'smart-city-operations', 
+      name: '🏙️ Smart City Operations', 
+      icon: '🏙️', 
+      color: 'text-indigo-400',
+      description: 'Smart city operations control center & urban infrastructure monitoring'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1026,6 +1034,9 @@ export default function MissionControl() {
         
         {/* Logistics Operations */}
         {currentView === 'logistics-operations' && <LogisticsOperations />}
+        
+        {/* Smart City Operations */}
+        {currentView === 'smart-city-operations' && <SmartCityOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
