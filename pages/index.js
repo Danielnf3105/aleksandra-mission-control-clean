@@ -35,6 +35,7 @@ import ElectricGridSCADA from '../components/ElectricGridSCADA';
 import MaritimeTrafficVTS from '../components/MaritimeTrafficVTS';
 import RailwayTrafficControl from '../components/RailwayTrafficControl';
 import NuclearPowerControl from '../components/NuclearPowerControl';
+import FinancialTradingFloor from '../components/FinancialTradingFloor';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -645,6 +646,13 @@ export default function MissionControl() {
       description: 'Nuclear power plant control center & safety monitoring'
     },
     { 
+      id: 'financial-trading-floor', 
+      name: '💹 Financial Trading Floor', 
+      icon: '💹', 
+      color: 'text-yellow-400',
+      description: 'Financial trading control center & risk management system'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -982,6 +990,9 @@ export default function MissionControl() {
         
         {/* Nuclear Power Control */}
         {currentView === 'nuclear-power-control' && <NuclearPowerControl />}
+        
+        {/* Financial Trading Floor */}
+        {currentView === 'financial-trading-floor' && <FinancialTradingFloor />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
