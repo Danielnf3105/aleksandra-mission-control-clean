@@ -34,6 +34,7 @@ import AirTrafficControlATC from '../components/AirTrafficControlATC';
 import ElectricGridSCADA from '../components/ElectricGridSCADA';
 import MaritimeTrafficVTS from '../components/MaritimeTrafficVTS';
 import RailwayTrafficControl from '../components/RailwayTrafficControl';
+import NuclearPowerControl from '../components/NuclearPowerControl';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -637,6 +638,13 @@ export default function MissionControl() {
       description: 'Railway centralized traffic control & train dispatch system'
     },
     { 
+      id: 'nuclear-power-control', 
+      name: '☢️ Nuclear Power Control', 
+      icon: '☢️', 
+      color: 'text-red-400',
+      description: 'Nuclear power plant control center & safety monitoring'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -971,6 +979,9 @@ export default function MissionControl() {
         
         {/* Railway Traffic Control */}
         {currentView === 'railway-traffic-control' && <RailwayTrafficControl />}
+        
+        {/* Nuclear Power Control */}
+        {currentView === 'nuclear-power-control' && <NuclearPowerControl />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
