@@ -10,6 +10,7 @@ import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import ErrorRecovery from '../components/ErrorRecovery';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
+import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -452,6 +453,13 @@ export default function MissionControl() {
       description: 'Daniel\'s workspace and project tracking'
     },
     { 
+      id: 'system-processes', 
+      name: '⚙️ System Processes', 
+      icon: '⚙️', 
+      color: 'text-emerald-400',
+      description: 'Real-time system and process monitoring'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -712,6 +720,9 @@ export default function MissionControl() {
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
+        
+        {/* System Process Monitoring */}
+        {currentView === 'system-processes' && <SystemProcessMonitoring />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
