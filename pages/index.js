@@ -25,6 +25,7 @@ import AgentOrchestrationCenter from '../components/AgentOrchestrationCenter';
 import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter';
 import APIManagementCenter from '../components/APIManagementCenter';
 import DataMonitoringCenter from '../components/DataMonitoringCenter';
+import AIPredictiveCenter from '../components/AIPredictiveCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -565,6 +566,13 @@ export default function MissionControl() {
       description: 'Real-time sensor monitoring and IoT-style telemetry'
     },
     { 
+      id: 'ai-predictive', 
+      name: '🧠 AI Predictive', 
+      icon: '🧠', 
+      color: 'text-violet-400',
+      description: 'Machine learning insights and predictive analytics'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -872,6 +880,9 @@ export default function MissionControl() {
         
         {/* Data Monitoring Center */}
         {currentView === 'data-monitoring' && <DataMonitoringCenter />}
+        
+        {/* AI Predictive Center */}
+        {currentView === 'ai-predictive' && <AIPredictiveCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
