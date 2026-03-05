@@ -38,6 +38,7 @@ import NuclearPowerControl from '../components/NuclearPowerControl';
 import FinancialTradingFloor from '../components/FinancialTradingFloor';
 import DataCenterOperations from '../components/DataCenterOperations';
 import ManufacturingOperations from '../components/ManufacturingOperations';
+import LogisticsOperations from '../components/LogisticsOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -669,6 +670,13 @@ export default function MissionControl() {
       description: 'Manufacturing operations control center & production line monitoring'
     },
     { 
+      id: 'logistics-operations', 
+      name: '🚛 Logistics Operations', 
+      icon: '🚛', 
+      color: 'text-purple-400',
+      description: 'Logistics operations control center & supply chain monitoring'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1015,6 +1023,9 @@ export default function MissionControl() {
         
         {/* Manufacturing Operations */}
         {currentView === 'manufacturing-operations' && <ManufacturingOperations />}
+        
+        {/* Logistics Operations */}
+        {currentView === 'logistics-operations' && <LogisticsOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
