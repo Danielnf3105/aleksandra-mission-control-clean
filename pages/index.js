@@ -26,6 +26,7 @@ import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter
 import APIManagementCenter from '../components/APIManagementCenter';
 import DataMonitoringCenter from '../components/DataMonitoringCenter';
 import AIPredictiveCenter from '../components/AIPredictiveCenter';
+import SpaceMissionCenter from '../components/SpaceMissionCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -573,6 +574,13 @@ export default function MissionControl() {
       description: 'Machine learning insights and predictive analytics'
     },
     { 
+      id: 'space-mission', 
+      name: '🚀 Space Mission', 
+      icon: '🚀', 
+      color: 'text-sky-400',
+      description: 'NASA/SpaceX-inspired space operations control'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -883,6 +891,9 @@ export default function MissionControl() {
         
         {/* AI Predictive Center */}
         {currentView === 'ai-predictive' && <AIPredictiveCenter />}
+        
+        {/* Space Mission Center */}
+        {currentView === 'space-mission' && <SpaceMissionCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
