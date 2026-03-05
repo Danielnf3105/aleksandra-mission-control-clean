@@ -19,6 +19,7 @@ import MobileResponsiveLayout from '../components/MobileResponsiveLayout';
 import MobileDashboardView from '../components/MobileDashboardView';
 import RealTimeNotificationCenter from '../components/RealTimeNotificationCenter';
 import WorkflowAutomationCenter from '../components/WorkflowAutomationCenter';
+import PerformanceAnalyticsCenter from '../components/PerformanceAnalyticsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -517,6 +518,13 @@ export default function MissionControl() {
       description: 'Enterprise process automation and orchestration'
     },
     { 
+      id: 'performance-analytics', 
+      name: '📊 Performance Analytics', 
+      icon: '📊', 
+      color: 'text-cyan-400',
+      description: 'Advanced analytics, cost management, and optimization'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -806,6 +814,9 @@ export default function MissionControl() {
         
         {/* Workflow Automation Center */}
         {currentView === 'workflow-automation' && <WorkflowAutomationCenter />}
+        
+        {/* Performance Analytics Center */}
+        {currentView === 'performance-analytics' && <PerformanceAnalyticsCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
