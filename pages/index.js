@@ -12,6 +12,7 @@ import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
+import DataVisualizationCenter from '../components/DataVisualizationCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -468,6 +469,13 @@ export default function MissionControl() {
       description: 'Interactive mission control command interface'
     },
     { 
+      id: 'data-visualization', 
+      name: '📊 Data Visualization', 
+      icon: '📊', 
+      color: 'text-violet-400',
+      description: 'Advanced analytics and data insights'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -734,6 +742,9 @@ export default function MissionControl() {
         
         {/* Mission Control Terminal */}
         {currentView === 'terminal' && <MissionControlTerminal />}
+        
+        {/* Data Visualization Center */}
+        {currentView === 'data-visualization' && <DataVisualizationCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
