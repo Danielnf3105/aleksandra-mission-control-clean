@@ -33,6 +33,7 @@ import EmergencyOperationsEOC from '../components/EmergencyOperationsEOC';
 import AirTrafficControlATC from '../components/AirTrafficControlATC';
 import ElectricGridSCADA from '../components/ElectricGridSCADA';
 import MaritimeTrafficVTS from '../components/MaritimeTrafficVTS';
+import RailwayTrafficControl from '../components/RailwayTrafficControl';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -629,6 +630,13 @@ export default function MissionControl() {
       description: 'USCG vessel traffic service & maritime control center'
     },
     { 
+      id: 'railway-traffic-control', 
+      name: '🚂 Railway Traffic Control', 
+      icon: '🚂', 
+      color: 'text-indigo-400',
+      description: 'Railway centralized traffic control & train dispatch system'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -960,6 +968,9 @@ export default function MissionControl() {
         
         {/* Maritime Traffic VTS */}
         {currentView === 'maritime-traffic-vts' && <MaritimeTrafficVTS />}
+        
+        {/* Railway Traffic Control */}
+        {currentView === 'railway-traffic-control' && <RailwayTrafficControl />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
