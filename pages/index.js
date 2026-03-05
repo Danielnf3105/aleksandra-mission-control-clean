@@ -42,6 +42,7 @@ import LogisticsOperations from '../components/LogisticsOperations';
 import SmartCityOperations from '../components/SmartCityOperations';
 import HealthcareOperations from '../components/HealthcareOperations';
 import AgriculturalOperations from '../components/AgriculturalOperations';
+import RetailOperations from '../components/RetailOperations';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -701,6 +702,13 @@ export default function MissionControl() {
       description: 'Agricultural operations control center & precision farming management'
     },
     { 
+      id: 'retail-operations', 
+      name: '🏪 Retail Operations', 
+      icon: '🏪', 
+      color: 'text-orange-400',
+      description: 'Retail operations control center & omnichannel management system'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1059,6 +1067,9 @@ export default function MissionControl() {
         
         {/* Agricultural Operations */}
         {currentView === 'agricultural-operations' && <AgriculturalOperations />}
+        
+        {/* Retail Operations */}
+        {currentView === 'retail-operations' && <RetailOperations />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
