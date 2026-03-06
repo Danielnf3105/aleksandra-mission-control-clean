@@ -92,6 +92,7 @@ import TaskManagementCenter from '../components/TaskManagementCenter';
 import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligenceCenter';
 import EnterpriseSecurityCenter from '../components/SecurityOperationsCenter';
 import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestrationCenter';
+import RealTimeDataObservabilityCenter from '../components/RealTimeDataObservabilityCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -581,6 +582,13 @@ export default function MissionControl() {
       icon: '🏗️', 
       color: 'text-green-500',
       description: 'Real-time infrastructure observability, SRE metrics, and DevOps pipeline monitoring'
+    },
+    { 
+      id: 'real-time-data-observability', 
+      name: '📊 Real-Time Data Observability', 
+      icon: '📊', 
+      color: 'text-cyan-500',
+      description: 'Enterprise data pipeline monitoring, quality analytics, and streaming observability'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1408,6 +1416,9 @@ export default function MissionControl() {
         
         {/* Infrastructure & DevOps */}
         {currentView === 'infrastructure-devops' && <InfrastructureDevOpsCenter />}
+        
+        {/* Real-Time Data Observability */}
+        {currentView === 'real-time-data-observability' && <RealTimeDataObservabilityCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
