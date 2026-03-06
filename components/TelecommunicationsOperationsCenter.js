@@ -1,985 +1,743 @@
-// TelecommunicationsOperationsCenter.js - Telecommunications Operations Center & Network Operations Dashboard
-import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
+import { Radio, Signal, Wifi, Smartphone, TrendingUp, AlertTriangle, CheckCircle, Activity, Settings, Eye, Router, Antenna } from 'lucide-react';
 
 const TelecommunicationsOperationsCenter = () => {
   const [networkStatus, setNetworkStatus] = useState({
-    operationalStatus: 'NORMAL_OPERATIONS',
-    totalSubscribers: 15847234,
-    activeConnections: 12456789,
-    networkUtilization: 67.8, // percentage
-    serviceAvailability: 99.97, // percentage
-    qualityOfService: 94.7, // percentage
-    totalThroughput: 2847.6, // Gbps
-    packetLoss: 0.03, // percentage
-    latency: 12.4, // milliseconds
-    lastUpdate: Date.now()
+    totalSubscribers: 12847563,
+    activeConnections: 9234521,
+    networkUptime: 99.97,
+    avgThroughput: 2847.3, // Gbps
+    call5GCoverage: 89.4, // %
+    dataTraffic: 18647.2, // TB/day
+    serviceQuality: 98.2, // %
+    incidentCount: 7
   });
 
-  const [networkInfrastructure, setNetworkInfrastructure] = useState([
+  const [cellTowerOperations, setCellTowerOperations] = useState([
     {
-      technology: '5G_NR',
-      name: '5G New Radio',
-      base_stations: 8947,
-      coverage_area: 87.3, // percentage
-      active_users: 3456789,
-      throughput: 1247.8, // Mbps
-      latency: 8.2, // milliseconds
-      availability: 99.8, // percentage
-      status: 'OPTIMAL',
-      spectrum_efficiency: 94.2, // percentage
-      handover_success_rate: 99.1, // percentage
-      energy_efficiency: 'ENHANCED'
+      id: 'TOWER-001',
+      location: 'Downtown Hub Alpha',
+      type: '5G NR',
+      coordinates: '40.7128°N 74.0060°W',
+      status: 'operational',
+      coverage: 95.7, // %
+      connectedUsers: 8947,
+      capacity: 12000,
+      signalStrength: -67, // dBm
+      throughput: 3.4, // Gbps
+      bands: ['n78 (3.5GHz)', 'n41 (2.5GHz)', 'n71 (600MHz)'],
+      backhaul: 'fiber',
+      temperature: 34.2, // °C
+      powerLevel: 87.3 // %
     },
     {
-      technology: 'LTE_ADVANCED',
-      name: 'LTE Advanced Pro',
-      base_stations: 45678,
-      coverage_area: 96.7,
-      active_users: 8567234,
-      throughput: 845.6,
-      latency: 15.7,
-      availability: 99.9,
-      status: 'OPTIMAL',
-      spectrum_efficiency: 89.4,
-      handover_success_rate: 98.7,
-      aggregation_carriers: 5
+      id: 'TOWER-002',
+      location: 'Suburban Site Beta',
+      type: '4G LTE',
+      coordinates: '40.7589°N 73.9851°W',
+      status: 'operational',
+      coverage: 92.1,
+      connectedUsers: 6234,
+      capacity: 8000,
+      signalStrength: -71,
+      throughput: 1.8,
+      bands: ['B2 (1900MHz)', 'B12 (700MHz)', 'B66 (AWS)'],
+      backhaul: 'fiber',
+      temperature: 31.8,
+      powerLevel: 91.2
     },
     {
-      technology: 'FIBER_OPTIC',
-      name: 'Fiber Infrastructure',
-      total_length: 234567, // km
-      active_connections: 2847934,
-      bandwidth_capacity: 2400, // Gbps
-      utilization: 65.3, // percentage
-      availability: 99.95,
-      status: 'OPTIMAL',
-      fault_rate: 0.02, // faults per 100km
-      repair_time: 2.3, // hours
-      network_segments: 15647
+      id: 'TOWER-003',
+      location: 'Industrial Zone Gamma',
+      type: '5G NR',
+      coordinates: '40.6892°N 74.0445°W',
+      status: 'maintenance',
+      coverage: 78.4,
+      connectedUsers: 2847,
+      capacity: 10000,
+      signalStrength: -78,
+      throughput: 2.1,
+      bands: ['n78 (3.5GHz)', 'n260 (28GHz)'],
+      backhaul: 'microwave',
+      temperature: 39.1,
+      powerLevel: 62.7
     },
     {
-      technology: 'MPLS_VPN',
-      name: 'MPLS Enterprise',
-      total_circuits: 15647,
-      active_vpns: 2847,
-      bandwidth_utilization: 72.4,
-      sla_compliance: 99.2,
-      availability: 99.8,
-      status: 'OPTIMAL',
-      qos_classes: 8,
-      traffic_engineering: 'AUTOMATED',
-      failover_time: 0.8 // seconds
+      id: 'TOWER-004',
+      location: 'University Campus Delta',
+      type: '5G NR',
+      coordinates: '40.7505°N 73.9934°W',
+      status: 'operational',
+      coverage: 97.2,
+      connectedUsers: 11234,
+      capacity: 15000,
+      signalStrength: -65,
+      throughput: 4.1,
+      bands: ['n78 (3.5GHz)', 'n41 (2.5GHz)', 'n260 (28GHz)'],
+      backhaul: 'fiber',
+      temperature: 33.6,
+      powerLevel: 93.8
     },
     {
-      technology: 'SATELLITE',
-      name: 'Satellite Network',
-      active_satellites: 12,
-      earth_stations: 89,
-      coverage_zones: 45,
-      throughput: 156.7,
-      latency: 550,
-      availability: 98.9,
-      status: 'OPERATIONAL',
-      signal_strength: 87.3, // dBm
-      weather_impact: 'MINIMAL'
+      id: 'TOWER-005',
+      location: 'Highway Corridor Epsilon',
+      type: '4G LTE',
+      coordinates: '40.7282°N 73.7949°W',
+      status: 'degraded',
+      coverage: 86.3,
+      connectedUsers: 4567,
+      capacity: 7000,
+      signalStrength: -74,
+      throughput: 1.2,
+      bands: ['B2 (1900MHz)', 'B4 (AWS)', 'B12 (700MHz)'],
+      backhaul: 'fiber',
+      temperature: 41.7,
+      powerLevel: 78.9
     }
   ]);
 
-  const [serviceQuality, setServiceQuality] = useState({
-    voice_services: {
-      call_success_rate: 99.4, // percentage
-      voice_quality_mos: 4.2, // Mean Opinion Score
-      dropped_call_rate: 0.3, // percentage
-      blocked_call_rate: 0.8, // percentage
-      handover_failures: 67,
-      echo_cancellation: 'ACTIVE',
-      noise_reduction: 'ENHANCED'
-    },
-    data_services: {
-      throughput_consistency: 94.7, // percentage
-      packet_delivery_ratio: 99.8, // percentage
-      jitter: 2.1, // milliseconds
-      tcp_retransmission_rate: 0.15, // percentage
-      dns_resolution_time: 8.3, // milliseconds
-      http_response_time: 245, // milliseconds
-      video_streaming_quality: 'EXCELLENT'
-    },
-    messaging_services: {
-      sms_delivery_success: 99.9, // percentage
-      sms_delivery_time: 1.2, // seconds
-      mms_success_rate: 98.7, // percentage
-      rich_messaging_availability: 97.8, // percentage
-      spam_filtering_accuracy: 99.2, // percentage
-      message_encryption: 'END_TO_END'
-    }
-  });
-
-  const [networkSecurity, setNetworkSecurity] = useState({
-    threat_detection: {
-      threats_detected: 234,
-      threats_blocked: 228,
-      success_rate: 97.4, // percentage
-      false_positive_rate: 1.2, // percentage
-      avg_detection_time: 1.8, // seconds
-      ai_threat_analysis: 'ENABLED'
-    },
-    ddos_protection: {
-      attacks_mitigated: 45,
-      peak_attack_volume: 156, // Gbps
-      mitigation_time: 0.3, // seconds
-      uptime_maintained: 99.99, // percentage
-      scrubbing_capacity: 2400, // Gbps
-      global_protection: 'ACTIVE'
-    },
-    access_control: {
-      authenticated_sessions: 8967234,
-      failed_authentication: 23456,
-      two_factor_enabled: 87.3, // percentage
-      privileged_access_monitoring: 'ACTIVE',
-      zero_trust_adoption: 92.1, // percentage
-      certificate_management: 'AUTOMATED'
-    },
-    compliance: {
-      gdpr_compliance: 'CERTIFIED',
-      iso27001_status: 'COMPLIANT',
-      sox_audit_status: 'PASSED',
-      pci_dss_level: 'LEVEL_1',
-      hipaa_compliance: 'VERIFIED',
-      data_encryption: '256_BIT_AES'
-    }
-  });
-
-  const [operationalMetrics, setOperationalMetrics] = useState([
+  const [nocMonitoring, setNocMonitoring] = useState([
     {
-      region: 'NORTH_AMERICA',
-      population_coverage: 97.8, // percentage
-      active_subscribers: 4567234,
-      network_capacity: 856.7, // Gbps
-      utilization: 68.2, // percentage
-      incidents_today: 12,
-      mean_time_to_repair: 1.8, // hours
-      customer_satisfaction: 4.3, // score out of 5
-      revenue_per_user: 45.67, // USD/month
-      churn_rate: 2.1 // percentage/month
+      id: 'NOC-CORE-001',
+      system: 'Core Network',
+      component: '5G SA Core',
+      status: 'operational',
+      cpu: 34.7, // %
+      memory: 67.2, // %
+      connections: 2847561,
+      throughput: 12.4, // Gbps
+      latency: 12.3, // ms
+      packetLoss: 0.002, // %
+      alerts: 0,
+      lastUpdate: new Date()
     },
     {
-      region: 'EUROPE',
-      population_coverage: 96.4,
-      active_subscribers: 3456789,
-      network_capacity: 724.3,
-      utilization: 71.5,
-      incidents_today: 8,
-      mean_time_to_repair: 1.5,
-      customer_satisfaction: 4.1,
-      revenue_per_user: 42.34,
-      churn_rate: 1.8
+      id: 'NOC-RAN-001',
+      system: 'Radio Access Network',
+      component: '5G gNodeB',
+      status: 'operational',
+      cpu: 28.9,
+      memory: 54.3,
+      connections: 1234567,
+      throughput: 8.7,
+      latency: 8.9,
+      packetLoss: 0.001,
+      alerts: 0,
+      lastUpdate: new Date()
     },
     {
-      region: 'ASIA_PACIFIC',
-      population_coverage: 94.7,
-      active_subscribers: 6789012,
-      network_capacity: 1247.9,
-      utilization: 78.9,
-      incidents_today: 23,
-      mean_time_to_repair: 2.3,
-      customer_satisfaction: 4.2,
-      revenue_per_user: 38.92,
-      churn_rate: 2.4
+      id: 'NOC-TRANS-001',
+      system: 'Transport Network',
+      component: 'Optical Transport',
+      status: 'warning',
+      cpu: 67.8,
+      memory: 89.2,
+      connections: 0,
+      throughput: 45.6,
+      latency: 2.1,
+      packetLoss: 0.008,
+      alerts: 2,
+      lastUpdate: new Date()
     },
     {
-      region: 'LATIN_AMERICA',
-      population_coverage: 89.3,
-      active_subscribers: 2345678,
-      network_capacity: 445.2,
-      utilization: 65.7,
-      incidents_today: 15,
-      mean_time_to_repair: 3.1,
-      customer_satisfaction: 3.9,
-      revenue_per_user: 28.45,
-      churn_rate: 3.2
+      id: 'NOC-IMS-001',
+      system: 'IMS Core',
+      component: 'Voice over LTE',
+      status: 'operational',
+      cpu: 42.1,
+      memory: 71.8,
+      connections: 456789,
+      throughput: 3.4,
+      latency: 45.2,
+      packetLoss: 0.003,
+      alerts: 0,
+      lastUpdate: new Date()
+    },
+    {
+      id: 'NOC-BSS-001',
+      system: 'BSS/OSS',
+      component: 'Billing & Operations',
+      status: 'operational',
+      cpu: 51.6,
+      memory: 76.4,
+      connections: 12847563,
+      throughput: 1.8,
+      latency: 156.7,
+      packetLoss: 0.001,
+      alerts: 1,
+      lastUpdate: new Date()
     }
   ]);
 
-  const [incidentManagement, setIncidentManagement] = useState({
-    active_incidents: [
-      {
-        incident_id: 'INC_2026_030501',
-        severity: 'HIGH',
-        type: 'FIBER_CUT',
-        location: 'Metro Area 7 - Fiber Route A',
-        affected_services: ['INTERNET', 'VOICE', 'ENTERPRISE'],
-        affected_users: 15647,
-        start_time: Date.now() - 2.5 * 60 * 60 * 1000,
-        status: 'IN_PROGRESS',
-        assigned_team: 'Field Operations Team 3',
-        estimated_resolution: Date.now() + 1.5 * 60 * 60 * 1000,
-        workaround_deployed: true,
-        impact_level: 'SERVICE_DEGRADATION'
-      },
-      {
-        incident_id: 'INC_2026_030502',
-        severity: 'MEDIUM',
-        type: 'BASE_STATION_FAULT',
-        location: 'Sector 45B - 5G Tower',
-        affected_services: ['5G_DATA', '5G_VOICE'],
-        affected_users: 3456,
-        start_time: Date.now() - 45 * 60 * 1000,
-        status: 'INVESTIGATING',
-        assigned_team: 'Radio Network Team 1',
-        estimated_resolution: Date.now() + 2 * 60 * 60 * 1000,
-        workaround_deployed: false,
-        impact_level: 'LOCALIZED_OUTAGE'
-      },
-      {
-        incident_id: 'INC_2026_030503',
-        severity: 'LOW',
-        type: 'CAPACITY_THRESHOLD',
-        location: 'Core Network - Region 2',
-        affected_services: ['DATA_THROUGHPUT'],
-        affected_users: 0,
-        start_time: Date.now() - 15 * 60 * 1000,
-        status: 'MONITORING',
-        assigned_team: 'Capacity Planning Team',
-        estimated_resolution: Date.now() + 4 * 60 * 60 * 1000,
-        workaround_deployed: false,
-        impact_level: 'PERFORMANCE_DEGRADATION'
-      }
-    ],
-    sla_compliance: {
-      uptime_target: 99.95, // percentage
-      current_uptime: 99.97,
-      mttr_target: 4, // hours
-      current_mttr: 2.1,
-      incidents_resolved_on_time: 94.7, // percentage
-      customer_satisfaction_target: 4.2,
-      current_satisfaction: 4.1
+  const [serviceQualityMetrics, setServiceQualityMetrics] = useState([
+    {
+      time: new Date(Date.now() - 300000).toLocaleTimeString(),
+      callSuccess: 98.9,
+      dataSpeed: 2834.2,
+      latency: 11.8,
+      availability: 99.96
+    },
+    {
+      time: new Date(Date.now() - 240000).toLocaleTimeString(),
+      callSuccess: 98.7,
+      dataSpeed: 2841.8,
+      latency: 12.1,
+      availability: 99.95
+    },
+    {
+      time: new Date(Date.now() - 180000).toLocaleTimeString(),
+      callSuccess: 98.8,
+      dataSpeed: 2845.6,
+      latency: 11.9,
+      availability: 99.97
+    },
+    {
+      time: new Date(Date.now() - 120000).toLocaleTimeString(),
+      callSuccess: 99.1,
+      dataSpeed: 2846.3,
+      latency: 12.0,
+      availability: 99.96
+    },
+    {
+      time: new Date(Date.now() - 60000).toLocaleTimeString(),
+      callSuccess: 99.0,
+      dataSpeed: 2847.2,
+      latency: 12.2,
+      availability: 99.97
+    },
+    {
+      time: new Date().toLocaleTimeString(),
+      callSuccess: 98.2,
+      dataSpeed: 2847.3,
+      latency: 12.3,
+      availability: 99.97
     }
+  ]);
+
+  const [telecomAlerts, setTelecomAlerts] = useState([
+    {
+      id: 'TEL-001',
+      severity: 'warning',
+      type: 'High CPU Usage',
+      message: 'Optical Transport system CPU utilization at 67.8% - monitoring closely',
+      timestamp: new Date(),
+      status: 'active',
+      location: 'Transport Network',
+      impact: 'medium'
+    },
+    {
+      id: 'TEL-002',
+      severity: 'caution',
+      type: 'Signal Degradation',
+      message: 'Highway Corridor tower experiencing reduced signal quality',
+      timestamp: new Date(Date.now() - 180000),
+      status: 'investigating',
+      location: 'TOWER-005',
+      impact: 'low'
+    },
+    {
+      id: 'TEL-003',
+      severity: 'info',
+      type: 'Maintenance Complete',
+      message: '5G NR upgrade completed successfully at Industrial Zone site',
+      timestamp: new Date(Date.now() - 360000),
+      status: 'resolved',
+      location: 'TOWER-003',
+      impact: 'positive'
+    }
+  ]);
+
+  const [trafficAnalysis, setTrafficAnalysis] = useState([
+    {
+      region: 'Metropolitan Core',
+      subscribers: 4234567,
+      dataUsage: 6847.3, // TB/day
+      callMinutes: 2847563,
+      smsCount: 1234567,
+      avgSpeed: 287.4, // Mbps
+      satisfaction: 96.8
+    },
+    {
+      region: 'Suburban Areas',
+      subscribers: 3456789,
+      dataUsage: 4532.1,
+      callMinutes: 1987654,
+      smsCount: 987654,
+      avgSpeed: 234.7,
+      satisfaction: 94.2
+    },
+    {
+      region: 'Industrial Zones',
+      subscribers: 1892345,
+      dataUsage: 2847.6,
+      callMinutes: 1123456,
+      smsCount: 567890,
+      avgSpeed: 198.3,
+      satisfaction: 92.1
+    },
+    {
+      region: 'University Districts',
+      subscribers: 2234567,
+      dataUsage: 3456.7,
+      callMinutes: 1456789,
+      smsCount: 789012,
+      avgSpeed: 312.8,
+      satisfaction: 97.5
+    },
+    {
+      region: 'Highway Corridors',
+      subscribers: 1029895,
+      dataUsage: 963.5,
+      callMinutes: 678901,
+      smsCount: 345678,
+      avgSpeed: 156.2,
+      satisfaction: 89.7
+    }
+  ]);
+
+  const [nocTeam, setNocTeam] = useState([
+    {
+      name: 'NOC Manager Chen',
+      position: 'Network Operations Manager',
+      shift: 'Day Shift',
+      status: 'on-duty',
+      location: 'Primary NOC',
+      experience: '16 years'
+    },
+    {
+      name: '5G Specialist Rodriguez',
+      position: '5G Network Specialist',
+      shift: 'Day Shift',
+      status: 'monitoring',
+      location: '5G Control Center',
+      experience: '8 years'
+    },
+    {
+      name: 'Transport Engineer Kim',
+      position: 'Transport Network Engineer',
+      shift: 'Day Shift',
+      status: 'investigating',
+      location: 'Transport NOC',
+      experience: '12 years'
+    },
+    {
+      name: 'QoS Analyst Williams',
+      position: 'Quality of Service Analyst',
+      shift: 'Day Shift',
+      status: 'analyzing',
+      location: 'QoS Center',
+      experience: '10 years'
+    }
+  ]);
+
+  const [systemMetrics, setSystemMetrics] = useState({
+    networkReliability: 99.97,
+    aiopsIntegration: 94.3, // AIOps automation level
+    securityCompliance: 98.7,
+    energyEfficiency: 91.2,
+    capacityUtilization: 76.8,
+    automationLevel: 88.4,
+    predictiveMaintenance: 92.6,
+    customerSatisfaction: 96.3
   });
 
-  const [networkHistory, setNetworkHistory] = useState([]);
-
-  const generateNetworkHistory = () => {
-    const data = [];
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    
-    for (let i = 0; i <= 23; i++) { // 24 hours
-      const time = new Date(startOfDay.getTime() + i * 60 * 60 * 1000);
-      
-      // Simulate realistic telecom patterns
-      const hour = time.getHours();
-      let trafficMultiplier = 0.4; // Base traffic (night)
-      
-      if (hour >= 6 && hour <= 9) trafficMultiplier = 0.8; // Morning traffic
-      if (hour >= 10 && hour <= 16) trafficMultiplier = 0.7; // Business hours
-      if (hour >= 17 && hour <= 22) trafficMultiplier = 1.0; // Peak evening
-      if (hour >= 23 || hour <= 5) trafficMultiplier = 0.3; // Low night traffic
-      
-      data.push({
-        time: time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}),
-        network_utilization: 40 + trafficMultiplier * 40 + Math.random() * 10,
-        active_connections: Math.floor((8000000 + trafficMultiplier * 6000000) + Math.random() * 1000000),
-        throughput: Math.floor((1200 + trafficMultiplier * 1600) + Math.random() * 200),
-        packet_loss: Math.max(0, 0.02 + (1 - trafficMultiplier) * 0.08 + Math.random() * 0.03),
-        latency: 8 + (1 - trafficMultiplier) * 8 + Math.random() * 4,
-        service_availability: 99.8 + Math.random() * 0.19,
-        incidents: Math.floor((1 - trafficMultiplier + 0.1) * 5 + Math.random() * 3)
-      });
-    }
-    return data;
-  };
-
-  useEffect(() => {
-    setNetworkHistory(generateNetworkHistory());
-  }, []);
-
+  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
       // Update network status
       setNetworkStatus(prev => ({
         ...prev,
-        networkUtilization: Math.max(50.0, Math.min(85.0, prev.networkUtilization + (Math.random() - 0.5) * 3.0)),
-        qualityOfService: Math.max(90.0, Math.min(98.0, prev.qualityOfService + (Math.random() - 0.5) * 1.5)),
-        packetLoss: Math.max(0.01, Math.min(0.15, prev.packetLoss + (Math.random() - 0.5) * 0.02)),
-        latency: Math.max(8.0, Math.min(25.0, prev.latency + (Math.random() - 0.5) * 2.0)),
-        lastUpdate: Date.now()
+        activeConnections: Math.max(8000000, Math.min(10000000, prev.activeConnections + Math.floor((Math.random() - 0.5) * 50000))),
+        avgThroughput: Math.max(2500, Math.min(3500, prev.avgThroughput + (Math.random() - 0.5) * 50)),
+        call5GCoverage: Math.max(85, Math.min(95, prev.call5GCoverage + (Math.random() - 0.5) * 0.5)),
+        dataTraffic: Math.max(15000, Math.min(25000, prev.dataTraffic + (Math.random() - 0.5) * 500)),
+        serviceQuality: Math.max(95, Math.min(99.5, prev.serviceQuality + (Math.random() - 0.5) * 0.3)),
+        incidentCount: Math.max(3, Math.min(15, prev.incidentCount + Math.floor((Math.random() - 0.7) * 2)))
       }));
 
-      // Update network infrastructure
-      setNetworkInfrastructure(prev => prev.map(tech => ({
-        ...tech,
-        throughput: Math.max(tech.throughput * 0.8, Math.min(tech.throughput * 1.2, tech.throughput + (Math.random() - 0.5) * tech.throughput * 0.1)),
-        latency: Math.max(tech.latency * 0.7, Math.min(tech.latency * 1.3, tech.latency + (Math.random() - 0.5) * tech.latency * 0.1)),
-        availability: Math.max(98.0, Math.min(99.99, tech.availability + (Math.random() - 0.5) * 0.3))
+      // Update cell tower operations
+      setCellTowerOperations(prev => prev.map(tower => {
+        if (tower.status === 'operational') {
+          return {
+            ...tower,
+            connectedUsers: Math.max(tower.capacity * 0.2, Math.min(tower.capacity * 0.9, tower.connectedUsers + Math.floor((Math.random() - 0.5) * 500))),
+            coverage: Math.max(85, Math.min(98, tower.coverage + (Math.random() - 0.5) * 2)),
+            throughput: Math.max(tower.throughput * 0.7, Math.min(tower.throughput * 1.3, tower.throughput + (Math.random() - 0.5) * 0.3)),
+            signalStrength: Math.max(-85, Math.min(-60, tower.signalStrength + Math.floor((Math.random() - 0.5) * 3))),
+            temperature: Math.max(25, Math.min(50, tower.temperature + (Math.random() - 0.5) * 2)),
+            powerLevel: Math.max(70, Math.min(100, tower.powerLevel + (Math.random() - 0.5) * 2))
+          };
+        }
+        return tower;
+      }));
+
+      // Update NOC monitoring
+      setNocMonitoring(prev => prev.map(system => ({
+        ...system,
+        cpu: Math.max(20, Math.min(80, system.cpu + (Math.random() - 0.5) * 5)),
+        memory: Math.max(40, Math.min(90, system.memory + (Math.random() - 0.5) * 3)),
+        connections: system.component === 'Billing & Operations' ? system.connections : Math.max(system.connections * 0.8, Math.min(system.connections * 1.2, system.connections + Math.floor((Math.random() - 0.5) * 10000))),
+        throughput: Math.max(system.throughput * 0.8, Math.min(system.throughput * 1.2, system.throughput + (Math.random() - 0.5) * 1)),
+        latency: Math.max(system.latency * 0.5, Math.min(system.latency * 1.5, system.latency + (Math.random() - 0.5) * 2)),
+        packetLoss: Math.max(0.001, Math.min(0.01, system.packetLoss + (Math.random() - 0.5) * 0.001)),
+        lastUpdate: new Date()
       })));
 
-      // Update service quality
-      setServiceQuality(prev => ({
+      // Update service quality metrics
+      const newQualityData = {
+        time: new Date().toLocaleTimeString(),
+        callSuccess: networkStatus.serviceQuality,
+        dataSpeed: networkStatus.avgThroughput,
+        latency: 10 + Math.random() * 5,
+        availability: networkStatus.networkUptime
+      };
+      
+      setServiceQualityMetrics(prev => [...prev.slice(1), newQualityData]);
+
+      // Update system metrics
+      setSystemMetrics(prev => ({
         ...prev,
-        voice_services: {
-          ...prev.voice_services,
-          call_success_rate: Math.max(98.0, Math.min(99.8, prev.voice_services.call_success_rate + (Math.random() - 0.5) * 0.5)),
-          voice_quality_mos: Math.max(3.5, Math.min(4.5, prev.voice_services.voice_quality_mos + (Math.random() - 0.5) * 0.2))
-        },
-        data_services: {
-          ...prev.data_services,
-          packet_delivery_ratio: Math.max(99.0, Math.min(99.95, prev.data_services.packet_delivery_ratio + (Math.random() - 0.5) * 0.2)),
-          http_response_time: Math.max(200, Math.min(400, prev.data_services.http_response_time + (Math.random() - 0.5) * 30))
-        }
+        networkReliability: Math.max(99.9, Math.min(100, prev.networkReliability + (Math.random() - 0.5) * 0.01)),
+        aiopsIntegration: Math.max(90, Math.min(98, prev.aiopsIntegration + (Math.random() - 0.5) * 0.5)),
+        securityCompliance: Math.max(95, Math.min(100, prev.securityCompliance + (Math.random() - 0.5) * 0.2)),
+        energyEfficiency: Math.max(85, Math.min(95, prev.energyEfficiency + (Math.random() - 0.5) * 0.3))
       }));
 
-    }, 18000);
+      // Occasionally add new telecom alerts
+      if (Math.random() > 0.96) {
+        const alertTypes = ['High CPU Usage', 'Signal Degradation', 'Network Congestion', 'Equipment Status'];
+        const severities = ['info', 'caution', 'warning', 'critical'];
+        const locations = ['Core Network', '5G Sites', 'Transport Network', 'BSS Systems', 'Radio Access'];
+        
+        const newAlert = {
+          id: `TEL-${Date.now()}`,
+          severity: severities[Math.floor(Math.random() * severities.length)],
+          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+          message: 'Real-time telecommunications operations alert',
+          timestamp: new Date(),
+          status: 'active',
+          location: locations[Math.floor(Math.random() * locations.length)],
+          impact: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)]
+        };
+        
+        setTelecomAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+      }
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [networkStatus.serviceQuality, networkStatus.avgThroughput, networkStatus.networkUptime]);
 
-  const getStatusColor = (status) => {
+  const getTowerStatusColor = (status) => {
     switch (status) {
-      case 'NORMAL_OPERATIONS':
-      case 'OPTIMAL':
-      case 'OPERATIONAL':
-      case 'EXCELLENT':
-      case 'ACTIVE':
-      case 'ENABLED':
-      case 'CERTIFIED':
-      case 'COMPLIANT':
-      case 'PASSED':
-      case 'VERIFIED':
-      case 'ENHANCED':
-      case 'AUTOMATED': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'IN_PROGRESS':
-      case 'INVESTIGATING':
-      case 'MONITORING': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'HIGH':
-      case 'MEDIUM':
-      case 'SERVICE_DEGRADATION':
-      case 'LOCALIZED_OUTAGE': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
-      case 'CRITICAL':
-      case 'LOW':
-      case 'PERFORMANCE_DEGRADATION':
-      case 'FAULT': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
+      case 'operational': return '#10B981';
+      case 'maintenance': return '#8B5CF6';
+      case 'degraded': return '#F59E0B';
+      case 'offline': return '#EF4444';
+      default: return '#6B7280';
     }
   };
 
-  const formatNumber = (num, decimals = 0) => {
-    return num.toFixed(decimals);
-  };
-
-  const formatLargeNumber = (num) => {
-    if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
-    return num.toString();
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    }).format(amount);
-  };
-
-  const formatTime = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    const diff = timestamp - Date.now();
-    if (Math.abs(diff) < 60000) return 'now';
-    if (diff > 0) {
-      if (diff < 3600000) return `in ${Math.floor(diff / 60000)}min`;
-      return `in ${Math.floor(diff / 3600000)}h`;
-    } else {
-      const absDiff = Math.abs(diff);
-      if (absDiff < 3600000) return `${Math.floor(absDiff / 60000)}m ago`;
-      return `${Math.floor(absDiff / 3600000)}h ago`;
+  const getNocStatusColor = (status) => {
+    switch (status) {
+      case 'operational': return '#10B981';
+      case 'warning': return '#F59E0B';
+      case 'critical': return '#EF4444';
+      case 'maintenance': return '#8B5CF6';
+      default: return '#6B7280';
     }
   };
 
-  const formatDuration = (hours) => {
-    if (hours < 1) return `${Math.floor(hours * 60)}min`;
-    return `${formatNumber(hours, 1)}h`;
+  const getAlertSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#EF4444';
+      case 'warning': return '#F59E0B';
+      case 'caution': return '#3B82F6';
+      case 'info': return '#10B981';
+      default: return '#6B7280';
+    }
   };
+
+  const getNetworkTypeColor = (type) => {
+    switch (type) {
+      case '5G NR': return '#8B5CF6';
+      case '4G LTE': return '#3B82F6';
+      case '3G UMTS': return '#F59E0B';
+      default: return '#6B7280';
+    }
+  };
+
+  const networkTechnologyDistribution = [
+    { name: '5G NR', value: 45.2, color: '#8B5CF6' },
+    { name: '4G LTE', value: 48.7, color: '#3B82F6' },
+    { name: '3G UMTS', value: 5.8, color: '#F59E0B' },
+    { name: 'Other', value: 0.3, color: '#6B7280' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          📡 TELECOMMUNICATIONS OPERATIONS CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            {formatNumber(networkStatus.serviceAvailability, 2)}% Uptime
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <Radio className="w-8 h-8 text-blue-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">TELECOMMUNICATIONS OPERATIONS CENTER</h1>
+            <p className="text-gray-400">Network Operations NOC, 5G/fiber monitoring, service quality, security & incident management</p>
           </div>
-          <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono border border-blue-500/30">
-            {formatLargeNumber(networkStatus.activeConnections)} Active
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">{networkStatus.networkUptime.toFixed(2)}%</div>
+            <div className="text-xs text-gray-400">UPTIME</div>
           </div>
-          <div className="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-mono border border-purple-500/30">
-            {formatNumber(networkStatus.qualityOfService, 1)}% QoS
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">{(networkStatus.activeConnections / 1000000).toFixed(1)}M</div>
+            <div className="text-xs text-gray-400">CONNECTIONS</div>
           </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Network Operations & NOC Monitoring
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-400">{networkStatus.avgThroughput.toFixed(1)}</div>
+            <div className="text-xs text-gray-400">GBPS</div>
           </div>
         </div>
       </div>
 
-      {/* Network Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">TOTAL SUBSCRIBERS</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {formatLargeNumber(networkStatus.totalSubscribers)}
-              </div>
-              <div className="text-xs text-blue-300">
-                {formatLargeNumber(networkStatus.activeConnections)} active connections
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">👥</div>
+      {/* Telecommunications KPIs */}
+      <div className="grid grid-cols-6 gap-4 mb-6">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Smartphone className="w-5 h-5 text-green-400" />
+            <span className="text-xs text-gray-400">SUBSCRIBERS</span>
           </div>
+          <div className="text-xl font-bold text-white">{(networkStatus.totalSubscribers / 1000000).toFixed(1)}M</div>
+          <div className="text-xs text-gray-400">Total</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">SERVICE AVAILABILITY</div>
-              <div className="text-2xl font-bold text-green-100">
-                {formatNumber(networkStatus.serviceAvailability, 2)}%
-              </div>
-              <div className="text-xs text-green-300">
-                Carrier-grade uptime
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">📶</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Signal className="w-5 h-5 text-purple-400" />
+            <span className="text-xs text-gray-400">5G COVERAGE</span>
           </div>
+          <div className="text-xl font-bold text-white">{networkStatus.call5GCoverage.toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Population</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">NETWORK UTILIZATION</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {formatNumber(networkStatus.networkUtilization, 1)}%
-              </div>
-              <div className="text-xs text-purple-300">
-                {formatNumber(networkStatus.totalThroughput, 1)} Gbps throughput
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">📊</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Activity className="w-5 h-5 text-yellow-400" />
+            <span className="text-xs text-gray-400">DATA TRAFFIC</span>
           </div>
+          <div className="text-xl font-bold text-white">{(networkStatus.dataTraffic / 1000).toFixed(1)}</div>
+          <div className="text-xs text-gray-400">PB/day</div>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">QUALITY OF SERVICE</div>
-              <div className="text-2xl font-bold text-orange-100">
-                {formatNumber(networkStatus.qualityOfService, 1)}%
-              </div>
-              <div className="text-xs text-orange-300">
-                {formatNumber(networkStatus.latency, 1)}ms latency
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">⚡</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <CheckCircle className="w-5 h-5 text-blue-400" />
+            <span className="text-xs text-gray-400">SERVICE QUALITY</span>
           </div>
+          <div className="text-xl font-bold text-white">{networkStatus.serviceQuality.toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">KPI Score</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <span className="text-xs text-gray-400">INCIDENTS</span>
+          </div>
+          <div className="text-xl font-bold text-white">{networkStatus.incidentCount}</div>
+          <div className="text-xs text-gray-400">Active</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <TrendingUp className="w-5 h-5 text-orange-400" />
+            <span className="text-xs text-gray-400">CAPACITY</span>
+          </div>
+          <div className="text-xl font-bold text-white">{((networkStatus.activeConnections / networkStatus.totalSubscribers) * 100).toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Utilization</div>
         </div>
       </div>
 
-      {/* Network Infrastructure Technologies */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          🌐 NETWORK INFRASTRUCTURE & TECHNOLOGY STACK
-        </h3>
-        <div className="space-y-3">
-          {networkInfrastructure.map((tech) => (
-            <div key={tech.technology} className="bg-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="text-sm font-bold text-white">{tech.name}</div>
-                  <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(tech.status)}`}>
-                    {tech.status}
-                  </span>
-                  <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                    {tech.technology.replace(/_/g, ' ')}
-                  </span>
-                </div>
-                <div className="text-xs text-gray-400">
-                  Availability: {formatNumber(tech.availability, 1)}%
-                </div>
-              </div>
-
-              {tech.technology === '5G_NR' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Base Stations: </span>
-                    <span className="text-cyan-400">{formatLargeNumber(tech.base_stations)}</span>
-                    <span className="text-gray-400"> | Coverage: </span>
-                    <span className="text-green-400">{formatNumber(tech.coverage_area, 1)}%</span>
-                    <span className="text-gray-400"> | Active Users: </span>
-                    <span className="text-blue-400">{formatLargeNumber(tech.active_users)}</span>
-                  </div>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Throughput: </span>
-                    <span className="text-purple-400">{formatNumber(tech.throughput, 1)} Mbps</span>
-                    <span className="text-gray-400"> | Latency: </span>
-                    <span className="text-orange-400">{formatNumber(tech.latency, 1)}ms</span>
-                    <span className="text-gray-400"> | Spectrum Efficiency: </span>
-                    <span className="text-pink-400">{formatNumber(tech.spectrum_efficiency, 1)}%</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Handover Success: </span>
-                    <span className="text-green-400">{formatNumber(tech.handover_success_rate, 1)}%</span>
-                    <span className="text-gray-400"> | Energy Efficiency: </span>
-                    <span className="text-cyan-400">{tech.energy_efficiency}</span>
-                  </div>
-                </>
-              )}
-
-              {tech.technology === 'LTE_ADVANCED' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Base Stations: </span>
-                    <span className="text-cyan-400">{formatLargeNumber(tech.base_stations)}</span>
-                    <span className="text-gray-400"> | Coverage: </span>
-                    <span className="text-green-400">{formatNumber(tech.coverage_area, 1)}%</span>
-                    <span className="text-gray-400"> | Active Users: </span>
-                    <span className="text-blue-400">{formatLargeNumber(tech.active_users)}</span>
-                  </div>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Throughput: </span>
-                    <span className="text-purple-400">{formatNumber(tech.throughput, 1)} Mbps</span>
-                    <span className="text-gray-400"> | Latency: </span>
-                    <span className="text-orange-400">{formatNumber(tech.latency, 1)}ms</span>
-                    <span className="text-gray-400"> | Carriers: </span>
-                    <span className="text-yellow-400">{tech.aggregation_carriers}</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Spectrum Efficiency: </span>
-                    <span className="text-pink-400">{formatNumber(tech.spectrum_efficiency, 1)}%</span>
-                    <span className="text-gray-400"> | Handover Success: </span>
-                    <span className="text-green-400">{formatNumber(tech.handover_success_rate, 1)}%</span>
-                  </div>
-                </>
-              )}
-
-              {tech.technology === 'FIBER_OPTIC' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Total Length: </span>
-                    <span className="text-cyan-400">{formatLargeNumber(tech.total_length)} km</span>
-                    <span className="text-gray-400"> | Active Connections: </span>
-                    <span className="text-blue-400">{formatLargeNumber(tech.active_connections)}</span>
-                    <span className="text-gray-400"> | Segments: </span>
-                    <span className="text-yellow-400">{formatLargeNumber(tech.network_segments)}</span>
-                  </div>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Capacity: </span>
-                    <span className="text-purple-400">{formatLargeNumber(tech.bandwidth_capacity)} Gbps</span>
-                    <span className="text-gray-400"> | Utilization: </span>
-                    <span className="text-orange-400">{formatNumber(tech.utilization, 1)}%</span>
-                    <span className="text-gray-400"> | Fault Rate: </span>
-                    <span className="text-red-400">{formatNumber(tech.fault_rate, 2)}/100km</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Avg Repair Time: </span>
-                    <span className="text-pink-400">{formatNumber(tech.repair_time, 1)}h</span>
-                  </div>
-                </>
-              )}
-
-              {tech.technology === 'MPLS_VPN' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Total Circuits: </span>
-                    <span className="text-cyan-400">{formatLargeNumber(tech.total_circuits)}</span>
-                    <span className="text-gray-400"> | Active VPNs: </span>
-                    <span className="text-blue-400">{formatLargeNumber(tech.active_vpns)}</span>
-                    <span className="text-gray-400"> | QoS Classes: </span>
-                    <span className="text-yellow-400">{tech.qos_classes}</span>
-                  </div>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Bandwidth Utilization: </span>
-                    <span className="text-purple-400">{formatNumber(tech.bandwidth_utilization, 1)}%</span>
-                    <span className="text-gray-400"> | SLA Compliance: </span>
-                    <span className="text-green-400">{formatNumber(tech.sla_compliance, 1)}%</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Traffic Engineering: </span>
-                    <span className="text-orange-400">{tech.traffic_engineering}</span>
-                    <span className="text-gray-400"> | Failover: </span>
-                    <span className="text-pink-400">{formatNumber(tech.failover_time, 1)}s</span>
-                  </div>
-                </>
-              )}
-
-              {tech.technology === 'SATELLITE' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Active Satellites: </span>
-                    <span className="text-cyan-400">{tech.active_satellites}</span>
-                    <span className="text-gray-400"> | Earth Stations: </span>
-                    <span className="text-blue-400">{tech.earth_stations}</span>
-                    <span className="text-gray-400"> | Coverage Zones: </span>
-                    <span className="text-yellow-400">{tech.coverage_zones}</span>
-                  </div>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Throughput: </span>
-                    <span className="text-purple-400">{formatNumber(tech.throughput, 1)} Mbps</span>
-                    <span className="text-gray-400"> | Latency: </span>
-                    <span className="text-orange-400">{formatNumber(tech.latency, 0)}ms</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Signal Strength: </span>
-                    <span className="text-pink-400">{formatNumber(tech.signal_strength, 1)} dBm</span>
-                    <span className="text-gray-400"> | Weather Impact: </span>
-                    <span className="text-green-400">{tech.weather_impact}</span>
-                  </div>
-                </>
-              )}
-
-              <div className="w-full bg-gray-600 rounded-full h-2 mt-2">
-                <div 
-                  className="h-2 rounded-full bg-green-400"
-                  style={{ width: `${Math.min(tech.availability, 100)}%` }}
-                ></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Service Quality Metrics */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📞 SERVICE QUALITY & PERFORMANCE METRICS
-        </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Voice Services</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Call Success Rate:</span>
-                <span className="text-green-400">{formatNumber(serviceQuality.voice_services.call_success_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Voice Quality (MOS):</span>
-                <span className="text-blue-400">{formatNumber(serviceQuality.voice_services.voice_quality_mos, 1)}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Dropped Call Rate:</span>
-                <span className="text-yellow-400">{formatNumber(serviceQuality.voice_services.dropped_call_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Blocked Call Rate:</span>
-                <span className="text-orange-400">{formatNumber(serviceQuality.voice_services.blocked_call_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Handover Failures:</span>
-                <span className="text-red-400">{serviceQuality.voice_services.handover_failures}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Echo Cancellation:</span>
-                <span className={`${getStatusColor(serviceQuality.voice_services.echo_cancellation).split(' ')[0]}`}>
-                  {serviceQuality.voice_services.echo_cancellation}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Noise Reduction:</span>
-                <span className={`${getStatusColor(serviceQuality.voice_services.noise_reduction).split(' ')[0]}`}>
-                  {serviceQuality.voice_services.noise_reduction}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Data Services</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Throughput Consistency:</span>
-                <span className="text-green-400">{formatNumber(serviceQuality.data_services.throughput_consistency, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Packet Delivery:</span>
-                <span className="text-blue-400">{formatNumber(serviceQuality.data_services.packet_delivery_ratio, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Jitter:</span>
-                <span className="text-yellow-400">{formatNumber(serviceQuality.data_services.jitter, 1)}ms</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">TCP Retransmission:</span>
-                <span className="text-orange-400">{formatNumber(serviceQuality.data_services.tcp_retransmission_rate, 2)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">DNS Resolution:</span>
-                <span className="text-cyan-400">{formatNumber(serviceQuality.data_services.dns_resolution_time, 1)}ms</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">HTTP Response:</span>
-                <span className="text-purple-400">{serviceQuality.data_services.http_response_time}ms</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Video Streaming:</span>
-                <span className={`${getStatusColor(serviceQuality.data_services.video_streaming_quality).split(' ')[0]}`}>
-                  {serviceQuality.data_services.video_streaming_quality}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Messaging Services</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">SMS Delivery Success:</span>
-                <span className="text-green-400">{formatNumber(serviceQuality.messaging_services.sms_delivery_success, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">SMS Delivery Time:</span>
-                <span className="text-blue-400">{formatNumber(serviceQuality.messaging_services.sms_delivery_time, 1)}s</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">MMS Success Rate:</span>
-                <span className="text-yellow-400">{formatNumber(serviceQuality.messaging_services.mms_success_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Rich Messaging:</span>
-                <span className="text-orange-400">{formatNumber(serviceQuality.messaging_services.rich_messaging_availability, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Spam Filtering:</span>
-                <span className="text-cyan-400">{formatNumber(serviceQuality.messaging_services.spam_filtering_accuracy, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Message Encryption:</span>
-                <span className="text-purple-400">{serviceQuality.messaging_services.message_encryption.replace(/_/g, ' ')}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Network Operations Trends */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📈 NETWORK OPERATIONS TRENDS (24 HOURS)
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={networkHistory}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-            <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10}/>
-            <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12}/>
-            <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12}/>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB'
-              }}
-            />
-            <Legend />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="active_connections"
-              stroke="#10B981"
-              fill="#10B981"
-              fillOpacity={0.2}
-              strokeWidth={2}
-              name="Active Connections (M)"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="network_utilization" 
-              stroke="#3B82F6" 
-              strokeWidth={2}
-              name="Network Utilization %"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="throughput" 
-              stroke="#8B5CF6" 
-              strokeWidth={2}
-              name="Throughput (Gbps)"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="packet_loss" 
-              stroke="#EF4444" 
-              strokeWidth={2}
-              name="Packet Loss %"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="latency" 
-              stroke="#F59E0B" 
-              strokeWidth={2}
-              name="Latency (ms)"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="service_availability" 
-              stroke="#06B6D4" 
-              strokeWidth={2}
-              name="Service Availability %"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="incidents" 
-              stroke="#F97316" 
-              strokeWidth={2}
-              name="Incidents"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Regional Operations and Incident Management */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Regional Operations */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🌍 REGIONAL OPERATIONS OVERVIEW
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Cell Tower Operations */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Antenna className="w-5 h-5 mr-2 text-purple-400" />
+            CELL TOWER OPERATIONS
           </h3>
-          
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {operationalMetrics.map((region, index) => (
-              <div key={index} className="bg-gray-700 rounded-lg p-3">
+          <div className="space-y-3">
+            {cellTowerOperations.map(tower => (
+              <div key={tower.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getTowerStatusColor(tower.status) }}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-bold text-white">{region.region.replace(/_/g, ' ')}</span>
-                  <div className="text-xs text-gray-400">
-                    CSAT: {formatNumber(region.customer_satisfaction, 1)}/5
+                  <span className="text-white font-medium text-sm">{tower.id}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getNetworkTypeColor(tower.type)}20`, 
+                      color: getNetworkTypeColor(tower.type) 
+                    }}>
+                      {tower.type}
+                    </span>
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getTowerStatusColor(tower.status)}20`, 
+                      color: getTowerStatusColor(tower.status) 
+                    }}>
+                      {tower.status.toUpperCase()}
+                    </span>
                   </div>
                 </div>
-
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Coverage: </span>
-                  <span className="text-green-400">{formatNumber(region.population_coverage, 1)}%</span>
-                  <span className="text-gray-400"> | Subscribers: </span>
-                  <span className="text-blue-400">{formatLargeNumber(region.active_subscribers)}</span>
-                  <span className="text-gray-400"> | Capacity: </span>
-                  <span className="text-purple-400">{formatNumber(region.network_capacity, 1)} Gbps</span>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  {tower.location}
                 </div>
-
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Utilization: </span>
-                  <span className="text-orange-400">{formatNumber(region.utilization, 1)}%</span>
-                  <span className="text-gray-400"> | Incidents Today: </span>
-                  <span className="text-red-400">{region.incidents_today}</span>
-                  <span className="text-gray-400"> | MTTR: </span>
-                  <span className="text-yellow-400">{formatDuration(region.mean_time_to_repair)}</span>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Users</span>
+                    <span className="text-green-400">{tower.connectedUsers.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Capacity</span>
+                    <span className="text-blue-400">{tower.capacity.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Coverage</span>
+                    <span className="text-purple-400">{tower.coverage.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Signal</span>
+                    <span className="text-white">{tower.signalStrength} dBm</span>
+                  </div>
                 </div>
-
-                <div className="text-xs">
-                  <span className="text-gray-400">ARPU: </span>
-                  <span className="text-green-400">{formatCurrency(region.revenue_per_user)}/mo</span>
-                  <span className="text-gray-400"> | Churn: </span>
-                  <span className="text-pink-400">{formatNumber(region.churn_rate, 1)}%/mo</span>
+                
+                <div className="text-xs text-gray-300 mb-2">
+                  Throughput: <span className="text-cyan-400">{tower.throughput.toFixed(1)} Gbps</span>
                 </div>
-
-                <div className="w-full bg-gray-600 rounded-full h-2 mt-2">
-                  <div 
-                    className={`h-2 rounded-full ${region.utilization < 70 ? 'bg-green-400' : 
-                                                     region.utilization < 85 ? 'bg-yellow-400' : 'bg-orange-400'}`}
-                    style={{ width: `${Math.min(region.utilization, 100)}%` }}
-                  ></div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">Temp: {tower.temperature.toFixed(1)}°C</span>
+                  <span className="text-gray-500">Power: {tower.powerLevel.toFixed(1)}%</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Incident Management */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🚨 INCIDENT MANAGEMENT & SLA MONITORING
+        {/* NOC Monitoring */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Router className="w-5 h-5 mr-2 text-blue-400" />
+            NOC MONITORING
           </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">SLA Compliance</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Uptime Target/Current:</span>
-                <span className="text-green-400">
-                  {formatNumber(incidentManagement.sla_compliance.uptime_target, 2)}% / 
-                  {formatNumber(incidentManagement.sla_compliance.current_uptime, 2)}%
-                </span>
+          <div className="space-y-3">
+            {nocMonitoring.map(system => (
+              <div key={system.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getNocStatusColor(system.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{system.system}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getNocStatusColor(system.status)}20`, 
+                      color: getNocStatusColor(system.status) 
+                    }}>
+                      {system.status.toUpperCase()}
+                    </span>
+                    {system.alerts > 0 && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-red-900 text-red-400">
+                        {system.alerts} Alert{system.alerts > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  {system.component}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">CPU</span>
+                    <span className="text-green-400">{system.cpu.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Memory</span>
+                    <span className="text-blue-400">{system.memory.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Throughput</span>
+                    <span className="text-purple-400">{system.throughput.toFixed(1)} Gbps</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Latency</span>
+                    <span className="text-white">{system.latency.toFixed(1)} ms</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">Loss: {(system.packetLoss * 100).toFixed(3)}%</span>
+                  <span className="text-gray-500">
+                    {system.connections > 0 ? `${(system.connections / 1000000).toFixed(1)}M conn` : 'N/A'}
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">MTTR Target/Current:</span>
-                <span className="text-blue-400">
-                  {incidentManagement.sla_compliance.mttr_target}h / 
-                  {formatNumber(incidentManagement.sla_compliance.current_mttr, 1)}h
-                </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Traffic Analysis & Alerts */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
+            TRAFFIC ANALYSIS & ALERTS
+          </h3>
+          <div className="space-y-3 mb-4">
+            {trafficAnalysis.slice(0, 4).map((region, index) => (
+              <div key={index} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{region.region}</span>
+                  <span className="text-xs text-gray-400">
+                    {(region.subscribers / 1000000).toFixed(1)}M subs
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Data Usage</span>
+                    <span className="text-blue-400">{region.dataUsage.toFixed(0)} TB</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Avg Speed</span>
+                    <span className="text-green-400">{region.avgSpeed.toFixed(0)} Mbps</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-purple-400">Satisfaction: {region.satisfaction.toFixed(1)}%</span>
+                  <span className="text-gray-500">
+                    {(region.callMinutes / 1000000).toFixed(1)}M mins
+                  </span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">On-Time Resolution:</span>
-                <span className="text-purple-400">{formatNumber(incidentManagement.sla_compliance.incidents_resolved_on_time, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">CSAT Target/Current:</span>
-                <span className="text-orange-400">
-                  {formatNumber(incidentManagement.sla_compliance.customer_satisfaction_target, 1)} / 
-                  {formatNumber(incidentManagement.sla_compliance.current_satisfaction, 1)}
-                </span>
-              </div>
-            </div>
+            ))}
           </div>
 
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Active Incidents</h4>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {incidentManagement.active_incidents.map((incident, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
+          {/* Telecom Alerts */}
+          <div className="border-t border-gray-700 pt-3">
+            <div className="text-sm text-white font-semibold mb-2">Network Alerts</div>
+            <div className="space-y-2">
+              {telecomAlerts.slice(0, 3).map(alert => (
+                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{incident.incident_id}</span>
-                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(incident.severity)}`}>
-                      {incident.severity}
+                    <span className="text-xs font-medium text-white">{alert.type}</span>
+                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
+                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
+                      color: getAlertSeverityColor(alert.severity) 
+                    }}>
+                      {alert.severity.toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-xs mb-1">
-                    <span className="text-gray-400">Type: </span>
-                    <span className="text-cyan-400">{incident.type.replace(/_/g, ' ')}</span>
-                    <span className="text-gray-400"> | Location: </span>
-                    <span className="text-yellow-400">{incident.location}</span>
-                  </div>
-                  <div className="text-xs mb-1">
-                    <span className="text-gray-400">Affected Users: </span>
-                    <span className="text-red-400">{formatLargeNumber(incident.affected_users)}</span>
-                    <span className="text-gray-400"> | Started: </span>
-                    <span className="text-purple-400">{formatTime(incident.start_time)}</span>
-                  </div>
-                  <div className="text-xs mb-1">
-                    <span className="text-gray-400">Status: </span>
-                    <span className={`${getStatusColor(incident.status).split(' ')[0]}`}>
-                      {incident.status.replace(/_/g, ' ')}
-                    </span>
-                    <span className="text-gray-400"> | ETA: </span>
-                    <span className="text-orange-400">{formatTime(incident.estimated_resolution)}</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Team: </span>
-                    <span className="text-blue-400">{incident.assigned_team}</span>
-                    <span className="text-gray-400"> | Workaround: </span>
-                    <span className={incident.workaround_deployed ? 'text-green-400' : 'text-red-400'}>
-                      {incident.workaround_deployed ? 'DEPLOYED' : 'NONE'}
-                    </span>
-                  </div>
-                  <div className="text-xs mt-1">
-                    <span className="text-gray-400">Impact: </span>
-                    <span className="text-pink-400">{incident.impact_level.replace(/_/g, ' ')}</span>
-                    <span className="text-gray-400"> | Services: </span>
-                    <span className="text-cyan-400">{incident.affected_services.join(', ')}</span>
+                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-400">{alert.location}</span>
+                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
                   </div>
                 </div>
               ))}
@@ -988,144 +746,143 @@ const TelecommunicationsOperationsCenter = () => {
         </div>
       </div>
 
-      {/* Network Security */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          🔒 NETWORK SECURITY & COMPLIANCE MONITORING
-        </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Threat Detection</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Threats Detected:</span>
-                <span className="text-red-400">{networkSecurity.threat_detection.threats_detected}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Threats Blocked:</span>
-                <span className="text-green-400">{networkSecurity.threat_detection.threats_blocked}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Success Rate:</span>
-                <span className="text-blue-400">{formatNumber(networkSecurity.threat_detection.success_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">False Positive:</span>
-                <span className="text-yellow-400">{formatNumber(networkSecurity.threat_detection.false_positive_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Detection Time:</span>
-                <span className="text-orange-400">{formatNumber(networkSecurity.threat_detection.avg_detection_time, 1)}s</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">AI Analysis:</span>
-                <span className={`${getStatusColor(networkSecurity.threat_detection.ai_threat_analysis).split(' ')[0]}`}>
-                  {networkSecurity.threat_detection.ai_threat_analysis}
-                </span>
+      {/* Network Analytics */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Real-time Service Quality Metrics */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME SERVICE QUALITY METRICS</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={serviceQualityMetrics}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="callSuccess" 
+                stroke="#10B981" 
+                strokeWidth={3}
+                name="Call Success %"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="dataSpeed" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Data Speed (Mbps)"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="latency" 
+                stroke="#F59E0B" 
+                strokeWidth={2}
+                name="Latency (ms)"
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Network Technology Mix & System Status */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">NETWORK TECHNOLOGY MIX & SYSTEM STATUS</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={networkTechnologyDistribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {networkTechnologyDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value) => [`${value}%`, 'Network Mix']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-2 mt-4">
+              {networkTechnologyDistribution.map((tech, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: tech.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{tech.name}</span>
+                  </div>
+                  <span className="text-white font-semibold">{tech.value}%</span>
+                </div>
+              ))}
+              
+              {/* System Status */}
+              <div className="mt-4 pt-3 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-2">System Status</div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Network Reliability</span>
+                    <span className="text-green-400">{systemMetrics.networkReliability.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">AIOps Integration</span>
+                    <span className="text-blue-400">{systemMetrics.aiopsIntegration.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Security Compliance</span>
+                    <span className="text-purple-400">{systemMetrics.securityCompliance.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Automation Level</span>
+                    <span className="text-green-400">{systemMetrics.automationLevel.toFixed(1)}%</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">DDoS Protection</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Attacks Mitigated:</span>
-                <span className="text-green-400">{networkSecurity.ddos_protection.attacks_mitigated}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Peak Attack Volume:</span>
-                <span className="text-red-400">{networkSecurity.ddos_protection.peak_attack_volume} Gbps</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Mitigation Time:</span>
-                <span className="text-blue-400">{formatNumber(networkSecurity.ddos_protection.mitigation_time, 1)}s</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Uptime Maintained:</span>
-                <span className="text-green-400">{formatNumber(networkSecurity.ddos_protection.uptime_maintained, 2)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Scrubbing Capacity:</span>
-                <span className="text-purple-400">{formatLargeNumber(networkSecurity.ddos_protection.scrubbing_capacity)} Gbps</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Global Protection:</span>
-                <span className={`${getStatusColor(networkSecurity.ddos_protection.global_protection).split(' ')[0]}`}>
-                  {networkSecurity.ddos_protection.global_protection}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Access Control</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Auth Sessions:</span>
-                <span className="text-green-400">{formatLargeNumber(networkSecurity.access_control.authenticated_sessions)}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Failed Auth:</span>
-                <span className="text-red-400">{formatLargeNumber(networkSecurity.access_control.failed_authentication)}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Two-Factor:</span>
-                <span className="text-blue-400">{formatNumber(networkSecurity.access_control.two_factor_enabled, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Privileged Access:</span>
-                <span className={`${getStatusColor(networkSecurity.access_control.privileged_access_monitoring).split(' ')[0]}`}>
-                  {networkSecurity.access_control.privileged_access_monitoring}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Zero Trust:</span>
-                <span className="text-purple-400">{formatNumber(networkSecurity.access_control.zero_trust_adoption, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Cert Management:</span>
-                <span className={`${getStatusColor(networkSecurity.access_control.certificate_management).split(' ')[0]}`}>
-                  {networkSecurity.access_control.certificate_management}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Compliance</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">GDPR Compliance:</span>
-                <span className={`${getStatusColor(networkSecurity.compliance.gdpr_compliance).split(' ')[0]}`}>
-                  {networkSecurity.compliance.gdpr_compliance}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">ISO 27001:</span>
-                <span className={`${getStatusColor(networkSecurity.compliance.iso27001_status).split(' ')[0]}`}>
-                  {networkSecurity.compliance.iso27001_status}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">SOX Audit:</span>
-                <span className={`${getStatusColor(networkSecurity.compliance.sox_audit_status).split(' ')[0]}`}>
-                  {networkSecurity.compliance.sox_audit_status}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">PCI DSS:</span>
-                <span className="text-green-400">{networkSecurity.compliance.pci_dss_level.replace(/_/g, ' ')}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">HIPAA:</span>
-                <span className={`${getStatusColor(networkSecurity.compliance.hipaa_compliance).split(' ')[0]}`}>
-                  {networkSecurity.compliance.hipaa_compliance}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Data Encryption:</span>
-                <span className="text-purple-400">{networkSecurity.compliance.data_encryption.replace(/_/g, ' ')}</span>
+          
+          {/* Telecommunications Control Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">Network Operations Control</span>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                  <Signal className="w-3 h-3 inline mr-1" />
+                  5G Management
+                </button>
+                <button className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-xs transition-colors">
+                  <Router className="w-3 h-3 inline mr-1" />
+                  NOC Operations
+                </button>
+                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
+                  <Eye className="w-3 h-3 inline mr-1" />
+                  Quality Monitoring
+                </button>
               </div>
             </div>
           </div>
