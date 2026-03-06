@@ -1,6 +1,331 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart } from 'recharts';
-import { DollarSign, TrendingUp, TrendingDown, Calculator, CreditCard, Target, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { DollarSign, TrendingUp, Calculator, Target, AlertTriangle, Clock } from 'lucide-react';
 
 const CostTrackingCenter = () => {
-  const [costData, setCostData] = useState({\n    totalSpend: 127.45,\n    monthlyBudget: 500.00,\n    dailyAverage: 4.25,\n    tokenUsage: 2847650,\n    efficiency: 85.3\n  });\n\n  const [dailyCosts, setDailyCosts] = useState([]);\n  const [modelBreakdown, setModelBreakdown] = useState([]);\n  const [agentCosts, setAgentCosts] = useState([]);\n  const [predictions, setPredictions] = useState({});\n  const [alerts, setAlerts] = useState([]);\n\n  // Model pricing configuration\n  const modelPricing = {\n    'claude-opus-4': { input: 0.015, output: 0.075, name: 'Claude Opus 4' },\n    'claude-sonnet-4': { input: 0.003, output: 0.015, name: 'Claude Sonnet 4' },\n    'claude-haiku-4': { input: 0.00025, output: 0.00125, name: 'Claude Haiku 4' },\n    'gpt-4-turbo': { input: 0.01, output: 0.03, name: 'GPT-4 Turbo' },\n    'gpt-4': { input: 0.03, output: 0.06, name: 'GPT-4' }\n  };\n\n  // Generate realistic cost data\n  useEffect(() => {\n    const generateDailyCosts = () => {\n      const costs = [];\n      const today = new Date();\n      \n      for (let i = 29; i >= 0; i--) {\n        const date = new Date(today);\n        date.setDate(date.getDate() - i);\n        \n        const baseSpend = 3 + Math.random() * 4; // $3-7 base\n        const weekendMultiplier = date.getDay() === 0 || date.getDay() === 6 ? 0.6 : 1;\n        const weeklyTrend = Math.sin((i / 7) * Math.PI) * 0.3 + 1; // Weekly variation\n        \n        const totalSpend = baseSpend * weekendMultiplier * weeklyTrend;\n        const tokenCount = Math.floor(totalSpend * 15000 + Math.random() * 5000); // ~15k tokens per dollar\n        \n        costs.push({\n          date: date.toISOString().split('T')[0],\n          dateFormatted: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),\n          spend: parseFloat(totalSpend.toFixed(2)),\n          tokens: tokenCount,\n          opusSpend: Math.random() * totalSpend * 0.4,\n          sonnetSpend: Math.random() * totalSpend * 0.4,\n          haikuSpend: Math.random() * totalSpend * 0.2,\n          efficiency: 75 + Math.random() * 20 // 75-95% efficiency\n        });\n      }\n      return costs;\n    };\n\n    const generateModelBreakdown = () => {\n      return [\n        { model: 'Claude Sonnet 4', spend: 45.67, tokens: 1245000, percentage: 35.8, color: '#3B82F6' },\n        { model: 'Claude Opus 4', spend: 52.34, tokens: 456000, percentage: 41.1, color: '#8B5CF6' },\n        { model: 'Claude Haiku 4', spend: 18.92, tokens: 987000, percentage: 14.8, color: '#10B981' },\n        { model: 'GPT-4 Turbo', spend: 8.45, tokens: 234000, percentage: 6.6, color: '#F59E0B' },\n        { model: 'GPT-4', spend: 2.07, tokens: 78000, percentage: 1.6, color: '#EF4444' }\n      ];\n    };\n\n    const generateAgentCosts = () => {\n      return [\n        { \n          name: 'Aleksandra Main', \n          spend: 48.67, \n          tokens: 1456000, \n          sessions: 142, \n          avgCostPerSession: 0.34,\n          efficiency: 92.1,\n          model: 'claude-sonnet-4',\n          color: '#3B82F6'\n        },\n        { \n          name: 'Content Processor', \n          spend: 23.45, \n          tokens: 987000, \n          sessions: 89, \n          avgCostPerSession: 0.26,\n          efficiency: 88.7,\n          model: 'claude-haiku-4',\n          color: '#10B981'\n        },\n        { \n          name: 'Research Agent', \n          spend: 34.12, \n          tokens: 234000, \n          sessions: 67, \n          avgCostPerSession: 0.51,\n          efficiency: 79.3,\n          model: 'claude-opus-4',\n          color: '#8B5CF6'\n        },\n        { \n          name: 'Analytics Agent', \n          spend: 15.87, \n          tokens: 567000, \n          sessions: 45, \n          avgCostPerSession: 0.35,\n          efficiency: 85.2,\n          model: 'claude-sonnet-4',\n          color: '#F59E0B'\n        },\n        { \n          name: 'Social Media Agent', \n          spend: 5.34, \n          tokens: 178000, \n          sessions: 23, \n          avgCostPerSession: 0.23,\n          efficiency: 91.8,\n          model: 'claude-haiku-4',\n          color: '#06B6D4'\n        }\n      ];\n    };\n\n    setDailyCosts(generateDailyCosts());\n    setModelBreakdown(generateModelBreakdown());\n    setAgentCosts(generateAgentCosts());\n\n    // Generate predictions\n    const currentSpend = 127.45;\n    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();\n    const daysElapsed = new Date().getDate();\n    const projectedSpend = (currentSpend / daysElapsed) * daysInMonth;\n    \n    setPredictions({\n      monthlyProjection: projectedSpend.toFixed(2),\n      budgetUtilization: ((currentSpend / 500) * 100).toFixed(1),\n      daysUntilBudgetExhaustion: Math.floor(500 / (currentSpend / daysElapsed)),\n      recommendedDailySpend: (500 / daysInMonth).toFixed(2)\n    });\n\n    // Generate cost alerts\n    const newAlerts = [];\n    if (projectedSpend > 500) {\n      newAlerts.push({\n        type: 'critical',\n        message: `Projected monthly spend ($${projectedSpend.toFixed(2)}) exceeds budget ($500)`,\n        timestamp: new Date().toLocaleTimeString()\n      });\n    }\n    if (currentSpend / 500 > 0.8) {\n      newAlerts.push({\n        type: 'warning',\n        message: 'Monthly budget 80% utilized',\n        timestamp: new Date().toLocaleTimeString()\n      });\n    }\n    setAlerts(newAlerts);\n  }, []);\n\n  // Real-time updates simulation\n  useEffect(() => {\n    const interval = setInterval(() => {\n      setCostData(prev => ({\n        ...prev,\n        totalSpend: prev.totalSpend + (Math.random() * 0.5),\n        tokenUsage: prev.tokenUsage + Math.floor(Math.random() * 1000),\n        efficiency: Math.max(70, Math.min(95, prev.efficiency + (Math.random() - 0.5) * 2))\n      }));\n    }, 10000);\n\n    return () => clearInterval(interval);\n  }, []);\n\n  const formatCurrency = (amount) => `$${amount.toFixed(2)}`;\n  const formatTokens = (tokens) => `${(tokens / 1000).toFixed(0)}K`;\n  const formatLargeTokens = (tokens) => {\n    if (tokens > 1000000) return `${(tokens / 1000000).toFixed(1)}M`;\n    return `${(tokens / 1000).toFixed(0)}K`;\n  };\n\n  const getEfficiencyColor = (efficiency) => {\n    if (efficiency >= 85) return '#10B981';\n    if (efficiency >= 70) return '#F59E0B';\n    return '#EF4444';\n  };\n\n  const getBudgetStatus = () => {\n    const utilization = (costData.totalSpend / costData.monthlyBudget) * 100;\n    if (utilization < 60) return { color: '#10B981', status: 'Good' };\n    if (utilization < 80) return { color: '#F59E0B', status: 'Monitor' };\n    return { color: '#EF4444', status: 'Critical' };\n  };\n\n  const budgetStatus = getBudgetStatus();\n\n  return (\n    <div className=\"min-h-screen bg-black text-white p-4 font-mono\">\n      {/* Header */}\n      <div className=\"flex items-center justify-between mb-6 border-b border-gray-800 pb-4\">\n        <div className=\"flex items-center space-x-3\">\n          <DollarSign className=\"w-8 h-8 text-green-400\" />\n          <div>\n            <h1 className=\"text-2xl font-bold text-white\">COST TRACKING CENTER</h1>\n            <p className=\"text-gray-400\">AI operations cost analysis, token usage, and budget monitoring</p>\n          </div>\n        </div>\n        <div className=\"flex items-center space-x-6\">\n          <div className=\"text-center\">\n            <div className=\"text-2xl font-bold text-green-400\">{formatCurrency(costData.totalSpend)}</div>\n            <div className=\"text-xs text-gray-400\">MONTH TO DATE</div>\n          </div>\n          <div className=\"text-center\">\n            <div className=\"text-2xl font-bold text-blue-400\">{formatLargeTokens(costData.tokenUsage)}</div>\n            <div className=\"text-xs text-gray-400\">TOKENS</div>\n          </div>\n          <div className=\"text-center\">\n            <div className=\"text-2xl font-bold\" style={{color: getEfficiencyColor(costData.efficiency)}}>\n              {costData.efficiency.toFixed(1)}%\n            </div>\n            <div className=\"text-xs text-gray-400\">EFFICIENCY</div>\n          </div>\n        </div>\n      </div>\n\n      {/* Overview Cards */}\n      <div className=\"grid grid-cols-4 gap-4 mb-6\">\n        {/* Monthly Budget */}\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <div className=\"flex items-center justify-between mb-3\">\n            <div className=\"flex items-center space-x-2\">\n              <Target className=\"w-5 h-5 text-green-400\" />\n              <span className=\"text-gray-400\">BUDGET</span>\n            </div>\n            <span className={`text-sm px-2 py-1 rounded-full`} \n                  style={{ backgroundColor: `${budgetStatus.color}20`, color: budgetStatus.color }}>\n              {budgetStatus.status}\n            </span>\n          </div>\n          <div className=\"space-y-2\">\n            <div className=\"text-2xl font-bold text-white\">{formatCurrency(costData.monthlyBudget)}</div>\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Used</span>\n              <span className=\"text-white\">{formatCurrency(costData.totalSpend)}</span>\n            </div>\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Remaining</span>\n              <span className=\"text-white\">{formatCurrency(costData.monthlyBudget - costData.totalSpend)}</span>\n            </div>\n          </div>\n          <div className=\"mt-3 bg-gray-800 rounded-full h-2\">\n            <div \n              className=\"h-2 rounded-full transition-all duration-500\" \n              style={{\n                width: `${Math.min(100, (costData.totalSpend / costData.monthlyBudget) * 100)}%`,\n                backgroundColor: budgetStatus.color\n              }}\n            />\n          </div>\n        </div>\n\n        {/* Daily Average */}\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <div className=\"flex items-center justify-between mb-3\">\n            <div className=\"flex items-center space-x-2\">\n              <Calculator className=\"w-5 h-5 text-blue-400\" />\n              <span className=\"text-gray-400\">DAILY AVG</span>\n            </div>\n            <TrendingUp className=\"w-5 h-5 text-green-400\" />\n          </div>\n          <div className=\"space-y-2\">\n            <div className=\"text-2xl font-bold text-white\">{formatCurrency(costData.dailyAverage)}</div>\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Target</span>\n              <span className=\"text-white\">{formatCurrency(costData.monthlyBudget / 30)}</span>\n            </div>\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Variance</span>\n              <span className={costData.dailyAverage > costData.monthlyBudget / 30 ? 'text-red-400' : 'text-green-400'}>\n                {formatCurrency(Math.abs(costData.dailyAverage - costData.monthlyBudget / 30))}\n              </span>\n            </div>\n          </div>\n        </div>\n\n        {/* Projected Spend */}\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <div className=\"flex items-center justify-between mb-3\">\n            <div className=\"flex items-center space-x-2\">\n              <TrendingUp className=\"w-5 h-5 text-purple-400\" />\n              <span className=\"text-gray-400\">PROJECTED</span>\n            </div>\n            <span className=\"text-2xl font-bold text-purple-400\">\n              {formatCurrency(predictions.monthlyProjection)}\n            </span>\n          </div>\n          <div className=\"space-y-2\">\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Budget Usage</span>\n              <span className=\"text-white\">{predictions.budgetUtilization}%</span>\n            </div>\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Days Left</span>\n              <span className=\"text-white\">{predictions.daysUntilBudgetExhaustion}d</span>\n            </div>\n          </div>\n        </div>\n\n        {/* Token Efficiency */}\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <div className=\"flex items-center justify-between mb-3\">\n            <div className=\"flex items-center space-x-2\">\n              <Clock className=\"w-5 h-5 text-cyan-400\" />\n              <span className=\"text-gray-400\">EFFICIENCY</span>\n            </div>\n            <span className=\"text-2xl font-bold\" style={{color: getEfficiencyColor(costData.efficiency)}}>\n              {costData.efficiency.toFixed(1)}%\n            </span>\n          </div>\n          <div className=\"space-y-2\">\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Tokens/Hour</span>\n              <span className=\"text-white\">{formatTokens(costData.tokenUsage / 24)}</span>\n            </div>\n            <div className=\"flex justify-between text-sm\">\n              <span className=\"text-gray-400\">Cost/Token</span>\n              <span className=\"text-white\">${(costData.totalSpend / costData.tokenUsage * 1000).toFixed(4)}</span>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      {/* Charts Section */}\n      <div className=\"grid grid-cols-2 gap-6 mb-6\">\n        {/* Daily Spend Trend */}\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <h3 className=\"text-lg font-semibold text-white mb-4\">DAILY SPEND TRENDS</h3>\n          <ResponsiveContainer width=\"100%\" height={300}>\n            <ComposedChart data={dailyCosts}>\n              <CartesianGrid strokeDasharray=\"3 3\" stroke=\"#374151\" />\n              <XAxis dataKey=\"dateFormatted\" stroke=\"#9CA3AF\" fontSize={12} />\n              <YAxis yAxisId=\"cost\" orientation=\"left\" stroke=\"#9CA3AF\" fontSize={12} />\n              <YAxis yAxisId=\"tokens\" orientation=\"right\" stroke=\"#9CA3AF\" fontSize={12} />\n              <Tooltip \n                contentStyle={{ \n                  backgroundColor: '#1F2937', \n                  border: '1px solid #374151',\n                  borderRadius: '8px',\n                  color: '#fff'\n                }} \n              />\n              <Legend />\n              <Bar \n                yAxisId=\"cost\"\n                dataKey=\"spend\" \n                fill=\"#3B82F6\" \n                fillOpacity={0.8}\n                name=\"Daily Spend ($)\"\n              />\n              <Line \n                yAxisId=\"tokens\"\n                type=\"monotone\" \n                dataKey=\"tokens\" \n                stroke=\"#10B981\" \n                strokeWidth={2}\n                name=\"Tokens\"\n                dot={false}\n              />\n            </ComposedChart>\n          </ResponsiveContainer>\n        </div>\n\n        {/* Model Cost Breakdown */}\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <h3 className=\"text-lg font-semibold text-white mb-4\">MODEL COST BREAKDOWN</h3>\n          <div className=\"flex\">\n            <ResponsiveContainer width=\"60%\" height={300}>\n              <PieChart>\n                <Pie\n                  data={modelBreakdown}\n                  cx=\"50%\"\n                  cy=\"50%\"\n                  innerRadius={40}\n                  outerRadius={100}\n                  paddingAngle={2}\n                  dataKey=\"spend\"\n                >\n                  {modelBreakdown.map((entry, index) => (\n                    <Cell key={`cell-${index}`} fill={entry.color} />\n                  ))}\n                </Pie>\n                <Tooltip \n                  formatter={(value) => [formatCurrency(value), 'Spend']}\n                  contentStyle={{ \n                    backgroundColor: '#1F2937', \n                    border: '1px solid #374151',\n                    borderRadius: '8px',\n                    color: '#fff'\n                  }} \n                />\n              </PieChart>\n            </ResponsiveContainer>\n            <div className=\"w-40% space-y-3 mt-4\">\n              {modelBreakdown.map((model, index) => (\n                <div key={index} className=\"bg-gray-800 rounded-lg p-3\">\n                  <div className=\"flex items-center justify-between mb-2\">\n                    <div className=\"flex items-center space-x-2\">\n                      <div \n                        className=\"w-3 h-3 rounded-full\" \n                        style={{ backgroundColor: model.color }}\n                      />\n                      <span className=\"text-white text-sm font-medium\">{model.model}</span>\n                    </div>\n                  </div>\n                  <div className=\"space-y-1 text-xs\">\n                    <div className=\"flex justify-between\">\n                      <span className=\"text-gray-400\">Spend</span>\n                      <span className=\"text-white\">{formatCurrency(model.spend)}</span>\n                    </div>\n                    <div className=\"flex justify-between\">\n                      <span className=\"text-gray-400\">Tokens</span>\n                      <span className=\"text-white\">{formatLargeTokens(model.tokens)}</span>\n                    </div>\n                    <div className=\"flex justify-between\">\n                      <span className=\"text-gray-400\">Share</span>\n                      <span className=\"text-white\">{model.percentage}%</span>\n                    </div>\n                  </div>\n                </div>\n              ))}\n            </div>\n          </div>\n        </div>\n      </div>\n\n      {/* Agent Cost Analysis */}\n      <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4 mb-6\">\n        <h3 className=\"text-lg font-semibold text-white mb-4\">AGENT COST ANALYSIS</h3>\n        <div className=\"space-y-3\">\n          {agentCosts.map((agent, index) => (\n            <div key={index} className=\"bg-gray-800 rounded-lg p-4\">\n              <div className=\"flex items-center justify-between\">\n                <div className=\"flex items-center space-x-4\">\n                  <div \n                    className=\"w-4 h-4 rounded-full\" \n                    style={{ backgroundColor: agent.color }}\n                  />\n                  <div>\n                    <div className=\"text-white font-semibold\">{agent.name}</div>\n                    <div className=\"text-gray-400 text-sm\">{agent.model}</div>\n                  </div>\n                </div>\n                <div className=\"flex items-center space-x-8\">\n                  <div className=\"text-center\">\n                    <div className=\"text-white font-semibold\">{formatCurrency(agent.spend)}</div>\n                    <div className=\"text-gray-400 text-xs\">Total Spend</div>\n                  </div>\n                  <div className=\"text-center\">\n                    <div className=\"text-white font-semibold\">{formatLargeTokens(agent.tokens)}</div>\n                    <div className=\"text-gray-400 text-xs\">Tokens</div>\n                  </div>\n                  <div className=\"text-center\">\n                    <div className=\"text-white font-semibold\">{agent.sessions}</div>\n                    <div className=\"text-gray-400 text-xs\">Sessions</div>\n                  </div>\n                  <div className=\"text-center\">\n                    <div className=\"text-white font-semibold\">{formatCurrency(agent.avgCostPerSession)}</div>\n                    <div className=\"text-gray-400 text-xs\">Avg/Session</div>\n                  </div>\n                  <div className=\"text-center\">\n                    <div className=\"text-white font-semibold\" style={{color: getEfficiencyColor(agent.efficiency)}}>\n                      {agent.efficiency}%\n                    </div>\n                    <div className=\"text-gray-400 text-xs\">Efficiency</div>\n                  </div>\n                </div>\n              </div>\n              <div className=\"mt-3 bg-gray-700 rounded-full h-2\">\n                <div \n                  className=\"h-2 rounded-full transition-all duration-500\" \n                  style={{\n                    width: `${(agent.spend / Math.max(...agentCosts.map(a => a.spend))) * 100}%`,\n                    backgroundColor: agent.color\n                  }}\n                />\n              </div>\n            </div>\n          ))}\n        </div>\n      </div>\n\n      {/* Cost Alerts */}\n      {alerts.length > 0 && (\n        <div className=\"bg-gray-900 border border-gray-700 rounded-lg p-4\">\n          <h3 className=\"text-lg font-semibold text-white mb-4 flex items-center\">\n            <AlertTriangle className=\"w-5 h-5 mr-2 text-yellow-400\" />\n            COST ALERTS\n          </h3>\n          <div className=\"space-y-2\">\n            {alerts.map((alert, index) => (\n              <div key={index} className={`p-3 rounded-lg border-l-4 ${\n                alert.type === 'critical' \n                  ? 'bg-red-900/20 border-red-400' \n                  : 'bg-yellow-900/20 border-yellow-400'\n              }`}>\n                <div className=\"flex items-center justify-between\">\n                  <span className=\"text-white\">{alert.message}</span>\n                  <span className=\"text-gray-400 text-sm flex items-center\">\n                    <Clock className=\"w-4 h-4 mr-1\" />\n                    {alert.timestamp}\n                  </span>\n                </div>\n              </div>\n            ))}\n          </div>\n        </div>\n      )}\n    </div>\n  );\n};\n\nexport default CostTrackingCenter;"
+  const [costData, setCostData] = useState({
+    totalSpend: 127.45,
+    monthlyBudget: 500.00,
+    dailyAverage: 4.25,
+    tokenUsage: 2847650,
+    efficiency: 85.3
+  });
+
+  const [dailyCosts, setDailyCosts] = useState([]);
+  const [modelBreakdown, setModelBreakdown] = useState([]);
+  const [alerts, setAlerts] = useState([]);
+
+  // Generate data on component mount
+  useEffect(() => {
+    // Generate daily cost data
+    const costs = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      
+      const baseSpend = 3 + Math.random() * 4;
+      const weekendMultiplier = date.getDay() === 0 || date.getDay() === 6 ? 0.6 : 1;
+      const totalSpend = baseSpend * weekendMultiplier;
+      
+      costs.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        spend: parseFloat(totalSpend.toFixed(2)),
+        tokens: Math.floor(totalSpend * 15000 + Math.random() * 5000)
+      });
+    }
+    setDailyCosts(costs);
+
+    // Generate model breakdown
+    setModelBreakdown([
+      { model: 'Claude Sonnet 4', spend: 45.67, percentage: 35.8, color: '#3B82F6' },
+      { model: 'Claude Opus 4', spend: 52.34, percentage: 41.1, color: '#8B5CF6' },
+      { model: 'Claude Haiku 4', spend: 18.92, percentage: 14.8, color: '#10B981' },
+      { model: 'GPT-4 Turbo', spend: 8.45, percentage: 6.6, color: '#F59E0B' },
+      { model: 'GPT-4', spend: 2.07, percentage: 1.6, color: '#EF4444' }
+    ]);
+
+    // Generate alerts
+    setAlerts([
+      { type: 'warning', message: 'Monthly budget 80% utilized', timestamp: new Date().toLocaleTimeString() }
+    ]);
+  }, []);
+
+  // Real-time updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCostData(prev => ({
+        ...prev,
+        totalSpend: prev.totalSpend + (Math.random() * 0.1),
+        tokenUsage: prev.tokenUsage + Math.floor(Math.random() * 100),
+        efficiency: Math.max(70, Math.min(95, prev.efficiency + (Math.random() - 0.5) * 2))
+      }));
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+  const formatTokens = (tokens) => `${(tokens / 1000000).toFixed(1)}M`;
+
+  const getEfficiencyColor = (efficiency) => {
+    if (efficiency >= 85) return '#10B981';
+    if (efficiency >= 70) return '#F59E0B';
+    return '#EF4444';
+  };
+
+  const getBudgetStatus = () => {
+    const utilization = (costData.totalSpend / costData.monthlyBudget) * 100;
+    if (utilization < 60) return { color: '#10B981', status: 'Good' };
+    if (utilization < 80) return { color: '#F59E0B', status: 'Monitor' };
+    return { color: '#EF4444', status: 'Critical' };
+  };
+
+  const budgetStatus = getBudgetStatus();
+
+  return (
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <DollarSign className="w-8 h-8 text-green-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">COST TRACKING CENTER</h1>
+            <p className="text-gray-400">AI operations cost analysis, token usage, and budget monitoring</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">{formatCurrency(costData.totalSpend)}</div>
+            <div className="text-xs text-gray-400">MONTH TO DATE</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">{formatTokens(costData.tokenUsage)}</div>
+            <div className="text-xs text-gray-400">TOKENS</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold" style={{color: getEfficiencyColor(costData.efficiency)}}>
+              {costData.efficiency.toFixed(1)}%
+            </div>
+            <div className="text-xs text-gray-400">EFFICIENCY</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Overview Cards */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        {/* Monthly Budget */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <Target className="w-5 h-5 text-green-400" />
+              <span className="text-gray-400">BUDGET</span>
+            </div>
+            <span className="text-sm px-2 py-1 rounded-full" 
+                  style={{ backgroundColor: `${budgetStatus.color}20`, color: budgetStatus.color }}>
+              {budgetStatus.status}
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="text-2xl font-bold text-white">{formatCurrency(costData.monthlyBudget)}</div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Used</span>
+              <span className="text-white">{formatCurrency(costData.totalSpend)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Remaining</span>
+              <span className="text-white">{formatCurrency(costData.monthlyBudget - costData.totalSpend)}</span>
+            </div>
+          </div>
+          <div className="mt-3 bg-gray-800 rounded-full h-2">
+            <div 
+              className="h-2 rounded-full transition-all duration-500" 
+              style={{
+                width: `${Math.min(100, (costData.totalSpend / costData.monthlyBudget) * 100)}%`,
+                backgroundColor: budgetStatus.color
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Daily Average */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <Calculator className="w-5 h-5 text-blue-400" />
+              <span className="text-gray-400">DAILY AVG</span>
+            </div>
+            <TrendingUp className="w-5 h-5 text-green-400" />
+          </div>
+          <div className="space-y-2">
+            <div className="text-2xl font-bold text-white">{formatCurrency(costData.dailyAverage)}</div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Target</span>
+              <span className="text-white">{formatCurrency(costData.monthlyBudget / 30)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Variance</span>
+              <span className={costData.dailyAverage > costData.monthlyBudget / 30 ? 'text-red-400' : 'text-green-400'}>
+                {formatCurrency(Math.abs(costData.dailyAverage - costData.monthlyBudget / 30))}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Token Usage */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <Clock className="w-5 h-5 text-purple-400" />
+              <span className="text-gray-400">TOKENS</span>
+            </div>
+            <span className="text-2xl font-bold text-purple-400">
+              {formatTokens(costData.tokenUsage)}
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Today</span>
+              <span className="text-white">{formatTokens(costData.tokenUsage * 0.05)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Cost/1K</span>
+              <span className="text-white">${(costData.totalSpend / (costData.tokenUsage / 1000)).toFixed(4)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Efficiency */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="w-5 h-5 text-cyan-400" />
+              <span className="text-gray-400">EFFICIENCY</span>
+            </div>
+            <span className="text-2xl font-bold" style={{color: getEfficiencyColor(costData.efficiency)}}>
+              {costData.efficiency.toFixed(1)}%
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Target</span>
+              <span className="text-white">85%</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-gray-400">Status</span>
+              <span className={costData.efficiency >= 85 ? 'text-green-400' : 'text-yellow-400'}>
+                {costData.efficiency >= 85 ? 'Good' : 'Monitor'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        {/* Daily Spend Trend */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">DAILY SPEND TRENDS</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={dailyCosts}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="date" stroke="#9CA3AF" fontSize={12} />
+              <YAxis stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Bar dataKey="spend" fill="#3B82F6" name="Daily Spend ($)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Model Cost Breakdown */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">MODEL COST BREAKDOWN</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={300}>
+              <PieChart>
+                <Pie
+                  data={modelBreakdown}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={100}
+                  paddingAngle={2}
+                  dataKey="spend"
+                >
+                  {modelBreakdown.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  formatter={(value) => [formatCurrency(value), 'Spend']}
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }} 
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-3 mt-4">
+              {modelBreakdown.map((model, index) => (
+                <div key={index} className="bg-gray-800 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: model.color }}
+                      />
+                      <span className="text-white text-sm font-medium">{model.model}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Spend</span>
+                      <span className="text-white">{formatCurrency(model.spend)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Share</span>
+                      <span className="text-white">{model.percentage}%</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Cost Alerts */}
+      {alerts.length > 0 && (
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
+            COST ALERTS
+          </h3>
+          <div className="space-y-2">
+            {alerts.map((alert, index) => (
+              <div key={index} className="p-3 rounded-lg border-l-4 bg-yellow-900/20 border-yellow-400">
+                <div className="flex items-center justify-between">
+                  <span className="text-white">{alert.message}</span>
+                  <span className="text-gray-400 text-sm flex items-center">
+                    <Clock className="w-4 h-4 mr-1" />
+                    {alert.timestamp}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CostTrackingCenter;
