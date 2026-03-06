@@ -1,1149 +1,953 @@
-// RetailOperationsCenter.js - Retail Operations Center & Omnichannel Management Dashboard
-import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
+import { ShoppingCart, Package, TrendingUp, AlertTriangle, Activity, Eye, Users, CreditCard, MapPin, Settings, Clock, Truck } from 'lucide-react';
 
 const RetailOperationsCenter = () => {
-  const [retailStatus, setRetailStatus] = useState({
-    operationalStatus: 'STORES_OPEN',
-    totalStores: 347,
-    storesOpen: 289,
-    storesClosed: 58,
-    maintenanceStores: 12,
-    totalSalestoday: 15647234, // USD
-    totalTransactions: 234567,
-    avgTransactionValue: 67.85, // USD
-    inventoryTurnover: 8.7, // times per year
-    customerSatisfaction: 4.3, // out of 5
-    lastUpdate: Date.now()
-  });
-
-  const [omniChannelMetrics, setOmniChannelMetrics] = useState({
-    unified_experience: {
-      channel_consistency: 94.7, // percentage
-      cross_channel_customers: 67.8, // percentage
-      mobile_engagement: 89.2, // percentage
-      online_to_offline: 34.5, // percentage conversion
-      offline_to_online: 28.9, // percentage conversion
-      unified_inventory_accuracy: 97.3, // percentage
-      omnichannel_satisfaction: 4.4 // score out of 5
-    },
-    sales_channels: [
-      {
-        channel: 'IN_STORE',
-        daily_sales: 8967234, // USD
-        transactions: 134567,
-        avg_ticket: 66.67,
-        conversion_rate: 78.9, // percentage
-        customer_count: 170645,
-        peak_hours: '14:00-17:00',
-        mobile_assisted: 45.7 // percentage
-      },
-      {
-        channel: 'ONLINE_WEB',
-        daily_sales: 4567890,
-        transactions: 67890,
-        avg_ticket: 67.28,
-        conversion_rate: 3.8,
-        unique_visitors: 1789456,
-        bounce_rate: 34.2, // percentage
-        mobile_traffic: 72.4 // percentage
-      },
-      {
-        channel: 'MOBILE_APP',
-        daily_sales: 1567234,
-        transactions: 23456,
-        avg_ticket: 66.82,
-        conversion_rate: 8.9,
-        app_sessions: 263456,
-        retention_rate: 67.8, // percentage
-        push_engagement: 23.4 // percentage
-      },
-      {
-        channel: 'SOCIAL_COMMERCE',
-        daily_sales: 456789,
-        transactions: 7890,
-        avg_ticket: 57.86,
-        conversion_rate: 4.2,
-        social_reach: 2345678,
-        engagement_rate: 5.7, // percentage
-        influencer_sales: 12.3 // percentage
-      },
-      {
-        channel: 'MARKETPLACE',
-        daily_sales: 567123,
-        transactions: 8934,
-        avg_ticket: 63.46,
-        conversion_rate: 2.1,
-        listing_views: 4256789,
-        seller_rating: 4.6, // out of 5
-        fulfillment_rate: 97.8 // percentage
-      }
-    ],
-    customer_journey: {
-      awareness_touchpoints: 12.7, // avg touchpoints
-      consideration_time: 7.3, // days
-      purchase_decision_time: 2.1, // days
-      post_purchase_engagement: 89.4, // percentage
-      loyalty_program_adoption: 45.7, // percentage
-      repeat_purchase_rate: 23.8 // percentage
-    }
-  });
-
-  const [inventoryManagement, setInventoryManagement] = useState({
-    real_time_tracking: {
-      total_skus: 156789,
-      in_stock_skus: 142456,
-      out_of_stock: 14333,
-      low_stock_alerts: 2347,
-      overstock_items: 1567,
-      accuracy_rate: 97.3, // percentage
-      auto_replenishment: 89.4, // percentage automated
-      demand_forecast_accuracy: 91.7 // percentage
-    },
-    allocation_system: {
-      stores_receiving_allocation: 289,
-      automatic_allocations: 8967,
-      manual_overrides: 234,
-      allocation_accuracy: 94.2, // percentage
-      inventory_optimization: 'AI_ENHANCED',
-      seasonality_adjustment: 'ACTIVE',
-      trend_analysis: 'REAL_TIME',
-      supplier_integration: 'AUTOMATED'
-    },
-    stock_levels: [
-      {
-        category: 'APPAREL',
-        total_units: 456789,
-        available: 423567,
-        reserved: 23456,
-        in_transit: 9766,
-        turnover_rate: 12.3, // times/year
-        margin: 56.7, // percentage
-        stockout_risk: 'LOW'
-      },
-      {
-        category: 'ELECTRONICS',
-        total_units: 89456,
-        available: 78234,
-        reserved: 8934,
-        in_transit: 2288,
-        turnover_rate: 6.8,
-        margin: 23.4,
-        stockout_risk: 'MEDIUM'
-      },
-      {
-        category: 'HOME_GOODS',
-        total_units: 234567,
-        available: 198456,
-        reserved: 28934,
-        in_transit: 7177,
-        turnover_rate: 4.2,
-        margin: 45.6,
-        stockout_risk: 'LOW'
-      },
-      {
-        category: 'BEAUTY_CARE',
-        total_units: 123456,
-        available: 115678,
-        reserved: 6789,
-        in_transit: 989,
-        turnover_rate: 9.1,
-        margin: 62.3,
-        stockout_risk: 'HIGH'
-      },
-      {
-        category: 'SPORTS_OUTDOOR',
-        total_units: 67890,
-        available: 45623,
-        reserved: 15678,
-        in_transit: 6589,
-        turnover_rate: 7.4,
-        margin: 38.9,
-        stockout_risk: 'MEDIUM'
-      }
-    ]
+  const [retailMetrics, setRetailMetrics] = useState({
+    totalRevenue: 24765892.47, // Daily revenue USD
+    totalTransactions: 47832,
+    averageOrderValue: 124.67,
+    conversionRate: 3.42, // %
+    inventoryValue: 8945673.12,
+    stockoutItems: 247,
+    fulfillmentRate: 97.8, // %
+    customerSatisfaction: 4.6 // /5.0
   });
 
   const [storeOperations, setStoreOperations] = useState([
     {
-      store_id: 'STORE_001_FLAGSHIP',
-      location: 'Times Square NYC',
-      store_type: 'FLAGSHIP',
-      status: 'OPERATIONAL',
-      manager: 'Sarah Johnson',
-      daily_sales: 234567,
-      transactions: 3456,
-      customers: 4567,
-      conversion_rate: 75.7, // percentage
-      staff_count: 45,
-      pos_systems: 12,
-      mobile_pos_active: 8,
-      inventory_accuracy: 98.9,
-      customer_satisfaction: 4.6,
-      loss_prevention_score: 97.3
+      id: 'STORE-001',
+      name: 'Manhattan Flagship',
+      location: 'New York, NY',
+      revenue: 4567890.23,
+      transactions: 8942,
+      aov: 156.78,
+      conversion: 4.2,
+      footTraffic: 23847,
+      staffCount: 45,
+      inventoryTurnover: 8.7,
+      status: 'performing',
+      alerts: 0
     },
     {
-      store_id: 'STORE_015_PREMIUM',
-      location: 'Beverly Hills CA',
-      store_type: 'PREMIUM',
-      status: 'OPERATIONAL',
-      manager: 'Michael Chen',
-      daily_sales: 156789,
-      transactions: 1789,
-      customers: 2345,
-      conversion_rate: 76.3,
-      staff_count: 28,
-      pos_systems: 8,
-      mobile_pos_active: 6,
-      inventory_accuracy: 97.8,
-      customer_satisfaction: 4.8,
-      loss_prevention_score: 98.9
+      id: 'STORE-002',
+      name: 'Beverly Hills Premium',
+      location: 'Los Angeles, CA',
+      revenue: 3456789.12,
+      transactions: 6234,
+      aov: 189.45,
+      conversion: 3.8,
+      footTraffic: 18934,
+      staffCount: 38,
+      inventoryTurnover: 7.2,
+      status: 'performing',
+      alerts: 1
     },
     {
-      store_id: 'STORE_089_STANDARD',
-      location: 'Denver CO',
-      store_type: 'STANDARD',
-      status: 'OPERATIONAL',
-      manager: 'Lisa Rodriguez',
-      daily_sales: 67890,
-      transactions: 1234,
-      customers: 1567,
-      conversion_rate: 78.7,
-      staff_count: 18,
-      pos_systems: 6,
-      mobile_pos_active: 4,
-      inventory_accuracy: 96.7,
-      customer_satisfaction: 4.2,
-      loss_prevention_score: 95.6
+      id: 'STORE-003',
+      name: 'Chicago Downtown',
+      location: 'Chicago, IL',
+      revenue: 2345678.91,
+      transactions: 5623,
+      aov: 134.56,
+      conversion: 3.1,
+      footTraffic: 16782,
+      staffCount: 32,
+      inventoryTurnover: 6.8,
+      status: 'underperforming',
+      alerts: 3
     },
     {
-      store_id: 'STORE_156_OUTLET',
-      location: 'Orlando FL',
-      store_type: 'OUTLET',
-      status: 'OPERATIONAL',
-      manager: 'David Kim',
-      daily_sales: 45678,
-      transactions: 987,
-      customers: 1234,
-      conversion_rate: 80.1,
-      staff_count: 12,
-      pos_systems: 4,
-      mobile_pos_active: 3,
-      inventory_accuracy: 94.5,
-      customer_satisfaction: 4.1,
-      loss_prevention_score: 93.2
+      id: 'STORE-004',
+      name: 'Miami Beach Outlet',
+      location: 'Miami, FL',
+      revenue: 1876543.21,
+      transactions: 7892,
+      aov: 98.34,
+      conversion: 4.7,
+      footTraffic: 21456,
+      staffCount: 28,
+      inventoryTurnover: 9.1,
+      status: 'performing',
+      alerts: 0
     },
     {
-      store_id: 'STORE_234_MALL',
-      location: 'Mall of America MN',
-      store_type: 'MALL',
-      status: 'MAINTENANCE',
-      maintenance_type: 'POS_SYSTEM_UPGRADE',
-      maintenance_start: Date.now() - 3 * 60 * 60 * 1000,
-      estimated_completion: Date.now() + 2 * 60 * 60 * 1000,
-      impact: 'PARTIAL_OPERATIONS',
-      backup_systems: 'MOBILE_POS_ONLY'
+      id: 'STORE-005',
+      name: 'Seattle Tech Hub',
+      location: 'Seattle, WA',
+      revenue: 2987654.32,
+      transactions: 4567,
+      aov: 167.89,
+      conversion: 2.8,
+      footTraffic: 14523,
+      staffCount: 25,
+      inventoryTurnover: 5.4,
+      status: 'attention_needed',
+      alerts: 2
     }
   ]);
 
-  const [posAnalytics, setPosAnalytics] = useState({
-    transaction_processing: {
-      total_transactions: 234567,
-      avg_processing_time: 23.4, // seconds
-      payment_methods: {
-        'CREDIT_CARD': 67.8, // percentage
-        'DEBIT_CARD': 18.9,
-        'MOBILE_PAY': 8.7,
-        'CASH': 3.4,
-        'BUY_NOW_PAY_LATER': 1.2
-      },
-      transaction_success_rate: 99.2, // percentage
-      mobile_pos_usage: 34.7, // percentage
-      contactless_payments: 78.9 // percentage
+  const [inventoryManagement, setInventoryManagement] = useState([
+    {
+      id: 'CAT-ELECTRONICS',
+      category: 'Electronics',
+      totalItems: 2847,
+      stockLevel: 87.3, // %
+      reorderAlerts: 23,
+      fastMoving: 456,
+      slowMoving: 89,
+      turnoverRate: 8.7,
+      inventoryValue: 3245678.90,
+      status: 'optimal'
     },
-    sales_analytics: {
-      hourly_peak: '15:00',
-      peak_conversion: 82.3, // percentage
-      basket_size_avg: 3.7, // items
-      upsell_success: 23.4, // percentage
-      cross_sell_success: 18.9, // percentage
-      return_rate: 8.7, // percentage
-      loyalty_redemptions: 15.6 // percentage
+    {
+      id: 'CAT-CLOTHING',
+      category: 'Clothing',
+      totalItems: 5623,
+      stockLevel: 76.2,
+      reorderAlerts: 167,
+      fastMoving: 890,
+      slowMoving: 234,
+      turnoverRate: 12.4,
+      inventoryValue: 2456789.12,
+      status: 'attention'
     },
-    staff_performance: {
-      avg_sales_per_associate: 2847, // USD
-      customer_service_rating: 4.4, // out of 5
-      product_knowledge_score: 87.3, // percentage
-      upselling_rate: 28.9, // percentage
-      training_completion: 94.7, // percentage
-      schedule_adherence: 96.1 // percentage
+    {
+      id: 'CAT-FOOTWEAR',
+      category: 'Footwear',
+      totalItems: 1894,
+      stockLevel: 92.1,
+      reorderAlerts: 12,
+      fastMoving: 345,
+      slowMoving: 45,
+      turnoverRate: 9.8,
+      inventoryValue: 1567890.23,
+      status: 'optimal'
+    },
+    {
+      id: 'CAT-ACCESSORIES',
+      category: 'Accessories',
+      totalItems: 3456,
+      stockLevel: 68.4,
+      reorderAlerts: 89,
+      fastMoving: 567,
+      slowMoving: 123,
+      turnoverRate: 15.2,
+      inventoryValue: 987654.32,
+      status: 'critical'
+    },
+    {
+      id: 'CAT-HOME',
+      category: 'Home & Garden',
+      totalItems: 2134,
+      stockLevel: 81.7,
+      reorderAlerts: 34,
+      fastMoving: 289,
+      slowMoving: 67,
+      turnoverRate: 6.9,
+      inventoryValue: 1234567.89,
+      status: 'optimal'
     }
+  ]);
+
+  const [supplyChainMonitoring, setSupplyChainMonitoring] = useState([
+    {
+      id: 'SUPPLIER-001',
+      name: 'Global Electronics Ltd',
+      category: 'Electronics',
+      onTimeDelivery: 96.7, // %
+      qualityScore: 4.8,
+      leadTime: 14, // days
+      orderVolume: 2456789.12,
+      activeOrders: 89,
+      delayedOrders: 3,
+      status: 'reliable',
+      lastDelivery: '2026-03-05'
+    },
+    {
+      id: 'SUPPLIER-002',
+      name: 'Fashion Forward Inc',
+      category: 'Clothing',
+      onTimeDelivery: 87.3,
+      qualityScore: 4.2,
+      leadTime: 21,
+      orderVolume: 1876543.21,
+      activeOrders: 156,
+      delayedOrders: 12,
+      status: 'issues',
+      lastDelivery: '2026-03-04'
+    },
+    {
+      id: 'SUPPLIER-003',
+      name: 'Premium Footwear Co',
+      category: 'Footwear',
+      onTimeDelivery: 94.5,
+      qualityScore: 4.6,
+      leadTime: 18,
+      orderVolume: 987654.32,
+      activeOrders: 67,
+      delayedOrders: 2,
+      status: 'reliable',
+      lastDelivery: '2026-03-06'
+    },
+    {
+      id: 'SUPPLIER-004',
+      name: 'Accessory Artisans',
+      category: 'Accessories',
+      onTimeDelivery: 78.9,
+      qualityScore: 3.9,
+      leadTime: 28,
+      orderVolume: 654321.09,
+      activeOrders: 234,
+      delayedOrders: 34,
+      status: 'review_needed',
+      lastDelivery: '2026-03-02'
+    },
+    {
+      id: 'SUPPLIER-005',
+      name: 'Home Essentials LLC',
+      category: 'Home & Garden',
+      onTimeDelivery: 91.2,
+      qualityScore: 4.4,
+      leadTime: 16,
+      orderVolume: 1234567.89,
+      activeOrders: 78,
+      delayedOrders: 5,
+      status: 'reliable',
+      lastDelivery: '2026-03-05'
+    }
+  ]);
+
+  const [posAnalytics, setPosAnalytics] = useState([
+    {
+      time: new Date(Date.now() - 300000).toLocaleTimeString(),
+      revenue: 24234567.89,
+      transactions: 46234,
+      aov: 123.45,
+      conversion: 3.38
+    },
+    {
+      time: new Date(Date.now() - 240000).toLocaleTimeString(),
+      revenue: 24356789.12,
+      transactions: 46789,
+      aov: 124.12,
+      conversion: 3.41
+    },
+    {
+      time: new Date(Date.now() - 180000).toLocaleTimeString(),
+      revenue: 24456789.23,
+      transactions: 47123,
+      aov: 124.34,
+      conversion: 3.39
+    },
+    {
+      time: new Date(Date.now() - 120000).toLocaleTimeString(),
+      revenue: 24567890.34,
+      transactions: 47456,
+      aov: 124.56,
+      conversion: 3.40
+    },
+    {
+      time: new Date(Date.now() - 60000).toLocaleTimeString(),
+      revenue: 24656789.45,
+      transactions: 47678,
+      aov: 124.78,
+      conversion: 3.41
+    },
+    {
+      time: new Date().toLocaleTimeString(),
+      revenue: 24765892.47,
+      transactions: 47832,
+      aov: 124.67,
+      conversion: 3.42
+    }
+  ]);
+
+  const [retailAlerts, setRetailAlerts] = useState([
+    {
+      id: 'RETAIL-001',
+      severity: 'critical',
+      type: 'Inventory Stockout',
+      message: 'iPhone 15 Pro Max out of stock across 3 stores - urgent restocking needed',
+      timestamp: new Date(),
+      status: 'active',
+      store: 'Multiple Locations',
+      impact: 'high'
+    },
+    {
+      id: 'RETAIL-002',
+      severity: 'warning',
+      type: 'Supplier Delay',
+      message: 'Fashion Forward Inc shipment delayed by 5 days - impact on spring collection',
+      timestamp: new Date(Date.now() - 180000),
+      status: 'investigating',
+      store: 'Warehouse',
+      impact: 'medium'
+    },
+    {
+      id: 'RETAIL-003',
+      severity: 'info',
+      type: 'Sales Surge',
+      message: 'Nike Air Max experiencing 300% sales increase - consider promotional boost',
+      timestamp: new Date(Date.now() - 360000),
+      status: 'monitoring',
+      store: 'Seattle Tech Hub',
+      impact: 'positive'
+    }
+  ]);
+
+  const [customerAnalytics, setCustomerAnalytics] = useState([
+    {
+      demographic: '18-25',
+      percentage: 23.4,
+      avgSpend: 89.67,
+      visits: 3.2,
+      loyalty: 'moderate'
+    },
+    {
+      demographic: '26-35',
+      percentage: 31.8,
+      avgSpend: 156.78,
+      visits: 4.7,
+      loyalty: 'high'
+    },
+    {
+      demographic: '36-45',
+      percentage: 28.9,
+      avgSpend: 198.34,
+      visits: 3.8,
+      loyalty: 'high'
+    },
+    {
+      demographic: '46-55',
+      percentage: 12.7,
+      avgSpend: 234.56,
+      visits: 2.9,
+      loyalty: 'very_high'
+    },
+    {
+      demographic: '55+',
+      percentage: 3.2,
+      avgSpend: 167.89,
+      visits: 2.1,
+      loyalty: 'moderate'
+    }
+  ]);
+
+  const [staffMetrics, setStaffMetrics] = useState([
+    {
+      position: 'Store Manager',
+      count: 15,
+      efficiency: 94.2,
+      customerRating: 4.7,
+      salesPerHour: 287.45
+    },
+    {
+      position: 'Sales Associate',
+      count: 89,
+      efficiency: 87.6,
+      customerRating: 4.3,
+      salesPerHour: 156.78
+    },
+    {
+      position: 'Cashier',
+      count: 67,
+      efficiency: 91.3,
+      customerRating: 4.5,
+      salesPerHour: 234.56
+    },
+    {
+      position: 'Stock Associate',
+      count: 45,
+      efficiency: 88.9,
+      customerRating: 4.1,
+      salesPerHour: 98.34
+    }
+  ]);
+
+  const [systemMetrics, setSystemMetrics] = useState({
+    posSystem: 99.97, // uptime %
+    inventorySystem: 99.94,
+    ecommerceSystem: 99.89,
+    paymentProcessing: 99.99,
+    averageTransactionTime: 2.34, // seconds
+    systemResponseTime: 0.145, // seconds
+    fraudDetection: 99.2, // accuracy %
+    dataIntegration: 98.8 // success rate %
   });
 
-  const [customerExperience, setCustomerExperience] = useState({
-    satisfaction_metrics: {
-      nps_score: 67, // Net Promoter Score
-      csat_score: 4.3, // Customer Satisfaction Score
-      ces_score: 2.1, // Customer Effort Score (lower is better)
-      review_sentiment: 82.4, // percentage positive
-      complaint_resolution_time: 24.7, // hours
-      first_contact_resolution: 76.8 // percentage
-    },
-    digital_engagement: {
-      wifi_usage: 67.8, // percentage of customers
-      mobile_app_usage: 34.5, // percentage
-      digital_receipt_adoption: 89.2, // percentage
-      loyalty_app_engagement: 45.7, // percentage
-      social_media_mentions: 2456,
-      qr_code_interactions: 23.8 // percentage
-    },
-    personalization: {
-      personalized_offers_sent: 156789,
-      offer_redemption_rate: 18.7, // percentage
-      recommendation_accuracy: 76.4, // percentage
-      targeted_campaign_success: 23.8, // percentage
-      customer_segmentation_active: 'AI_ENHANCED',
-      behavioral_tracking: 'GDPR_COMPLIANT'
-    },
-    loss_prevention: {
-      shrinkage_rate: 1.2, // percentage
-      theft_incidents: 23,
-      false_alarm_rate: 8.7, // percentage
-      recovery_rate: 67.8, // percentage
-      cctv_coverage: 98.9, // percentage
-      eas_effectiveness: 94.2 // percentage
-    }
-  });
-
-  const [retailHistory, setRetailHistory] = useState([]);
-
-  const generateRetailHistory = () => {
-    const data = [];
-    const startOfDay = new Date();
-    startOfDay.setHours(9, 0, 0, 0); // Stores open at 9 AM
-    
-    for (let i = 0; i <= 13; i++) { // 13 hours of operation (9 AM - 10 PM)
-      const time = new Date(startOfDay.getTime() + i * 60 * 60 * 1000);
-      
-      // Simulate realistic retail patterns
-      const hour = time.getHours();
-      let trafficMultiplier = 0.4; // Base traffic
-      
-      if (hour >= 10 && hour <= 12) trafficMultiplier = 0.7; // Morning shopping
-      if (hour >= 13 && hour <= 15) trafficMultiplier = 0.6; // Afternoon lull
-      if (hour >= 16 && hour <= 19) trafficMultiplier = 1.0; // Peak hours
-      if (hour >= 20) trafficMultiplier = 0.5; // Evening wind down
-      if ([12, 18].includes(hour)) trafficMultiplier = 0.8; // Lunch & dinner peaks
-      
-      data.push({
-        time: time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}),
-        total_sales: Math.floor((800000 + trafficMultiplier * 1200000) + Math.random() * 300000),
-        transactions: Math.floor((8000 + trafficMultiplier * 15000) + Math.random() * 3000),
-        customer_count: Math.floor((10000 + trafficMultiplier * 20000) + Math.random() * 5000),
-        conversion_rate: 70 + trafficMultiplier * 15 + Math.random() * 8,
-        avg_ticket: 50 + trafficMultiplier * 30 + Math.random() * 15,
-        inventory_accuracy: 95 + Math.random() * 4,
-        pos_response_time: 15 + (1 - trafficMultiplier) * 15 + Math.random() * 10
-      });
-    }
-    return data;
-  };
-
-  useEffect(() => {
-    setRetailHistory(generateRetailHistory());
-  }, []);
-
+  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update retail status
-      setRetailStatus(prev => ({
+      // Update retail metrics
+      setRetailMetrics(prev => ({
         ...prev,
-        totalSalestoday: prev.totalSalestoday + Math.floor(Math.random() * 50000),
-        totalTransactions: prev.totalTransactions + Math.floor(Math.random() * 100),
-        avgTransactionValue: Math.max(40.0, Math.min(100.0, prev.avgTransactionValue + (Math.random() - 0.5) * 3.0)),
-        customerSatisfaction: Math.max(3.5, Math.min(5.0, prev.customerSatisfaction + (Math.random() - 0.5) * 0.1)),
-        lastUpdate: Date.now()
-      }));
-
-      // Update omnichannel metrics
-      setOmniChannelMetrics(prev => ({
-        ...prev,
-        unified_experience: {
-          ...prev.unified_experience,
-          channel_consistency: Math.max(90.0, Math.min(98.0, prev.unified_experience.channel_consistency + (Math.random() - 0.5) * 1.0)),
-          mobile_engagement: Math.max(80.0, Math.min(95.0, prev.unified_experience.mobile_engagement + (Math.random() - 0.5) * 1.5))
-        },
-        sales_channels: prev.sales_channels.map(channel => ({
-          ...channel,
-          daily_sales: channel.daily_sales + Math.floor(Math.random() * 10000),
-          transactions: channel.transactions + Math.floor(Math.random() * 50),
-          conversion_rate: Math.max(2.0, Math.min(85.0, channel.conversion_rate + (Math.random() - 0.5) * 2.0))
-        }))
+        totalRevenue: prev.totalRevenue + (Math.random() * 10000),
+        totalTransactions: prev.totalTransactions + Math.floor(Math.random() * 50),
+        averageOrderValue: Math.max(100, Math.min(200, prev.averageOrderValue + (Math.random() - 0.5) * 5)),
+        conversionRate: Math.max(2.5, Math.min(5.0, prev.conversionRate + (Math.random() - 0.5) * 0.1)),
+        stockoutItems: Math.max(100, Math.min(400, prev.stockoutItems + Math.floor((Math.random() - 0.7) * 10))),
+        fulfillmentRate: Math.max(95, Math.min(100, prev.fulfillmentRate + (Math.random() - 0.5) * 0.1)),
+        customerSatisfaction: Math.max(4.0, Math.min(5.0, prev.customerSatisfaction + (Math.random() - 0.5) * 0.05))
       }));
 
       // Update store operations
-      setStoreOperations(prev => prev.map(store => {
-        if (store.status === 'OPERATIONAL') {
-          return {
-            ...store,
-            daily_sales: store.daily_sales + Math.floor(Math.random() * 5000),
-            transactions: store.transactions + Math.floor(Math.random() * 20),
-            customers: store.customers + Math.floor(Math.random() * 30),
-            conversion_rate: Math.max(60.0, Math.min(85.0, store.conversion_rate + (Math.random() - 0.5) * 2.0))
-          };
-        }
-        return store;
+      setStoreOperations(prev => prev.map(store => ({
+        ...store,
+        revenue: store.revenue + (Math.random() * 5000),
+        transactions: store.transactions + Math.floor(Math.random() * 25),
+        aov: Math.max(80, Math.min(250, store.aov + (Math.random() - 0.5) * 3)),
+        conversion: Math.max(2.0, Math.min(6.0, store.conversion + (Math.random() - 0.5) * 0.1)),
+        footTraffic: store.footTraffic + Math.floor((Math.random() - 0.3) * 50),
+        inventoryTurnover: Math.max(4.0, Math.min(15.0, store.inventoryTurnover + (Math.random() - 0.5) * 0.1))
+      })));
+
+      // Update inventory management
+      setInventoryManagement(prev => prev.map(category => ({
+        ...category,
+        stockLevel: Math.max(50, Math.min(100, category.stockLevel + (Math.random() - 0.6) * 2)),
+        reorderAlerts: Math.max(0, category.reorderAlerts + Math.floor((Math.random() - 0.7) * 5)),
+        fastMoving: category.fastMoving + Math.floor((Math.random() - 0.3) * 10),
+        turnoverRate: Math.max(3.0, Math.min(20.0, category.turnoverRate + (Math.random() - 0.5) * 0.2))
+      })));
+
+      // Update supply chain monitoring
+      setSupplyChainMonitoring(prev => prev.map(supplier => ({
+        ...supplier,
+        onTimeDelivery: Math.max(70, Math.min(100, supplier.onTimeDelivery + (Math.random() - 0.5) * 1)),
+        qualityScore: Math.max(3.0, Math.min(5.0, supplier.qualityScore + (Math.random() - 0.5) * 0.05)),
+        activeOrders: Math.max(20, supplier.activeOrders + Math.floor((Math.random() - 0.3) * 5)),
+        delayedOrders: Math.max(0, supplier.delayedOrders + Math.floor((Math.random() - 0.8) * 3))
+      })));
+
+      // Update POS analytics
+      const newPosData = {
+        time: new Date().toLocaleTimeString(),
+        revenue: retailMetrics.totalRevenue / 1000000, // Convert to millions for chart
+        transactions: retailMetrics.totalTransactions,
+        aov: retailMetrics.averageOrderValue,
+        conversion: retailMetrics.conversionRate
+      };
+      
+      setPosAnalytics(prev => [...prev.slice(1), newPosData]);
+
+      // Update system metrics
+      setSystemMetrics(prev => ({
+        ...prev,
+        posSystem: Math.max(99.5, Math.min(100, prev.posSystem + (Math.random() - 0.3) * 0.01)),
+        inventorySystem: Math.max(99.5, Math.min(100, prev.inventorySystem + (Math.random() - 0.3) * 0.01)),
+        averageTransactionTime: Math.max(1.5, Math.min(4.0, prev.averageTransactionTime + (Math.random() - 0.5) * 0.1)),
+        systemResponseTime: Math.max(0.05, Math.min(0.5, prev.systemResponseTime + (Math.random() - 0.5) * 0.02)),
+        fraudDetection: Math.max(98, Math.min(100, prev.fraudDetection + (Math.random() - 0.5) * 0.2))
       }));
 
-    }, 25000);
+      // Occasionally add new retail alerts
+      if (Math.random() > 0.95) {
+        const alertTypes = ['Inventory Stockout', 'Supplier Delay', 'Sales Surge', 'System Issue', 'Security Alert'];
+        const severities = ['info', 'warning', 'critical'];
+        const stores = storeOperations.map(s => s.name);
+        
+        const newAlert = {
+          id: `RETAIL-${Date.now()}`,
+          severity: severities[Math.floor(Math.random() * severities.length)],
+          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+          message: 'Real-time retail operations alert generated',
+          timestamp: new Date(),
+          status: 'active',
+          store: stores[Math.floor(Math.random() * stores.length)],
+          impact: ['low', 'medium', 'high', 'positive'][Math.floor(Math.random() * 4)]
+        };
+        
+        setRetailAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+      }
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [retailMetrics.totalRevenue, retailMetrics.totalTransactions, retailMetrics.averageOrderValue, retailMetrics.conversionRate]);
 
-  const getStatusColor = (status) => {
+  const getStoreStatusColor = (status) => {
     switch (status) {
-      case 'STORES_OPEN':
-      case 'OPERATIONAL':
-      case 'FLAGSHIP':
-      case 'PREMIUM':
-      case 'STANDARD':
-      case 'ACTIVE':
-      case 'AUTOMATED':
-      case 'AI_ENHANCED':
-      case 'REAL_TIME':
-      case 'GDPR_COMPLIANT':
-      case 'LOW': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'MALL':
-      case 'OUTLET':
-      case 'MEDIUM':
-      case 'PARTIAL_OPERATIONS':
-      case 'MOBILE_POS_ONLY': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'HIGH':
-      case 'MAINTENANCE':
-      case 'POS_SYSTEM_UPGRADE': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
-      case 'CRITICAL':
-      case 'CLOSED': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
+      case 'performing': return '#10B981';
+      case 'underperforming': return '#F59E0B';
+      case 'attention_needed': return '#EF4444';
+      case 'excellent': return '#8B5CF6';
+      default: return '#6B7280';
     }
   };
 
-  const formatNumber = (num, decimals = 0) => {
-    return num.toFixed(decimals);
-  };
-
-  const formatLargeNumber = (num) => {
-    if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
-    return num.toString();
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
-
-  const formatTime = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    const diff = timestamp - Date.now();
-    if (Math.abs(diff) < 60000) return 'now';
-    if (diff > 0) {
-      if (diff < 3600000) return `in ${Math.floor(diff / 60000)}min`;
-      return `in ${Math.floor(diff / 3600000)}h`;
-    } else {
-      const absDiff = Math.abs(diff);
-      if (absDiff < 3600000) return `${Math.floor(absDiff / 60000)}m ago`;
-      return `${Math.floor(absDiff / 3600000)}h ago`;
+  const getInventoryStatusColor = (status) => {
+    switch (status) {
+      case 'optimal': return '#10B981';
+      case 'attention': return '#F59E0B';
+      case 'critical': return '#EF4444';
+      case 'overstocked': return '#3B82F6';
+      default: return '#6B7280';
     }
   };
+
+  const getSupplierStatusColor = (status) => {
+    switch (status) {
+      case 'reliable': return '#10B981';
+      case 'issues': return '#F59E0B';
+      case 'review_needed': return '#EF4444';
+      case 'excellent': return '#8B5CF6';
+      default: return '#6B7280';
+    }
+  };
+
+  const getAlertSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#EF4444';
+      case 'warning': return '#F59E0B';
+      case 'info': return '#10B981';
+      case 'caution': return '#3B82F6';
+      default: return '#6B7280';
+    }
+  };
+
+  const salesByCategory = [
+    { name: 'Electronics', value: 34.2, color: '#3B82F6' },
+    { name: 'Clothing', value: 28.7, color: '#10B981' },
+    { name: 'Footwear', value: 18.9, color: '#8B5CF6' },
+    { name: 'Accessories', value: 11.4, color: '#F59E0B' },
+    { name: 'Home & Garden', value: 6.8, color: '#EF4444' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          🛍️ RETAIL OPERATIONS CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            {retailStatus.storesOpen}/{retailStatus.totalStores} Open
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <ShoppingCart className="w-8 h-8 text-blue-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">RETAIL OPERATIONS CENTER</h1>
+            <p className="text-gray-400">Real-time inventory, supply chain monitoring, POS analytics, customer insights & store operations</p>
           </div>
-          <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono border border-blue-500/30">
-            {formatCurrency(retailStatus.totalSalestoday)}
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">
+              ${(retailMetrics.totalRevenue / 1000000).toFixed(1)}M
+            </div>
+            <div className="text-xs text-gray-400">DAILY REVENUE</div>
           </div>
-          <div className="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-mono border border-purple-500/30">
-            CSAT {formatNumber(retailStatus.customerSatisfaction, 1)}
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">
+              {retailMetrics.totalTransactions.toLocaleString()}
+            </div>
+            <div className="text-xs text-gray-400">TRANSACTIONS</div>
           </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Omnichannel Store Management
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-400">${retailMetrics.averageOrderValue.toFixed(2)}</div>
+            <div className="text-xs text-gray-400">AVG ORDER</div>
           </div>
         </div>
       </div>
 
-      {/* Retail Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">DAILY SALES</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {formatCurrency(retailStatus.totalSalestoday)}
-              </div>
-              <div className="text-xs text-blue-300">
-                {formatLargeNumber(retailStatus.totalTransactions)} transactions
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">💰</div>
+      {/* Retail KPIs */}
+      <div className="grid grid-cols-6 gap-4 mb-6">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Package className="w-5 h-5 text-green-400" />
+            <span className="text-xs text-gray-400">INVENTORY</span>
           </div>
+          <div className="text-xl font-bold text-white">${(retailMetrics.inventoryValue / 1000000).toFixed(1)}M</div>
+          <div className="text-xs text-gray-400">Total Value</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">STORES OPERATIONAL</div>
-              <div className="text-2xl font-bold text-green-100">
-                {retailStatus.storesOpen}
-              </div>
-              <div className="text-xs text-green-300">
-                of {retailStatus.totalStores} total stores
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🏪</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <span className="text-xs text-gray-400">STOCKOUTS</span>
           </div>
+          <div className="text-xl font-bold text-white">{retailMetrics.stockoutItems}</div>
+          <div className="text-xs text-gray-400">Items</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">AVG TRANSACTION</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {formatCurrency(retailStatus.avgTransactionValue)}
-              </div>
-              <div className="text-xs text-purple-300">
-                Inventory turn: {formatNumber(retailStatus.inventoryTurnover, 1)}x
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🛒</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <TrendingUp className="w-5 h-5 text-blue-400" />
+            <span className="text-xs text-gray-400">CONVERSION</span>
           </div>
+          <div className="text-xl font-bold text-white">{retailMetrics.conversionRate.toFixed(2)}%</div>
+          <div className="text-xs text-gray-400">Rate</div>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">CUSTOMER SATISFACTION</div>
-              <div className="text-2xl font-bold text-orange-100">
-                {formatNumber(retailStatus.customerSatisfaction, 1)}
-              </div>
-              <div className="text-xs text-orange-300">
-                out of 5.0 rating
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">⭐</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Truck className="w-5 h-5 text-yellow-400" />
+            <span className="text-xs text-gray-400">FULFILLMENT</span>
           </div>
+          <div className="text-xl font-bold text-white">{retailMetrics.fulfillmentRate.toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Rate</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Users className="w-5 h-5 text-orange-400" />
+            <span className="text-xs text-gray-400">SATISFACTION</span>
+          </div>
+          <div className="text-xl font-bold text-white">{retailMetrics.customerSatisfaction.toFixed(1)}/5.0</div>
+          <div className="text-xs text-gray-400">Score</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <CreditCard className="w-5 h-5 text-purple-400" />
+            <span className="text-xs text-gray-400">POS UPTIME</span>
+          </div>
+          <div className="text-xl font-bold text-white">{systemMetrics.posSystem.toFixed(2)}%</div>
+          <div className="text-xs text-gray-400">System</div>
         </div>
       </div>
 
-      {/* Omnichannel Performance */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          🌐 OMNICHANNEL PERFORMANCE & UNIFIED EXPERIENCE
-        </h3>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Unified Experience</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Channel Consistency:</span>
-                <span className="text-green-400">{formatNumber(omniChannelMetrics.unified_experience.channel_consistency, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Cross-Channel Customers:</span>
-                <span className="text-blue-400">{formatNumber(omniChannelMetrics.unified_experience.cross_channel_customers, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Mobile Engagement:</span>
-                <span className="text-purple-400">{formatNumber(omniChannelMetrics.unified_experience.mobile_engagement, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Online to Offline:</span>
-                <span className="text-orange-400">{formatNumber(omniChannelMetrics.unified_experience.online_to_offline, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Offline to Online:</span>
-                <span className="text-yellow-400">{formatNumber(omniChannelMetrics.unified_experience.offline_to_online, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Inventory Accuracy:</span>
-                <span className="text-cyan-400">{formatNumber(omniChannelMetrics.unified_experience.unified_inventory_accuracy, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Omni Satisfaction:</span>
-                <span className="text-pink-400">{formatNumber(omniChannelMetrics.unified_experience.omnichannel_satisfaction, 1)}/5</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4 col-span-2">
-            <h4 className="text-sm font-bold text-white mb-3">Sales Channels Performance</h4>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {omniChannelMetrics.sales_channels.map((channel, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{channel.channel.replace(/_/g, ' ')}</span>
-                    <span className="text-xs text-gray-400">
-                      Conv: {formatNumber(channel.conversion_rate, 1)}%
-                    </span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Sales: </span>
-                    <span className="text-green-400">{formatCurrency(channel.daily_sales)}</span>
-                    <span className="text-gray-400"> | Txns: </span>
-                    <span className="text-blue-400">{formatLargeNumber(channel.transactions)}</span>
-                    <span className="text-gray-400"> | AOV: </span>
-                    <span className="text-purple-400">{formatCurrency(channel.avg_ticket)}</span>
-                  </div>
-                  
-                  {channel.channel === 'IN_STORE' && (
-                    <div className="text-xs">
-                      <span className="text-gray-400">Customers: </span>
-                      <span className="text-orange-400">{formatLargeNumber(channel.customer_count)}</span>
-                      <span className="text-gray-400"> | Peak: </span>
-                      <span className="text-yellow-400">{channel.peak_hours}</span>
-                      <span className="text-gray-400"> | Mobile Assist: </span>
-                      <span className="text-cyan-400">{formatNumber(channel.mobile_assisted, 1)}%</span>
-                    </div>
-                  )}
-
-                  {channel.channel === 'ONLINE_WEB' && (
-                    <div className="text-xs">
-                      <span className="text-gray-400">Visitors: </span>
-                      <span className="text-orange-400">{formatLargeNumber(channel.unique_visitors)}</span>
-                      <span className="text-gray-400"> | Bounce: </span>
-                      <span className="text-red-400">{formatNumber(channel.bounce_rate, 1)}%</span>
-                      <span className="text-gray-400"> | Mobile: </span>
-                      <span className="text-cyan-400">{formatNumber(channel.mobile_traffic, 1)}%</span>
-                    </div>
-                  )}
-
-                  {channel.channel === 'MOBILE_APP' && (
-                    <div className="text-xs">
-                      <span className="text-gray-400">Sessions: </span>
-                      <span className="text-orange-400">{formatLargeNumber(channel.app_sessions)}</span>
-                      <span className="text-gray-400"> | Retention: </span>
-                      <span className="text-green-400">{formatNumber(channel.retention_rate, 1)}%</span>
-                      <span className="text-gray-400"> | Push Engage: </span>
-                      <span className="text-cyan-400">{formatNumber(channel.push_engagement, 1)}%</span>
-                    </div>
-                  )}
-
-                  {channel.channel === 'SOCIAL_COMMERCE' && (
-                    <div className="text-xs">
-                      <span className="text-gray-400">Reach: </span>
-                      <span className="text-orange-400">{formatLargeNumber(channel.social_reach)}</span>
-                      <span className="text-gray-400"> | Engagement: </span>
-                      <span className="text-blue-400">{formatNumber(channel.engagement_rate, 1)}%</span>
-                      <span className="text-gray-400"> | Influencer: </span>
-                      <span className="text-pink-400">{formatNumber(channel.influencer_sales, 1)}%</span>
-                    </div>
-                  )}
-
-                  {channel.channel === 'MARKETPLACE' && (
-                    <div className="text-xs">
-                      <span className="text-gray-400">Views: </span>
-                      <span className="text-orange-400">{formatLargeNumber(channel.listing_views)}</span>
-                      <span className="text-gray-400"> | Rating: </span>
-                      <span className="text-green-400">{formatNumber(channel.seller_rating, 1)}/5</span>
-                      <span className="text-gray-400"> | Fulfillment: </span>
-                      <span className="text-cyan-400">{formatNumber(channel.fulfillment_rate, 1)}%</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-700 rounded-lg p-4">
-          <h4 className="text-sm font-bold text-white mb-3">Customer Journey Analytics</h4>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-            <div className="flex justify-between">
-              <span className="text-gray-400">Avg Touchpoints:</span>
-              <span className="text-blue-400">{formatNumber(omniChannelMetrics.customer_journey.awareness_touchpoints, 1)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Consideration Time:</span>
-              <span className="text-purple-400">{formatNumber(omniChannelMetrics.customer_journey.consideration_time, 1)}d</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Decision Time:</span>
-              <span className="text-orange-400">{formatNumber(omniChannelMetrics.customer_journey.purchase_decision_time, 1)}d</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Post-Purchase Engage:</span>
-              <span className="text-green-400">{formatNumber(omniChannelMetrics.customer_journey.post_purchase_engagement, 1)}%</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Loyalty Adoption:</span>
-              <span className="text-yellow-400">{formatNumber(omniChannelMetrics.customer_journey.loyalty_program_adoption, 1)}%</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">Repeat Purchase:</span>
-              <span className="text-cyan-400">{formatNumber(omniChannelMetrics.customer_journey.repeat_purchase_rate, 1)}%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Store Operations */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          🏪 STORE OPERATIONS & MANAGEMENT
-        </h3>
-        <div className="space-y-3">
-          {storeOperations.map((store) => (
-            <div key={store.store_id} className="bg-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="text-sm font-bold text-white">{store.store_id}</div>
-                  <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(store.status)}`}>
-                    {store.status}
-                  </span>
-                  {store.store_type && (
-                    <span className={`text-xs px-2 py-1 rounded ${getStatusColor(store.store_type)}`}>
-                      {store.store_type}
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs text-gray-400">
-                  {store.location}
-                </div>
-              </div>
-
-              {store.status === 'OPERATIONAL' ? (
-                <>
-                  <div className="text-sm mb-2">
-                    <span className="text-gray-400">Sales: </span>
-                    <span className="text-green-400">{formatCurrency(store.daily_sales)}</span>
-                    <span className="text-gray-400"> | Transactions: </span>
-                    <span className="text-blue-400">{formatLargeNumber(store.transactions)}</span>
-                    <span className="text-gray-400"> | Customers: </span>
-                    <span className="text-purple-400">{formatLargeNumber(store.customers)}</span>
-                    <span className="text-gray-400"> | Conv: </span>
-                    <span className="text-orange-400">{formatNumber(store.conversion_rate, 1)}%</span>
-                  </div>
-
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Manager: </span>
-                    <span className="text-cyan-400">{store.manager}</span>
-                    <span className="text-gray-400"> | Staff: </span>
-                    <span className="text-yellow-400">{store.staff_count}</span>
-                    <span className="text-gray-400"> | POS Systems: </span>
-                    <span className="text-pink-400">{store.pos_systems}</span>
-                    <span className="text-gray-400"> | Mobile POS: </span>
-                    <span className="text-green-400">{store.mobile_pos_active}</span>
-                  </div>
-
-                  <div className="text-xs">
-                    <span className="text-gray-400">Inventory Accuracy: </span>
-                    <span className="text-blue-400">{formatNumber(store.inventory_accuracy, 1)}%</span>
-                    <span className="text-gray-400"> | CSAT: </span>
-                    <span className="text-green-400">{formatNumber(store.customer_satisfaction, 1)}</span>
-                    <span className="text-gray-400"> | Loss Prevention: </span>
-                    <span className="text-purple-400">{formatNumber(store.loss_prevention_score, 1)}</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-sm mb-2">
-                    <span className="text-gray-400">Maintenance: </span>
-                    <span className="text-orange-400">{store.maintenance_type?.replace(/_/g, ' ')}</span>
-                    <span className="text-gray-400"> | Started: </span>
-                    <span className="text-yellow-400">{formatTime(store.maintenance_start)}</span>
-                    <span className="text-gray-400"> | ETA: </span>
-                    <span className="text-blue-400">{formatTime(store.estimated_completion)}</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Impact: </span>
-                    <span className="text-red-400">{store.impact?.replace(/_/g, ' ')}</span>
-                    <span className="text-gray-400"> | Backup: </span>
-                    <span className="text-green-400">{store.backup_systems?.replace(/_/g, ' ')}</span>
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Retail Operations Trends */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📈 RETAIL OPERATIONS TRENDS (STORE HOURS)
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={retailHistory}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-            <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10}/>
-            <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12}/>
-            <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12}/>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB'
-              }}
-            />
-            <Legend />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="total_sales"
-              stroke="#10B981"
-              fill="#10B981"
-              fillOpacity={0.2}
-              strokeWidth={2}
-              name="Total Sales ($k)"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="transactions" 
-              stroke="#3B82F6" 
-              strokeWidth={2}
-              name="Transactions (k)"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="customer_count" 
-              stroke="#8B5CF6" 
-              strokeWidth={2}
-              name="Customer Count (k)"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="conversion_rate" 
-              stroke="#F59E0B" 
-              strokeWidth={2}
-              name="Conversion Rate %"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="avg_ticket" 
-              stroke="#06B6D4" 
-              strokeWidth={2}
-              name="Avg Ticket ($)"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="inventory_accuracy" 
-              stroke="#EF4444" 
-              strokeWidth={2}
-              name="Inventory Accuracy %"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="pos_response_time" 
-              stroke="#F97316" 
-              strokeWidth={2}
-              name="POS Response (sec)"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Inventory Management and POS Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Inventory Management */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📦 INVENTORY MANAGEMENT & ALLOCATION
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Store Operations */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <ShoppingCart className="w-5 h-5 mr-2 text-blue-400" />
+            STORE OPERATIONS
           </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Real-Time Tracking</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total SKUs:</span>
-                <span className="text-blue-400">{formatLargeNumber(inventoryManagement.real_time_tracking.total_skus)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">In Stock:</span>
-                <span className="text-green-400">{formatLargeNumber(inventoryManagement.real_time_tracking.in_stock_skus)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Out of Stock:</span>
-                <span className="text-red-400">{formatLargeNumber(inventoryManagement.real_time_tracking.out_of_stock)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Low Stock Alerts:</span>
-                <span className="text-yellow-400">{formatLargeNumber(inventoryManagement.real_time_tracking.low_stock_alerts)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Overstock Items:</span>
-                <span className="text-orange-400">{formatLargeNumber(inventoryManagement.real_time_tracking.overstock_items)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Accuracy Rate:</span>
-                <span className="text-purple-400">{formatNumber(inventoryManagement.real_time_tracking.accuracy_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Auto Replenishment:</span>
-                <span className="text-cyan-400">{formatNumber(inventoryManagement.real_time_tracking.auto_replenishment, 1)}%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Stock Levels by Category</h4>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
-              {inventoryManagement.stock_levels.map((category, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{category.category.replace(/_/g, ' ')}</span>
-                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(category.stockout_risk)}`}>
-                      {category.stockout_risk} RISK
-                    </span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Available: </span>
-                    <span className="text-green-400">{formatLargeNumber(category.available)}</span>
-                    <span className="text-gray-400"> | Reserved: </span>
-                    <span className="text-yellow-400">{formatLargeNumber(category.reserved)}</span>
-                    <span className="text-gray-400"> | Transit: </span>
-                    <span className="text-blue-400">{formatLargeNumber(category.in_transit)}</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Turnover: </span>
-                    <span className="text-purple-400">{formatNumber(category.turnover_rate, 1)}x/yr</span>
-                    <span className="text-gray-400"> | Margin: </span>
-                    <span className="text-orange-400">{formatNumber(category.margin, 1)}%</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* POS Analytics */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            💳 POS ANALYTICS & PAYMENT PROCESSING
-          </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Transaction Processing</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total Transactions:</span>
-                <span className="text-blue-400">{formatLargeNumber(posAnalytics.transaction_processing.total_transactions)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Avg Processing Time:</span>
-                <span className="text-green-400">{formatNumber(posAnalytics.transaction_processing.avg_processing_time, 1)}s</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Success Rate:</span>
-                <span className="text-purple-400">{formatNumber(posAnalytics.transaction_processing.transaction_success_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Mobile POS Usage:</span>
-                <span className="text-orange-400">{formatNumber(posAnalytics.transaction_processing.mobile_pos_usage, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Contactless Payments:</span>
-                <span className="text-cyan-400">{formatNumber(posAnalytics.transaction_processing.contactless_payments, 1)}%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Payment Methods</h4>
-            <div className="space-y-1 text-xs">
-              {Object.entries(posAnalytics.transaction_processing.payment_methods).map(([method, percentage], index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <span className="text-gray-400">{method.replace(/_/g, ' ')}:</span>
+          <div className="space-y-3">
+            {storeOperations.map(store => (
+              <div key={store.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getStoreStatusColor(store.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{store.name}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-blue-400">{formatNumber(percentage, 1)}%</span>
-                    <div className="w-16 bg-gray-600 rounded-full h-1">
-                      <div 
-                        className="h-1 rounded-full bg-blue-400"
-                        style={{ width: `${percentage}%` }}
-                      ></div>
-                    </div>
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getStoreStatusColor(store.status)}20`, 
+                      color: getStoreStatusColor(store.status) 
+                    }}>
+                      {store.status.toUpperCase().replace('_', ' ')}
+                    </span>
+                    {store.alerts > 0 && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-red-900 text-red-400">
+                        {store.alerts} Alert{store.alerts > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  <MapPin className="w-3 h-3 inline mr-1" />
+                  {store.location} • {store.staffCount} Staff
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Revenue</span>
+                    <span className="text-green-400">${(store.revenue / 1000000).toFixed(2)}M</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Transactions</span>
+                    <span className="text-blue-400">{store.transactions.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">AOV</span>
+                    <span className="text-purple-400">${store.aov.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Conversion</span>
+                    <span className="text-white">{store.conversion.toFixed(1)}%</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">
+                    Traffic: {store.footTraffic.toLocaleString()}
+                  </span>
+                  <span className="text-gray-500">
+                    Turnover: {store.inventoryTurnover.toFixed(1)}x
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Inventory Management */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Package className="w-5 h-5 mr-2 text-green-400" />
+            INVENTORY MANAGEMENT
+          </h3>
+          <div className="space-y-3">
+            {inventoryManagement.map(category => (
+              <div key={category.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getInventoryStatusColor(category.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{category.category}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getInventoryStatusColor(category.status)}20`, 
+                      color: getInventoryStatusColor(category.status) 
+                    }}>
+                      {category.status.toUpperCase()}
+                    </span>
+                    {category.reorderAlerts > 0 && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-orange-900 text-orange-400">
+                        {category.reorderAlerts} Reorders
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Stock Level</span>
+                    <span className="text-green-400">{category.stockLevel.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Total Items</span>
+                    <span className="text-blue-400">{category.totalItems.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Fast Moving</span>
+                    <span className="text-purple-400">{category.fastMoving}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Turnover</span>
+                    <span className="text-white">{category.turnoverRate.toFixed(1)}x</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">
+                    Value: ${(category.inventoryValue / 1000000).toFixed(1)}M
+                  </span>
+                  <span className="text-gray-500">
+                    Slow: {category.slowMoving} items
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Supply Chain & Alerts */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Truck className="w-5 h-5 mr-2 text-yellow-400" />
+            SUPPLY CHAIN & ALERTS
+          </h3>
+          <div className="space-y-3 mb-4">
+            {supplyChainMonitoring.slice(0, 3).map(supplier => (
+              <div key={supplier.id} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{supplier.name}</span>
+                  <span 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: getSupplierStatusColor(supplier.status) }}
+                  />
+                </div>
+                
+                <div className="text-xs text-gray-400 mb-2">{supplier.category}</div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">On-Time</span>
+                    <span className="text-green-400">{supplier.onTimeDelivery.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Quality</span>
+                    <span className="text-blue-400">{supplier.qualityScore.toFixed(1)}/5</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Lead Time</span>
+                    <span className="text-purple-400">{supplier.leadTime}d</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Orders</span>
+                    <span className="text-white">{supplier.activeOrders}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">
+                    Volume: ${(supplier.orderVolume / 1000000).toFixed(1)}M
+                  </span>
+                  {supplier.delayedOrders > 0 && (
+                    <span className="text-red-400">
+                      {supplier.delayedOrders} Delayed
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Retail Alerts */}
+          <div className="border-t border-gray-700 pt-3">
+            <div className="text-sm text-white font-semibold mb-2">Operations Alerts</div>
+            <div className="space-y-2">
+              {retailAlerts.slice(0, 3).map(alert => (
+                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-white">{alert.type}</span>
+                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
+                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
+                      color: getAlertSeverityColor(alert.severity) 
+                    }}>
+                      {alert.severity.toUpperCase()}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-400">{alert.store}</span>
+                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Sales Analytics</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Peak Hour:</span>
-                <span className="text-yellow-400">{posAnalytics.sales_analytics.hourly_peak}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Peak Conversion:</span>
-                <span className="text-green-400">{formatNumber(posAnalytics.sales_analytics.peak_conversion, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Basket Size:</span>
-                <span className="text-blue-400">{formatNumber(posAnalytics.sales_analytics.basket_size_avg, 1)} items</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Upsell Success:</span>
-                <span className="text-purple-400">{formatNumber(posAnalytics.sales_analytics.upsell_success, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Cross-sell Success:</span>
-                <span className="text-orange-400">{formatNumber(posAnalytics.sales_analytics.cross_sell_success, 1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Return Rate:</span>
-                <span className="text-red-400">{formatNumber(posAnalytics.sales_analytics.return_rate, 1)}%</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Customer Experience */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          😊 CUSTOMER EXPERIENCE & ENGAGEMENT ANALYTICS
-        </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Satisfaction Metrics</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">NPS Score:</span>
-                <span className="text-green-400">{customerExperience.satisfaction_metrics.nps_score}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">CSAT Score:</span>
-                <span className="text-blue-400">{formatNumber(customerExperience.satisfaction_metrics.csat_score, 1)}/5</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">CES Score:</span>
-                <span className="text-purple-400">{formatNumber(customerExperience.satisfaction_metrics.ces_score, 1)}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Review Sentiment:</span>
-                <span className="text-orange-400">{formatNumber(customerExperience.satisfaction_metrics.review_sentiment, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Resolution Time:</span>
-                <span className="text-yellow-400">{formatNumber(customerExperience.satisfaction_metrics.complaint_resolution_time, 1)}h</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">First Contact:</span>
-                <span className="text-cyan-400">{formatNumber(customerExperience.satisfaction_metrics.first_contact_resolution, 1)}%</span>
+      {/* Analytics Dashboard */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Real-time POS Analytics */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME POS ANALYTICS</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={posAnalytics}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="revenue" 
+                stroke="#10B981" 
+                strokeWidth={3}
+                name="Revenue ($M)"
+                dot={false}
+              />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="transactions" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Transactions (K)"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="aov" 
+                stroke="#8B5CF6" 
+                strokeWidth={2}
+                name="AOV ($)"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="conversion" 
+                stroke="#F59E0B" 
+                strokeWidth={2}
+                name="Conversion %"
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Sales Distribution & System Status */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">SALES DISTRIBUTION & SYSTEM STATUS</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={salesByCategory}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {salesByCategory.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value) => [`${value}%`, 'Sales Share']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-2 mt-2">
+              {salesByCategory.map((category, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: category.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{category.name}</span>
+                  </div>
+                  <span className="text-white font-semibold">{category.value}%</span>
+                </div>
+              ))}
+              
+              {/* System Status */}
+              <div className="mt-4 pt-3 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-2">System Status</div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">POS System</span>
+                    <span className="text-green-400">{systemMetrics.posSystem.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Inventory System</span>
+                    <span className="text-blue-400">{systemMetrics.inventorySystem.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Transaction Time</span>
+                    <span className="text-purple-400">{systemMetrics.averageTransactionTime.toFixed(2)}s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Fraud Detection</span>
+                    <span className="text-green-400">{systemMetrics.fraudDetection.toFixed(1)}%</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Digital Engagement</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">WiFi Usage:</span>
-                <span className="text-green-400">{formatNumber(customerExperience.digital_engagement.wifi_usage, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Mobile App Usage:</span>
-                <span className="text-blue-400">{formatNumber(customerExperience.digital_engagement.mobile_app_usage, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Digital Receipts:</span>
-                <span className="text-purple-400">{formatNumber(customerExperience.digital_engagement.digital_receipt_adoption, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Loyalty App:</span>
-                <span className="text-orange-400">{formatNumber(customerExperience.digital_engagement.loyalty_app_engagement, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Social Mentions:</span>
-                <span className="text-yellow-400">{formatLargeNumber(customerExperience.digital_engagement.social_media_mentions)}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">QR Interactions:</span>
-                <span className="text-cyan-400">{formatNumber(customerExperience.digital_engagement.qr_code_interactions, 1)}%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Personalization</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Offers Sent:</span>
-                <span className="text-green-400">{formatLargeNumber(customerExperience.personalization.personalized_offers_sent)}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Redemption Rate:</span>
-                <span className="text-blue-400">{formatNumber(customerExperience.personalization.offer_redemption_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Recommendation Acc:</span>
-                <span className="text-purple-400">{formatNumber(customerExperience.personalization.recommendation_accuracy, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Campaign Success:</span>
-                <span className="text-orange-400">{formatNumber(customerExperience.personalization.targeted_campaign_success, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Segmentation:</span>
-                <span className={`${getStatusColor(customerExperience.personalization.customer_segmentation_active).split(' ')[0]}`}>
-                  {customerExperience.personalization.customer_segmentation_active.replace(/_/g, ' ')}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Tracking:</span>
-                <span className={`${getStatusColor(customerExperience.personalization.behavioral_tracking).split(' ')[0]}`}>
-                  {customerExperience.personalization.behavioral_tracking.replace(/_/g, ' ')}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Loss Prevention</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Shrinkage Rate:</span>
-                <span className="text-red-400">{formatNumber(customerExperience.loss_prevention.shrinkage_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Theft Incidents:</span>
-                <span className="text-orange-400">{customerExperience.loss_prevention.theft_incidents}</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">False Alarm Rate:</span>
-                <span className="text-yellow-400">{formatNumber(customerExperience.loss_prevention.false_alarm_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">Recovery Rate:</span>
-                <span className="text-green-400">{formatNumber(customerExperience.loss_prevention.recovery_rate, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">CCTV Coverage:</span>
-                <span className="text-blue-400">{formatNumber(customerExperience.loss_prevention.cctv_coverage, 1)}%</span>
-              </div>
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400">EAS Effectiveness:</span>
-                <span className="text-purple-400">{formatNumber(customerExperience.loss_prevention.eas_effectiveness, 1)}%</span>
+          
+          {/* Retail Control Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">Retail Operations Control</span>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                  <ShoppingCart className="w-3 h-3 inline mr-1" />
+                  Store Analytics
+                </button>
+                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
+                  <Package className="w-3 h-3 inline mr-1" />
+                  Inventory Control
+                </button>
+                <button className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 rounded text-xs transition-colors">
+                  <Truck className="w-3 h-3 inline mr-1" />
+                  Supply Chain
+                </button>
               </div>
             </div>
           </div>
