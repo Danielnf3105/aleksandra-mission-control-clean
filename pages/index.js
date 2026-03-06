@@ -96,6 +96,7 @@ import RealTimeDataObservabilityCenter from '../components/RealTimeDataObservabi
 import ExecutiveBusinessIntelligenceCenter from '../components/ExecutiveBusinessIntelligenceCenter';
 import EnterpriseNetworkOperationsCenter from '../components/EnterpriseNetworkOperationsCenter';
 import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCenter';
+import SpaceMissionControlCenter from '../components/SpaceMissionControlCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -613,6 +614,13 @@ export default function MissionControl() {
       icon: '💰', 
       color: 'text-yellow-500',
       description: 'Ultra-low latency trading infrastructure, real-time market monitoring, and risk management'
+    },
+    { 
+      id: 'space-mission-control', 
+      name: '🚀 Space Mission Control', 
+      icon: '🚀', 
+      color: 'text-sky-500',
+      description: '24/7 human spaceflight operations, real-time spacecraft monitoring, and mission management'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1452,6 +1460,9 @@ export default function MissionControl() {
         
         {/* Financial Trading Floor */}
         {currentView === 'financial-trading-floor' && <FinancialTradingFloorCenter />}
+        
+        {/* Space Mission Control */}
+        {currentView === 'space-mission-control' && <SpaceMissionControlCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
