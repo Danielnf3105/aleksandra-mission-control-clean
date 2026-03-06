@@ -89,6 +89,7 @@ import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
 import TaskManagementCenter from '../components/TaskManagementCenter';
+import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligenceCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -550,6 +551,13 @@ export default function MissionControl() {
       icon: '📋', 
       color: 'text-purple-400',
       description: 'Kanban workflow orchestration and project management'
+    },
+    { 
+      id: 'ai-predictive', 
+      name: '🧠 AI Predictive Intelligence', 
+      icon: '🧠', 
+      color: 'text-purple-500',
+      description: 'Machine learning insights, predictions, and intelligent automation'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1365,6 +1373,9 @@ export default function MissionControl() {
         
         {/* Task Management & Kanban */}
         {currentView === 'task-management' && <TaskManagementCenter />}
+        
+        {/* AI Predictive Intelligence */}
+        {currentView === 'ai-predictive' && <AIPredictiveIntelligenceCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
