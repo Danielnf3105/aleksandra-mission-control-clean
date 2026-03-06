@@ -1,926 +1,998 @@
-// CybersecurityOperationsCenter.js - Cybersecurity Operations Center (SOC) & Threat Intelligence Dashboard
-import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
+import { Shield, AlertTriangle, Eye, Activity, TrendingUp, Users, Zap, Clock, MapPin, Settings, Target, Lock } from 'lucide-react';
 
 const CybersecurityOperationsCenter = () => {
-  const [socStatus, setSocStatus] = useState({
-    operationalStatus: 'ACTIVE_MONITORING',
-    threatLevel: 'ELEVATED',
-    analystsOnDuty: 12,
-    totalAnalysts: 18,
-    incidentsToday: 47,
-    criticalIncidents: 3,
-    highSeverityIncidents: 8,
-    threatsBlocked: 2847,
-    meanTimeToDetection: 4.2, // minutes
-    meanTimeToResponse: 12.7, // minutes
-    securityScore: 87.3, // percentage
-    lastUpdate: Date.now()
+  const [securityMetrics, setSecurityMetrics] = useState({
+    totalThreats: 47892,
+    activeIncidents: 23,
+    resolvedIncidents: 1847,
+    criticalAlerts: 8,
+    meanTimeToDetection: 4.7, // minutes
+    meanTimeToResponse: 12.3, // minutes
+    securityScore: 94.7, // /100
+    complianceScore: 97.2 // %
   });
 
-  const [threatIntelligence, setThreatIntelligence] = useState({
-    feeds_active: 23,
-    feeds_total: 25,
-    iocs_processed: 156743, // Indicators of Compromise
-    cti_sources: ['MISP', 'STIX/TAXII', 'Commercial TI', 'Open Source', 'Internal'],
-    threat_actors: [
-      {
-        actor: 'APT29 (Cozy Bear)',
-        first_seen: '2024-12-15',
-        last_activity: Date.now() - 3 * 24 * 60 * 60 * 1000,
-        techniques: ['T1566.001', 'T1055', 'T1083', 'T1082'],
-        targets: ['Government', 'Healthcare', 'Energy'],
-        confidence: 'HIGH',
-        severity: 'CRITICAL'
-      },
-      {
-        actor: 'Lazarus Group',
-        first_seen: '2024-11-28',
-        last_activity: Date.now() - 7 * 24 * 60 * 60 * 1000,
-        techniques: ['T1566.002', 'T1204.002', 'T1059.003'],
-        targets: ['Financial', 'Cryptocurrency', 'Defense'],
-        confidence: 'MEDIUM',
-        severity: 'HIGH'
-      },
-      {
-        actor: 'BlackCat (ALPHV)',
-        first_seen: '2024-10-23',
-        last_activity: Date.now() - 12 * 24 * 60 * 60 * 1000,
-        techniques: ['T1486', 'T1490', 'T1552.001'],
-        targets: ['Healthcare', 'Manufacturing', 'Legal'],
-        confidence: 'HIGH',
-        severity: 'HIGH'
-      }
-    ],
-    malware_families: {
-      'Emotet': { detections: 234, trend: 'INCREASING' },
-      'Cobalt Strike': { detections: 156, trend: 'STABLE' },
-      'LockBit': { detections: 89, trend: 'DECREASING' },
-      'IcedID': { detections: 67, trend: 'STABLE' },
-      'Qakbot': { detections: 45, trend: 'INCREASING' }
+  const [threatDetection, setThreatDetection] = useState([
+    {
+      id: 'THREAT-001',
+      type: 'Advanced Persistent Threat',
+      severity: 'critical',
+      status: 'investigating',
+      sourceIP: '203.45.78.192',
+      targetAsset: 'web-server-prod-01',
+      detectionTime: new Date(Date.now() - 180000),
+      lastActivity: new Date(Date.now() - 60000),
+      riskScore: 9.2,
+      analyst: 'Sarah Chen',
+      ttl: 'TTP-0045'
+    },
+    {
+      id: 'THREAT-002', 
+      type: 'Malware Detection',
+      severity: 'high',
+      status: 'contained',
+      sourceIP: '157.92.34.211',
+      targetAsset: 'workstation-finance-15',
+      detectionTime: new Date(Date.now() - 300000),
+      lastActivity: new Date(Date.now() - 120000),
+      riskScore: 7.8,
+      analyst: 'Mike Rodriguez',
+      ttl: 'TTP-0023'
+    },
+    {
+      id: 'THREAT-003',
+      type: 'Data Exfiltration',
+      severity: 'high',
+      status: 'mitigated',
+      sourceIP: '78.134.56.89',
+      targetAsset: 'database-customer-main',
+      detectionTime: new Date(Date.now() - 420000),
+      lastActivity: new Date(Date.now() - 180000),
+      riskScore: 8.1,
+      analyst: 'Jennifer Kim',
+      ttl: 'TTP-0067'
+    },
+    {
+      id: 'THREAT-004',
+      type: 'Phishing Campaign',
+      severity: 'medium',
+      status: 'monitoring',
+      sourceIP: '91.203.145.67',
+      targetAsset: 'email-gateway',
+      detectionTime: new Date(Date.now() - 240000),
+      lastActivity: new Date(Date.now() - 90000),
+      riskScore: 5.4,
+      analyst: 'David Thompson',
+      ttl: 'TTP-0012'
+    },
+    {
+      id: 'THREAT-005',
+      type: 'Insider Threat',
+      severity: 'high',
+      status: 'investigating',
+      sourceIP: '192.168.1.47',
+      targetAsset: 'file-server-hr',
+      detectionTime: new Date(Date.now() - 360000),
+      lastActivity: new Date(Date.now() - 45000),
+      riskScore: 7.9,
+      analyst: 'Amanda Martinez',
+      ttl: 'TTP-0089'
     }
-  });
+  ]);
 
-  const [siemAnalytics, setSiemAnalytics] = useState({
-    total_events: 284739284, // events processed today
-    events_per_second: 3456,
-    correlated_alerts: 2847,
-    high_priority_alerts: 89,
-    false_positives: 234,
-    true_positives: 67,
-    accuracy_rate: 96.3, // percentage
-    data_sources: 156,
-    log_retention: 365, // days
-    storage_utilization: 78.9, // percentage
-    parsing_engines: [
-      {
-        engine: 'SYSLOG_PARSER',
-        status: 'OPERATIONAL',
-        throughput: 45623, // events/sec
-        cpu_usage: 67.3,
-        memory_usage: 78.9
-      },
-      {
-        engine: 'WINDOWS_EVENT_PARSER',
-        status: 'OPERATIONAL',
-        throughput: 23456,
-        cpu_usage: 45.7,
-        memory_usage: 56.8
-      },
-      {
-        engine: 'NETWORK_FLOW_PARSER',
-        status: 'HIGH_LOAD',
-        throughput: 89012,
-        cpu_usage: 89.2,
-        memory_usage: 91.4
-      }
-    ],
-    risk_based_alerting: {
-      asset_criticality: 'ENABLED',
-      business_impact_scoring: 'ACTIVE',
-      threat_intel_enrichment: 'OPERATIONAL',
-      context_analysis: 'RUNNING'
+  const [siemAnalytics, setSiemAnalytics] = useState([
+    {
+      source: 'Network Firewalls',
+      eventsPerHour: 847392,
+      alerts: 234,
+      falsePositives: 12,
+      coverage: 98.7,
+      status: 'operational'
+    },
+    {
+      source: 'Endpoint Detection',
+      eventsPerHour: 234567,
+      alerts: 89,
+      falsePositives: 8,
+      coverage: 94.3,
+      status: 'operational'
+    },
+    {
+      source: 'Email Security',
+      eventsPerHour: 156789,
+      alerts: 67,
+      falsePositives: 5,
+      coverage: 99.2,
+      status: 'operational'
+    },
+    {
+      source: 'Web Application',
+      eventsPerHour: 89456,
+      alerts: 45,
+      falsePositives: 3,
+      coverage: 91.8,
+      status: 'degraded'
+    },
+    {
+      source: 'Cloud Services',
+      eventsPerHour: 345678,
+      alerts: 123,
+      falsePositives: 15,
+      coverage: 87.4,
+      status: 'operational'
     }
-  });
+  ]);
 
   const [incidentResponse, setIncidentResponse] = useState([
     {
-      incident_id: 'INC-2026-0305-001',
-      title: 'Suspicious PowerShell Activity',
-      severity: 'HIGH',
-      status: 'INVESTIGATING',
-      analyst: 'Sarah Chen',
-      created: Date.now() - 2.5 * 60 * 60 * 1000,
-      updated: Date.now() - 15 * 60 * 1000,
-      affected_assets: ['WKS-001-HR', 'WKS-045-FIN', 'SRV-DC01'],
-      mitre_tactics: ['T1059.001', 'T1055', 'T1083'],
-      containment_status: 'PARTIAL',
-      escalation_level: 'L2',
-      estimated_impact: 'MEDIUM',
-      source_ip: '192.168.1.45',
-      indicators: ['powershell.exe', 'base64 encoding', 'WMI queries']
+      id: 'INC-2026-0347',
+      title: 'Ransomware Attempt on Finance Network',
+      severity: 'critical',
+      status: 'active',
+      createdAt: new Date(Date.now() - 450000),
+      assignedTo: 'IR Team Alpha',
+      affectedSystems: 14,
+      estimatedImpact: 'high',
+      progress: 67,
+      nextAction: 'Isolate affected hosts'
     },
     {
-      incident_id: 'INC-2026-0305-002',
-      title: 'Ransomware Encryption Attempt',
-      severity: 'CRITICAL',
-      status: 'CONTAINED',
-      analyst: 'Mike Rodriguez',
-      created: Date.now() - 6 * 60 * 60 * 1000,
-      updated: Date.now() - 5 * 60 * 1000,
-      affected_assets: ['SRV-FILE01', 'WKS-078-ENG'],
-      mitre_tactics: ['T1486', 'T1490', 'T1547.001'],
-      containment_status: 'COMPLETE',
-      escalation_level: 'L3',
-      estimated_impact: 'HIGH',
-      source_ip: '10.0.0.87',
-      indicators: ['LockBit signature', 'file encryption', '.lockbit extension'],
-      recovery_time: 45 // minutes
+      id: 'INC-2026-0346',
+      title: 'Suspicious Login Activity - Executive Accounts',
+      severity: 'high',
+      status: 'investigating',
+      createdAt: new Date(Date.now() - 720000),
+      assignedTo: 'IR Team Beta',
+      affectedSystems: 3,
+      estimatedImpact: 'medium',
+      progress: 45,
+      nextAction: 'Password reset and MFA enforcement'
     },
     {
-      incident_id: 'INC-2026-0305-003',
-      title: 'Phishing Campaign Detection',
-      severity: 'MEDIUM',
-      status: 'MONITORING',
-      analyst: 'Lisa Zhang',
-      created: Date.now() - 4 * 60 * 60 * 1000,
-      updated: Date.now() - 30 * 60 * 1000,
-      affected_assets: ['EMAIL-GATEWAY', 'USER-MAILBOXES'],
-      mitre_tactics: ['T1566.001', 'T1204.002'],
-      containment_status: 'MONITORING',
-      escalation_level: 'L1',
-      estimated_impact: 'LOW',
-      source_ip: '203.0.113.45',
-      indicators: ['fake microsoft login', 'credential harvesting', 'suspicious domains'],
-      blocked_emails: 234
+      id: 'INC-2026-0345',
+      title: 'DDoS Attack on Public Web Services',
+      severity: 'medium',
+      status: 'mitigated',
+      createdAt: new Date(Date.now() - 1800000),
+      assignedTo: 'IR Team Gamma',
+      affectedSystems: 8,
+      estimatedImpact: 'low',
+      progress: 95,
+      nextAction: 'Post-incident analysis'
     },
     {
-      incident_id: 'INC-2026-0305-004',
-      title: 'Privilege Escalation Detected',
-      severity: 'HIGH',
-      status: 'ESCALATED',
-      analyst: 'David Kim',
-      created: Date.now() - 1.5 * 60 * 60 * 1000,
-      updated: Date.now() - 8 * 60 * 1000,
-      affected_assets: ['AD-CONTROLLER', 'DOMAIN-ADMIN'],
-      mitre_tactics: ['T1068', 'T1078.002', 'T1136.001'],
-      containment_status: 'INVESTIGATING',
-      escalation_level: 'L3',
-      estimated_impact: 'CRITICAL',
-      source_ip: '10.0.0.156',
-      indicators: ['unusual admin activity', 'new user creation', 'permission changes']
+      id: 'INC-2026-0344',
+      title: 'Malicious File Upload Detected',
+      severity: 'high',
+      status: 'contained',
+      createdAt: new Date(Date.now() - 900000),
+      assignedTo: 'IR Team Alpha',
+      affectedSystems: 1,
+      estimatedImpact: 'medium',
+      progress: 85,
+      nextAction: 'Malware analysis completion'
     }
   ]);
 
-  const [securityControls, setSecurityControls] = useState({
-    endpoint_protection: {
-      total_endpoints: 2847,
-      protected_endpoints: 2834,
-      quarantined_files: 156,
-      active_scans: 23,
-      definition_updates: 'CURRENT',
-      last_update: Date.now() - 2 * 60 * 60 * 1000
+  const [vulnerabilityManagement, setVulnerabilityManagement] = useState([
+    {
+      category: 'Critical',
+      count: 12,
+      resolved: 8,
+      overdue: 2,
+      avgResolutionTime: 2.3,
+      trend: 'decreasing'
     },
-    network_security: {
-      firewalls: {
-        total: 8,
-        operational: 8,
-        blocked_connections: 45623,
-        policy_violations: 234
-      },
-      ids_ips: {
-        sensors: 12,
-        active: 12,
-        intrusion_attempts: 567,
-        signatures: 'UPDATED'
-      },
-      dns_filtering: {
-        queries_analyzed: 2847392,
-        malicious_domains_blocked: 567,
-        category_blocks: 1247
-      }
+    {
+      category: 'High',
+      count: 89,
+      resolved: 67,
+      overdue: 8,
+      avgResolutionTime: 7.4,
+      trend: 'stable'
     },
-    email_security: {
-      emails_processed: 156743,
-      spam_blocked: 8947,
-      malware_detected: 234,
-      phishing_attempts: 89,
-      quarantined_emails: 345,
-      safe_links_clicks: 2456
+    {
+      category: 'Medium',
+      count: 234,
+      resolved: 189,
+      overdue: 15,
+      avgResolutionTime: 14.7,
+      trend: 'increasing'
     },
-    vulnerability_management: {
-      assets_scanned: 2847,
-      critical_vulnerabilities: 23,
-      high_vulnerabilities: 156,
-      medium_vulnerabilities: 567,
-      patch_compliance: 94.7, // percentage
-      scan_coverage: 98.2 // percentage
+    {
+      category: 'Low',
+      count: 567,
+      resolved: 423,
+      overdue: 34,
+      avgResolutionTime: 30.2,
+      trend: 'stable'
     }
+  ]);
+
+  const [securityAnalytics, setSecurityAnalytics] = useState([
+    {
+      time: new Date(Date.now() - 300000).toLocaleTimeString(),
+      threats: 46234,
+      incidents: 21,
+      detectionTime: 4.9,
+      responseTime: 12.8
+    },
+    {
+      time: new Date(Date.now() - 240000).toLocaleTimeString(),
+      threats: 46789,
+      incidents: 22,
+      detectionTime: 4.6,
+      responseTime: 12.5
+    },
+    {
+      time: new Date(Date.now() - 180000).toLocaleTimeString(),
+      threats: 47123,
+      incidents: 23,
+      detectionTime: 4.8,
+      responseTime: 12.1
+    },
+    {
+      time: new Date(Date.now() - 120000).toLocaleTimeString(),
+      threats: 47456,
+      incidents: 22,
+      detectionTime: 4.5,
+      responseTime: 12.4
+    },
+    {
+      time: new Date(Date.now() - 60000).toLocaleTimeString(),
+      threats: 47678,
+      incidents: 23,
+      detectionTime: 4.8,
+      responseTime: 12.2
+    },
+    {
+      time: new Date().toLocaleTimeString(),
+      threats: 47892,
+      incidents: 23,
+      detectionTime: 4.7,
+      responseTime: 12.3
+    }
+  ]);
+
+  const [securityAlerts, setSecurityAlerts] = useState([
+    {
+      id: 'SEC-001',
+      severity: 'critical',
+      type: 'Intrusion Detection',
+      message: 'Multiple failed login attempts detected from suspicious IP - potential brute force attack',
+      timestamp: new Date(),
+      status: 'active',
+      source: 'Network Monitoring',
+      impact: 'immediate'
+    },
+    {
+      id: 'SEC-002', 
+      severity: 'warning',
+      type: 'Policy Violation',
+      message: 'Unauthorized software installation detected on workstation in R&D department',
+      timestamp: new Date(Date.now() - 120000),
+      status: 'investigating',
+      source: 'Endpoint Detection',
+      impact: 'medium'
+    },
+    {
+      id: 'SEC-003',
+      severity: 'info',
+      type: 'System Update',
+      message: 'Security patch deployment completed across 95% of enterprise endpoints',
+      timestamp: new Date(Date.now() - 300000),
+      status: 'resolved',
+      source: 'Patch Management',
+      impact: 'positive'
+    }
+  ]);
+
+  const [complianceMetrics, setComplianceMetrics] = useState([
+    {
+      framework: 'ISO 27001',
+      status: 'compliant',
+      score: 97.8,
+      lastAudit: '2026-02-15',
+      nextAudit: '2026-08-15',
+      findings: 2
+    },
+    {
+      framework: 'SOC 2 Type II',
+      status: 'compliant', 
+      score: 96.4,
+      lastAudit: '2026-01-20',
+      nextAudit: '2026-07-20',
+      findings: 1
+    },
+    {
+      framework: 'PCI DSS',
+      status: 'compliant',
+      score: 98.9,
+      lastAudit: '2026-03-01',
+      nextAudit: '2026-09-01',
+      findings: 0
+    },
+    {
+      framework: 'NIST Framework',
+      status: 'compliant',
+      score: 94.7,
+      lastAudit: '2026-02-28',
+      nextAudit: '2026-08-28',
+      findings: 3
+    },
+    {
+      framework: 'GDPR',
+      status: 'compliant',
+      score: 99.1,
+      lastAudit: '2026-02-10',
+      nextAudit: '2026-08-10',
+      findings: 0
+    }
+  ]);
+
+  const [socTeam, setSocTeam] = useState([
+    {
+      role: 'SOC Manager',
+      count: 2,
+      availability: 100,
+      workload: 78.4,
+      efficiency: 94.2
+    },
+    {
+      role: 'Security Analysts L1',
+      count: 8,
+      availability: 87.5,
+      workload: 89.7,
+      efficiency: 86.3
+    },
+    {
+      role: 'Security Analysts L2',
+      count: 6,
+      availability: 83.3,
+      workload: 92.1,
+      efficiency: 91.8
+    },
+    {
+      role: 'Incident Responders',
+      count: 4,
+      availability: 100,
+      workload: 76.8,
+      efficiency: 93.7
+    },
+    {
+      role: 'Threat Hunters',
+      count: 3,
+      availability: 100,
+      workload: 84.2,
+      efficiency: 88.9
+    }
+  ]);
+
+  const [systemMetrics, setSystemMetrics] = useState({
+    siemUptime: 99.97, // %
+    soarPlatform: 99.94,
+    threatIntelligence: 99.89,
+    endpointProtection: 98.7,
+    avgQueryTime: 0.847, // seconds
+    dataIngestionRate: 2847392, // events/hour
+    falsePositiveRate: 2.3, // %
+    automationLevel: 76.8 // %
   });
 
-  const [soarPlaybooks, setSoarPlaybooks] = useState([
-    {
-      playbook_id: 'PB-PHISHING-001',
-      name: 'Phishing Email Response',
-      trigger: 'Email Classification',
-      status: 'ACTIVE',
-      executions_today: 23,
-      success_rate: 96.7, // percentage
-      avg_execution_time: 2.3, // minutes
-      last_execution: Date.now() - 45 * 60 * 1000,
-      steps: [
-        'Extract email headers',
-        'Analyze sender reputation', 
-        'Check against threat intel',
-        'Quarantine suspicious emails',
-        'Notify security team'
-      ]
-    },
-    {
-      playbook_id: 'PB-MALWARE-002',
-      name: 'Malware Containment',
-      trigger: 'Endpoint Detection',
-      status: 'ACTIVE',
-      executions_today: 8,
-      success_rate: 91.2,
-      avg_execution_time: 4.7,
-      last_execution: Date.now() - 2 * 60 * 60 * 1000,
-      steps: [
-        'Isolate affected endpoint',
-        'Collect forensic data',
-        'Analyze malware sample',
-        'Update signatures',
-        'Deploy remediation'
-      ]
-    },
-    {
-      playbook_id: 'PB-BRUTEFORCE-003',
-      name: 'Brute Force Detection',
-      trigger: 'Authentication Failures',
-      status: 'ACTIVE',
-      executions_today: 15,
-      success_rate: 94.8,
-      avg_execution_time: 1.8,
-      last_execution: Date.now() - 20 * 60 * 1000,
-      steps: [
-        'Detect failed login patterns',
-        'Block source IP',
-        'Reset user passwords',
-        'Enable MFA',
-        'Generate incident report'
-      ]
-    }
-  ]);
-
-  const [operationsHistory, setOperationsHistory] = useState([]);
-
-  const generateOperationsHistory = () => {
-    const data = [];
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    
-    for (let i = 0; i <= 23; i++) { // 24 hours
-      const time = new Date(startOfDay.getTime() + i * 60 * 60 * 1000);
-      
-      // Simulate realistic SOC patterns
-      const hour = time.getHours();
-      let activityMultiplier = 0.7; // Base activity
-      
-      if (hour >= 9 && hour <= 17) activityMultiplier = 1.0; // Business hours peak
-      if (hour >= 22 || hour <= 6) activityMultiplier = 0.4; // Night hours
-      if (hour >= 18 && hour <= 21) activityMultiplier = 0.6; // Evening hours
-      
-      data.push({
-        time: time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}),
-        events_processed: Math.floor(8000000 + activityMultiplier * 4000000 + Math.random() * 1000000),
-        threats_detected: Math.floor(activityMultiplier * 150 + Math.random() * 50),
-        incidents_created: Math.floor(activityMultiplier * 8 + Math.random() * 4),
-        alerts_generated: Math.floor(activityMultiplier * 200 + Math.random() * 100),
-        false_positives: Math.floor(activityMultiplier * 25 + Math.random() * 15),
-        response_time: 8 + (1 / activityMultiplier) * 5 + Math.random() * 3,
-        threat_intel_matches: Math.floor(activityMultiplier * 12 + Math.random() * 8)
-      });
-    }
-    return data;
-  };
-
-  useEffect(() => {
-    setOperationsHistory(generateOperationsHistory());
-  }, []);
-
+  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update SOC status
-      setSocStatus(prev => ({
+      // Update security metrics
+      setSecurityMetrics(prev => ({
         ...prev,
-        threatsBlocked: prev.threatsBlocked + Math.floor(Math.random() * 50),
-        incidentsToday: prev.incidentsToday + Math.floor(Math.random() * 2),
-        meanTimeToDetection: Math.max(2.0, Math.min(10.0, prev.meanTimeToDetection + (Math.random() - 0.5) * 1.0)),
-        meanTimeToResponse: Math.max(5.0, Math.min(30.0, prev.meanTimeToResponse + (Math.random() - 0.5) * 2.0)),
-        securityScore: Math.max(70.0, Math.min(95.0, prev.securityScore + (Math.random() - 0.5) * 2.0)),
-        lastUpdate: Date.now()
+        totalThreats: prev.totalThreats + Math.floor(Math.random() * 100),
+        activeIncidents: Math.max(15, Math.min(35, prev.activeIncidents + Math.floor((Math.random() - 0.5) * 3))),
+        resolvedIncidents: prev.resolvedIncidents + Math.floor(Math.random() * 5),
+        criticalAlerts: Math.max(0, Math.min(15, prev.criticalAlerts + Math.floor((Math.random() - 0.6) * 2))),
+        meanTimeToDetection: Math.max(2, Math.min(10, prev.meanTimeToDetection + (Math.random() - 0.5) * 0.5)),
+        meanTimeToResponse: Math.max(8, Math.min(20, prev.meanTimeToResponse + (Math.random() - 0.5) * 1)),
+        securityScore: Math.max(85, Math.min(100, prev.securityScore + (Math.random() - 0.5) * 0.5)),
+        complianceScore: Math.max(90, Math.min(100, prev.complianceScore + (Math.random() - 0.5) * 0.2))
+      }));
+
+      // Update threat detection
+      setThreatDetection(prev => prev.map(threat => {
+        const statusTransitions = {
+          'investigating': ['investigating', 'contained', 'mitigated'],
+          'contained': ['contained', 'mitigated', 'resolved'],
+          'mitigated': ['mitigated', 'resolved'],
+          'monitoring': ['monitoring', 'investigating', 'resolved'],
+          'resolved': ['resolved']
+        };
+        
+        const possibleStatuses = statusTransitions[threat.status] || [threat.status];
+        const newStatus = Math.random() > 0.95 ? 
+          possibleStatuses[Math.floor(Math.random() * possibleStatuses.length)] : threat.status;
+
+        return {
+          ...threat,
+          status: newStatus,
+          lastActivity: Math.random() > 0.8 ? new Date() : threat.lastActivity,
+          riskScore: Math.max(1, Math.min(10, threat.riskScore + (Math.random() - 0.5) * 0.2))
+        };
       }));
 
       // Update SIEM analytics
-      setSiemAnalytics(prev => ({
-        ...prev,
-        total_events: prev.total_events + Math.floor(Math.random() * 100000),
-        events_per_second: Math.max(1000, Math.min(10000, prev.events_per_second + Math.floor((Math.random() - 0.5) * 500))),
-        correlated_alerts: prev.correlated_alerts + Math.floor(Math.random() * 10),
-        high_priority_alerts: Math.max(0, prev.high_priority_alerts + Math.floor((Math.random() - 0.8) * 3))
+      setSiemAnalytics(prev => prev.map(source => ({
+        ...source,
+        eventsPerHour: Math.max(source.eventsPerHour * 0.8, Math.min(source.eventsPerHour * 1.2, source.eventsPerHour + Math.floor((Math.random() - 0.5) * 10000))),
+        alerts: Math.max(0, source.alerts + Math.floor((Math.random() - 0.7) * 10)),
+        falsePositives: Math.max(0, source.falsePositives + Math.floor((Math.random() - 0.8) * 3)),
+        coverage: Math.max(80, Math.min(100, source.coverage + (Math.random() - 0.5) * 1))
+      })));
+
+      // Update incident response
+      setIncidentResponse(prev => prev.map(incident => {
+        if (incident.status === 'resolved') return incident;
+        
+        const newProgress = Math.min(100, incident.progress + Math.floor(Math.random() * 5));
+        let newStatus = incident.status;
+        
+        if (newProgress >= 95) newStatus = 'resolved';
+        else if (newProgress >= 80 && incident.status === 'active') newStatus = 'mitigated';
+        else if (newProgress >= 60 && incident.status === 'investigating') newStatus = 'active';
+        
+        return {
+          ...incident,
+          progress: newProgress,
+          status: newStatus
+        };
       }));
 
-      // Update threat intelligence
-      setThreatIntelligence(prev => ({
+      // Update security analytics
+      const newSecurityData = {
+        time: new Date().toLocaleTimeString(),
+        threats: securityMetrics.totalThreats,
+        incidents: securityMetrics.activeIncidents,
+        detectionTime: securityMetrics.meanTimeToDetection,
+        responseTime: securityMetrics.meanTimeToResponse
+      };
+      
+      setSecurityAnalytics(prev => [...prev.slice(1), newSecurityData]);
+
+      // Update system metrics
+      setSystemMetrics(prev => ({
         ...prev,
-        iocs_processed: prev.iocs_processed + Math.floor(Math.random() * 1000)
+        siemUptime: Math.max(99.5, Math.min(100, prev.siemUptime + (Math.random() - 0.3) * 0.01)),
+        soarPlatform: Math.max(99.5, Math.min(100, prev.soarPlatform + (Math.random() - 0.3) * 0.01)),
+        avgQueryTime: Math.max(0.3, Math.min(2.0, prev.avgQueryTime + (Math.random() - 0.5) * 0.1)),
+        dataIngestionRate: Math.max(prev.dataIngestionRate * 0.9, Math.min(prev.dataIngestionRate * 1.1, prev.dataIngestionRate + Math.floor((Math.random() - 0.5) * 50000))),
+        falsePositiveRate: Math.max(1, Math.min(5, prev.falsePositiveRate + (Math.random() - 0.5) * 0.2)),
+        automationLevel: Math.max(60, Math.min(90, prev.automationLevel + (Math.random() - 0.5) * 1))
       }));
 
-    }, 20000);
+      // Occasionally add new security alerts
+      if (Math.random() > 0.93) {
+        const alertTypes = ['Intrusion Detection', 'Malware Alert', 'Policy Violation', 'Data Loss Prevention', 'Anomaly Detection'];
+        const severities = ['info', 'warning', 'critical'];
+        const sources = siemAnalytics.map(s => s.source);
+        
+        const newAlert = {
+          id: `SEC-${Date.now()}`,
+          severity: severities[Math.floor(Math.random() * severities.length)],
+          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+          message: 'Real-time security operations alert generated',
+          timestamp: new Date(),
+          status: 'active',
+          source: sources[Math.floor(Math.random() * sources.length)],
+          impact: ['low', 'medium', 'high', 'immediate'][Math.floor(Math.random() * 4)]
+        };
+        
+        setSecurityAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+      }
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [securityMetrics.totalThreats, securityMetrics.activeIncidents, securityMetrics.meanTimeToDetection, securityMetrics.meanTimeToResponse]);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'ACTIVE_MONITORING':
-      case 'OPERATIONAL':
-      case 'ACTIVE':
-      case 'ENABLED':
-      case 'RUNNING':
-      case 'COMPLETE':
-      case 'CONTAINED':
-      case 'CURRENT':
-      case 'UPDATED': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'INVESTIGATING':
-      case 'MONITORING':
-      case 'HIGH_LOAD':
-      case 'MEDIUM':
-      case 'PARTIAL': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'ESCALATED':
-      case 'HIGH':
-      case 'ELEVATED': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
-      case 'CRITICAL': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
-    }
-  };
-
-  const getSeverityColor = (severity) => {
+  const getThreatSeverityColor = (severity) => {
     switch (severity) {
-      case 'LOW': return 'text-green-400';
-      case 'MEDIUM': return 'text-yellow-400';
-      case 'HIGH': return 'text-orange-400';
-      case 'CRITICAL': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'critical': return '#EF4444';
+      case 'high': return '#F59E0B';
+      case 'medium': return '#3B82F6';
+      case 'low': return '#10B981';
+      default: return '#6B7280';
     }
   };
 
-  const getTrendColor = (trend) => {
-    switch (trend) {
-      case 'INCREASING': return 'text-red-400';
-      case 'STABLE': return 'text-blue-400';
-      case 'DECREASING': return 'text-green-400';
-      default: return 'text-gray-400';
+  const getThreatStatusColor = (status) => {
+    switch (status) {
+      case 'investigating': return '#F59E0B';
+      case 'contained': return '#8B5CF6';
+      case 'mitigated': return '#3B82F6';
+      case 'monitoring': return '#10B981';
+      case 'resolved': return '#6B7280';
+      default: return '#6B7280';
     }
   };
 
-  const formatNumber = (num, decimals = 0) => {
-    return num.toFixed(decimals);
-  };
-
-  const formatLargeNumber = (num) => {
-    if (num >= 1000000000) return `${(num / 1000000000).toFixed(1)}B`;
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
-    return num.toString();
-  };
-
-  const formatTime = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    const diff = timestamp - Date.now();
-    if (Math.abs(diff) < 60000) return 'now';
-    if (diff > 0) {
-      if (diff < 3600000) return `in ${Math.floor(diff / 60000)}min`;
-      if (diff < 86400000) return `in ${Math.floor(diff / 3600000)}h`;
-      return `in ${Math.floor(diff / 86400000)}d`;
-    } else {
-      const absDiff = Math.abs(diff);
-      if (absDiff < 3600000) return `${Math.floor(absDiff / 60000)}m ago`;
-      if (absDiff < 86400000) return `${Math.floor(absDiff / 3600000)}h ago`;
-      return `${Math.floor(absDiff / 86400000)}d ago`;
+  const getIncidentStatusColor = (status) => {
+    switch (status) {
+      case 'active': return '#EF4444';
+      case 'investigating': return '#F59E0B';
+      case 'mitigated': return '#3B82F6';
+      case 'resolved': return '#10B981';
+      default: return '#6B7280';
     }
   };
+
+  const getAlertSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#EF4444';
+      case 'warning': return '#F59E0B';
+      case 'info': return '#10B981';
+      default: return '#6B7280';
+    }
+  };
+
+  const getComplianceStatusColor = (status) => {
+    switch (status) {
+      case 'compliant': return '#10B981';
+      case 'warning': return '#F59E0B';
+      case 'non_compliant': return '#EF4444';
+      default: return '#6B7280';
+    }
+  };
+
+  const threatDistribution = [
+    { name: 'Malware', value: 32.4, color: '#EF4444' },
+    { name: 'Phishing', value: 28.7, color: '#F59E0B' },
+    { name: 'Intrusion', value: 19.3, color: '#8B5CF6' },
+    { name: 'Data Breach', value: 12.8, color: '#3B82F6' },
+    { name: 'Insider Threat', value: 6.8, color: '#10B981' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          🛡️ CYBERSECURITY OPERATIONS CENTER (SOC)
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            {socStatus.threatsBlocked} Threats Blocked
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <Shield className="w-8 h-8 text-blue-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">CYBERSECURITY OPERATIONS CENTER</h1>
+            <p className="text-gray-400">24/7 threat detection, SIEM analytics, incident response, vulnerability management & security compliance monitoring</p>
           </div>
-          <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono border border-blue-500/30">
-            {formatNumber(socStatus.meanTimeToDetection, 1)}m MTTD
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-red-400">
+              {securityMetrics.activeIncidents}
+            </div>
+            <div className="text-xs text-gray-400">ACTIVE THREATS</div>
           </div>
-          <div className={`px-3 py-1 rounded-full text-sm font-mono border ${getStatusColor(socStatus.threatLevel)}`}>
-            Threat Level: {socStatus.threatLevel}
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">
+              {securityMetrics.securityScore.toFixed(1)}
+            </div>
+            <div className="text-xs text-gray-400">SECURITY SCORE</div>
           </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Threat Intelligence & Incident Response
+          <div className="text-center">
+            <div className="text-2xl font-bold text-yellow-400">{securityMetrics.meanTimeToDetection.toFixed(1)}min</div>
+            <div className="text-xs text-gray-400">DETECTION TIME</div>
           </div>
         </div>
       </div>
 
-      {/* SOC Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">INCIDENTS TODAY</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {socStatus.incidentsToday}
-              </div>
-              <div className="text-xs text-blue-300">
-                {socStatus.criticalIncidents} critical | {socStatus.highSeverityIncidents} high
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🚨</div>
+      {/* Security KPIs */}
+      <div className="grid grid-cols-6 gap-4 mb-6">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <span className="text-xs text-gray-400">THREATS</span>
           </div>
+          <div className="text-xl font-bold text-white">{securityMetrics.totalThreats.toLocaleString()}</div>
+          <div className="text-xs text-gray-400">Total Detected</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">THREATS BLOCKED</div>
-              <div className="text-2xl font-bold text-green-100">
-                {formatLargeNumber(socStatus.threatsBlocked)}
-              </div>
-              <div className="text-xs text-green-300">
-                Last 24 hours
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🛡️</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Target className="w-5 h-5 text-orange-400" />
+            <span className="text-xs text-gray-400">INCIDENTS</span>
           </div>
+          <div className="text-xl font-bold text-white">{securityMetrics.resolvedIncidents}</div>
+          <div className="text-xs text-gray-400">Resolved</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">RESPONSE TIME</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {formatNumber(socStatus.meanTimeToResponse, 1)}m
-              </div>
-              <div className="text-xs text-purple-300">
-                Mean Time to Response
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">⏱️</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Eye className="w-5 h-5 text-blue-400" />
+            <span className="text-xs text-gray-400">CRITICAL</span>
           </div>
+          <div className="text-xl font-bold text-white">{securityMetrics.criticalAlerts}</div>
+          <div className="text-xs text-gray-400">Alerts</div>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">SECURITY SCORE</div>
-              <div className="text-2xl font-bold text-orange-100">
-                {formatNumber(socStatus.securityScore, 1)}%
-              </div>
-              <div className="text-xs text-orange-300">
-                Overall Posture
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">📊</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Clock className="w-5 h-5 text-purple-400" />
+            <span className="text-xs text-gray-400">RESPONSE</span>
           </div>
+          <div className="text-xl font-bold text-white">{securityMetrics.meanTimeToResponse.toFixed(1)}min</div>
+          <div className="text-xs text-gray-400">Mean Time</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Lock className="w-5 h-5 text-green-400" />
+            <span className="text-xs text-gray-400">COMPLIANCE</span>
+          </div>
+          <div className="text-xl font-bold text-white">{securityMetrics.complianceScore.toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Score</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Zap className="w-5 h-5 text-cyan-400" />
+            <span className="text-xs text-gray-400">SIEM UPTIME</span>
+          </div>
+          <div className="text-xl font-bold text-white">{systemMetrics.siemUptime.toFixed(2)}%</div>
+          <div className="text-xs text-gray-400">System</div>
         </div>
       </div>
 
-      {/* Incident Response */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          🚨 ACTIVE INCIDENT RESPONSE & INVESTIGATION
-        </h3>
-        <div className="space-y-3">
-          {incidentResponse.map((incident) => (
-            <div key={incident.incident_id} className="bg-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="text-sm font-bold text-white">{incident.incident_id}</div>
-                  <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(incident.severity)}`}>
-                    {incident.severity}
-                  </span>
-                  <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(incident.status)}`}>
-                    {incident.status}
-                  </span>
-                  <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                    {incident.escalation_level}
-                  </span>
-                </div>
-                <div className="text-xs text-gray-400">
-                  Analyst: {incident.analyst}
-                </div>
-              </div>
-
-              <div className="text-sm font-bold text-white mb-2">{incident.title}</div>
-
-              <div className="text-xs mb-2">
-                <span className="text-gray-400">Affected Assets: </span>
-                <span className="text-cyan-400">{incident.affected_assets.join(', ')}</span>
-                <span className="text-gray-400"> | Source IP: </span>
-                <span className="text-orange-400">{incident.source_ip}</span>
-                <span className="text-gray-400"> | Impact: </span>
-                <span className={getSeverityColor(incident.estimated_impact)}>
-                  {incident.estimated_impact}
-                </span>
-              </div>
-
-              <div className="text-xs mb-2">
-                <span className="text-gray-400">MITRE Tactics: </span>
-                <span className="text-purple-400">{incident.mitre_tactics.join(', ')}</span>
-                <span className="text-gray-400"> | Containment: </span>
-                <span className={getStatusColor(incident.containment_status).split(' ')[0]}>
-                  {incident.containment_status}
-                </span>
-              </div>
-
-              <div className="text-xs mb-2">
-                <span className="text-gray-400">Indicators: </span>
-                <span className="text-yellow-400">{incident.indicators.join(', ')}</span>
-              </div>
-
-              <div className="text-xs">
-                <span className="text-gray-400">Created: </span>
-                <span className="text-green-400">{formatTime(incident.created)}</span>
-                <span className="text-gray-400"> | Updated: </span>
-                <span className="text-blue-400">{formatTime(incident.updated)}</span>
-                {incident.recovery_time && (
-                  <>
-                    <span className="text-gray-400"> | Recovery: </span>
-                    <span className="text-green-400">{incident.recovery_time} min</span>
-                  </>
-                )}
-                {incident.blocked_emails && (
-                  <>
-                    <span className="text-gray-400"> | Blocked Emails: </span>
-                    <span className="text-red-400">{incident.blocked_emails}</span>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Threat Intelligence and SIEM Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Threat Intelligence */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🕵️ THREAT INTELLIGENCE & IOC ANALYSIS
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Threat Detection */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
+            THREAT DETECTION
           </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Intelligence Feeds</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Active Feeds:</span>
-                <span className="text-green-400">{threatIntelligence.feeds_active}/{threatIntelligence.feeds_total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">IOCs Processed:</span>
-                <span className="text-blue-400">{formatLargeNumber(threatIntelligence.iocs_processed)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Sources:</span>
-                <span className="text-purple-400">{threatIntelligence.cti_sources.join(', ')}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Active Threat Actors</h4>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {threatIntelligence.threat_actors.map((actor, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{actor.actor}</span>
-                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(actor.severity)}`}>
-                      {actor.severity}
-                    </span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Last Activity: </span>
-                    <span className="text-orange-400">{formatTime(actor.last_activity)}</span>
-                    <span className="text-gray-400"> | Targets: </span>
-                    <span className="text-cyan-400">{actor.targets.join(', ')}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Malware Families</h4>
-            <div className="space-y-2">
-              {Object.entries(threatIntelligence.malware_families).map(([family, data], index) => (
-                <div key={index} className="flex items-center justify-between text-xs">
-                  <span className="text-white">{family}</span>
+          <div className="space-y-3">
+            {threatDetection.map(threat => (
+              <div key={threat.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getThreatSeverityColor(threat.severity) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{threat.type}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-yellow-400">{data.detections}</span>
-                    <span className={getTrendColor(data.trend)}>
-                      {data.trend === 'INCREASING' ? '↗' : data.trend === 'DECREASING' ? '↘' : '→'}
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getThreatSeverityColor(threat.severity)}20`, 
+                      color: getThreatSeverityColor(threat.severity) 
+                    }}>
+                      {threat.severity.toUpperCase()}
+                    </span>
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getThreatStatusColor(threat.status)}20`, 
+                      color: getThreatStatusColor(threat.status) 
+                    }}>
+                      {threat.status.toUpperCase()}
                     </span>
                   </div>
                 </div>
-              ))}
-            </div>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  ID: <span className="text-blue-400">{threat.id}</span> • 
+                  TTL: <span className="text-purple-400">{threat.ttl}</span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Source IP</span>
+                    <span className="text-red-400">{threat.sourceIP}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Target</span>
+                    <span className="text-blue-400">{threat.targetAsset.split('-')[0]}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Risk Score</span>
+                    <span className="text-yellow-400">{threat.riskScore.toFixed(1)}/10</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Analyst</span>
+                    <span className="text-white">{threat.analyst.split(' ')[0]}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-green-400">
+                    Detected: {threat.detectionTime.toLocaleTimeString()}
+                  </span>
+                  <span className="text-gray-500">
+                    Last: {threat.lastActivity.toLocaleTimeString()}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* SIEM Analytics */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📊 SIEM ANALYTICS & EVENT CORRELATION
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Eye className="w-5 h-5 mr-2 text-blue-400" />
+            SIEM ANALYTICS
           </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Event Processing</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Events Today:</span>
-                <span className="text-blue-400">{formatLargeNumber(siemAnalytics.total_events)}</span>
+          <div className="space-y-3">
+            {siemAnalytics.map((source, index) => (
+              <div key={index} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{source.source}</span>
+                  <span 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: source.status === 'operational' ? '#10B981' : '#F59E0B' }}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Events/Hr</span>
+                    <span className="text-green-400">{(source.eventsPerHour / 1000).toFixed(0)}K</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Alerts</span>
+                    <span className="text-blue-400">{source.alerts}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Coverage</span>
+                    <span className="text-purple-400">{source.coverage.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">False+</span>
+                    <span className="text-white">{source.falsePositives}</span>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-yellow-400">
+                  Accuracy: {((source.alerts - source.falsePositives) / source.alerts * 100).toFixed(1)}%
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Events/Second:</span>
-                <span className="text-green-400">{formatLargeNumber(siemAnalytics.events_per_second)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Correlated Alerts:</span>
-                <span className="text-yellow-400">{formatLargeNumber(siemAnalytics.correlated_alerts)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">High Priority:</span>
-                <span className="text-red-400">{siemAnalytics.high_priority_alerts}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Accuracy Rate:</span>
-                <span className="text-cyan-400">{formatNumber(siemAnalytics.accuracy_rate, 1)}%</span>
-              </div>
-            </div>
+            ))}
           </div>
+        </div>
 
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Parsing Engines</h4>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {siemAnalytics.parsing_engines.map((engine, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">
-                      {engine.engine.replace(/_/g, ' ')}
-                    </span>
-                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(engine.status)}`}>
-                      {engine.status.replace(/_/g, ' ')}
+        {/* Incident Response & Alerts */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Target className="w-5 h-5 mr-2 text-orange-400" />
+            INCIDENT RESPONSE & ALERTS
+          </h3>
+          <div className="space-y-3 mb-4">
+            {incidentResponse.slice(0, 3).map(incident => (
+              <div key={incident.id} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{incident.id}</span>
+                  <span 
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{ 
+                      backgroundColor: `${getIncidentStatusColor(incident.status)}20`, 
+                      color: getIncidentStatusColor(incident.status) 
+                    }}
+                  >
+                    {incident.status.toUpperCase()}
+                  </span>
+                </div>
+                
+                <div className="text-xs text-gray-300 mb-2">{incident.title}</div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Severity</span>
+                    <span style={{ color: getThreatSeverityColor(incident.severity) }}>
+                      {incident.severity.toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Throughput: </span>
-                    <span className="text-orange-400">{formatLargeNumber(engine.throughput)}/s</span>
-                    <span className="text-gray-400"> | CPU: </span>
-                    <span className="text-blue-400">{formatNumber(engine.cpu_usage, 1)}%</span>
-                    <span className="text-gray-400"> | Mem: </span>
-                    <span className="text-purple-400">{formatNumber(engine.memory_usage, 1)}%</span>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Progress</span>
+                    <span className="text-blue-400">{incident.progress}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Systems</span>
+                    <span className="text-purple-400">{incident.affectedSystems}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Team</span>
+                    <span className="text-white">{incident.assignedTo.split(' ')[2]}</span>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-yellow-400">
+                  Next: {incident.nextAction}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Security Alerts */}
+          <div className="border-t border-gray-700 pt-3">
+            <div className="text-sm text-white font-semibold mb-2">Real-time Alerts</div>
+            <div className="space-y-2">
+              {securityAlerts.slice(0, 3).map(alert => (
+                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-white">{alert.type}</span>
+                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
+                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
+                      color: getAlertSeverityColor(alert.severity) 
+                    }}>
+                      {alert.severity.toUpperCase()}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-400">{alert.source}</span>
+                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Risk-Based Alerting</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Asset Criticality:</span>
-                <span className={`${getStatusColor(siemAnalytics.risk_based_alerting.asset_criticality).split(' ')[0]}`}>
-                  {siemAnalytics.risk_based_alerting.asset_criticality}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Business Impact:</span>
-                <span className={`${getStatusColor(siemAnalytics.risk_based_alerting.business_impact_scoring).split(' ')[0]}`}>
-                  {siemAnalytics.risk_based_alerting.business_impact_scoring}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">TI Enrichment:</span>
-                <span className={`${getStatusColor(siemAnalytics.risk_based_alerting.threat_intel_enrichment).split(' ')[0]}`}>
-                  {siemAnalytics.risk_based_alerting.threat_intel_enrichment}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* SOC Operations Trends */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📈 SOC OPERATIONS TRENDS (24 HOURS)
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={operationsHistory}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-            <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10}/>
-            <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12}/>
-            <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12}/>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB'
-              }}
-            />
-            <Legend />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="events_processed"
-              stroke="#10B981"
-              fill="#10B981"
-              fillOpacity={0.2}
-              strokeWidth={2}
-              name="Events Processed"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="threats_detected" 
-              stroke="#3B82F6" 
-              strokeWidth={2}
-              name="Threats Detected"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="alerts_generated" 
-              stroke="#8B5CF6" 
-              strokeWidth={2}
-              name="Alerts Generated"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="incidents_created" 
-              stroke="#F59E0B" 
-              strokeWidth={2}
-              name="Incidents Created"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="response_time" 
-              stroke="#06B6D4" 
-              strokeWidth={2}
-              name="Response Time (min)"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="false_positives" 
-              stroke="#EF4444" 
-              strokeWidth={2}
-              name="False Positives"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="threat_intel_matches" 
-              stroke="#F97316" 
-              strokeWidth={2}
-              name="Threat Intel Matches"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Security Controls and SOAR Playbooks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Security Controls */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🔒 SECURITY CONTROLS & PROTECTION STATUS
-          </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Endpoint Protection</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Protected Endpoints:</span>
-                <span className="text-green-400">{securityControls.endpoint_protection.protected_endpoints}/{securityControls.endpoint_protection.total_endpoints}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Quarantined Files:</span>
-                <span className="text-yellow-400">{securityControls.endpoint_protection.quarantined_files}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Active Scans:</span>
-                <span className="text-blue-400">{securityControls.endpoint_protection.active_scans}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Definitions:</span>
-                <span className="text-green-400">{securityControls.endpoint_protection.definition_updates}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Network Security</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Firewalls:</span>
-                <span className="text-green-400">{securityControls.network_security.firewalls.operational}/{securityControls.network_security.firewalls.total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Blocked Connections:</span>
-                <span className="text-red-400">{formatLargeNumber(securityControls.network_security.firewalls.blocked_connections)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">IDS/IPS Sensors:</span>
-                <span className="text-blue-400">{securityControls.network_security.ids_ips.active}/{securityControls.network_security.ids_ips.sensors}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Intrusion Attempts:</span>
-                <span className="text-orange-400">{securityControls.network_security.ids_ips.intrusion_attempts}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Email Security</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Emails Processed:</span>
-                <span className="text-blue-400">{formatLargeNumber(securityControls.email_security.emails_processed)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Spam Blocked:</span>
-                <span className="text-yellow-400">{formatLargeNumber(securityControls.email_security.spam_blocked)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Malware Detected:</span>
-                <span className="text-red-400">{securityControls.email_security.malware_detected}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Phishing Attempts:</span>
-                <span className="text-orange-400">{securityControls.email_security.phishing_attempts}</span>
-              </div>
-            </div>
-          </div>
+      {/* Security Analytics */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Real-time Security Operations */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME SECURITY OPERATIONS</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={securityAnalytics}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="threats" 
+                stroke="#EF4444" 
+                strokeWidth={3}
+                name="Threats Detected"
+                dot={false}
+              />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="incidents" 
+                stroke="#F59E0B" 
+                strokeWidth={2}
+                name="Active Incidents"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="detectionTime" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Detection Time (min)"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="responseTime" 
+                stroke="#8B5CF6" 
+                strokeWidth={2}
+                name="Response Time (min)"
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        {/* SOAR Playbooks */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🤖 SOAR PLAYBOOKS & AUTOMATION
-          </h3>
-          
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {soarPlaybooks.map((playbook, index) => (
-              <div key={index} className="bg-gray-700 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
+        {/* Threat Distribution & Compliance Status */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">THREAT DISTRIBUTION & COMPLIANCE STATUS</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={threatDistribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {threatDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value) => [`${value}%`, 'Threat Type']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-2 mt-2">
+              {threatDistribution.map((threat, index) => (
+                <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-bold text-white">{playbook.name}</span>
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(playbook.status)}`}>
-                      {playbook.status}
-                    </span>
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: threat.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{threat.name}</span>
                   </div>
-                  <div className="text-xs text-gray-400">
-                    {formatNumber(playbook.success_rate, 1)}% Success
-                  </div>
+                  <span className="text-white font-semibold">{threat.value}%</span>
                 </div>
-
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Trigger: </span>
-                  <span className="text-cyan-400">{playbook.trigger}</span>
-                  <span className="text-gray-400"> | Executions Today: </span>
-                  <span className="text-purple-400">{playbook.executions_today}</span>
-                  <span className="text-gray-400"> | Avg Time: </span>
-                  <span className="text-orange-400">{formatNumber(playbook.avg_execution_time, 1)}min</span>
-                </div>
-
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Last Execution: </span>
-                  <span className="text-green-400">{formatTime(playbook.last_execution)}</span>
-                </div>
-
-                <div className="text-xs">
-                  <span className="text-gray-400">Steps: </span>
-                  <span className="text-blue-400">{playbook.steps.join(' → ')}</span>
+              ))}
+              
+              {/* Compliance Status */}
+              <div className="mt-4 pt-3 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-2">Compliance Status</div>
+                <div className="space-y-1 text-xs">
+                  {complianceMetrics.slice(0, 4).map((framework, index) => (
+                    <div key={index} className="flex justify-between">
+                      <span className="text-gray-400">{framework.framework}</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-green-400">{framework.score.toFixed(1)}%</span>
+                        <span 
+                          className="w-2 h-2 rounded-full" 
+                          style={{ backgroundColor: getComplianceStatusColor(framework.status) }}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            </div>
+          </div>
+          
+          {/* Security Control Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-white font-semibold">Security Automation Status</span>
+              <span className="text-xs text-blue-400">{systemMetrics.automationLevel.toFixed(1)}% Automated</span>
+            </div>
+            <div className="space-y-2">
+              <div className="bg-gray-800 rounded-lg p-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-blue-400">SOAR Platform</span>
+                  <span className="text-xs text-green-400">{systemMetrics.soarPlatform.toFixed(2)}%</span>
+                </div>
+                <div className="text-xs text-gray-300">Automated response workflows active</div>
+              </div>
+              <div className="bg-gray-800 rounded-lg p-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-purple-400">Threat Intelligence</span>
+                  <span className="text-xs text-green-400">{systemMetrics.threatIntelligence.toFixed(2)}%</span>
+                </div>
+                <div className="text-xs text-gray-300">Real-time feed integration operational</div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Cybersecurity Control Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">Cybersecurity Operations Control</span>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors">
+                  <Shield className="w-3 h-3 inline mr-1" />
+                  Threat Hunting
+                </button>
+                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                  <Eye className="w-3 h-3 inline mr-1" />
+                  SIEM Console
+                </button>
+                <button className="px-3 py-1 bg-orange-600 hover:bg-orange-700 rounded text-xs transition-colors">
+                  <Target className="w-3 h-3 inline mr-1" />
+                  Incident Response
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
