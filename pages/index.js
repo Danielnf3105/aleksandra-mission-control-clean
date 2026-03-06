@@ -93,6 +93,7 @@ import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligen
 import EnterpriseSecurityCenter from '../components/SecurityOperationsCenter';
 import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestrationCenter';
 import RealTimeDataObservabilityCenter from '../components/RealTimeDataObservabilityCenter';
+import ExecutiveBusinessIntelligenceCenter from '../components/ExecutiveBusinessIntelligenceCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -589,6 +590,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-cyan-500',
       description: 'Enterprise data pipeline monitoring, quality analytics, and streaming observability'
+    },
+    { 
+      id: 'executive-business-intelligence', 
+      name: '📈 Executive Business Intelligence', 
+      icon: '📈', 
+      color: 'text-indigo-500',
+      description: 'Real-time analytics, executive reporting, and strategic business insights for C-suite'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1419,6 +1427,9 @@ export default function MissionControl() {
         
         {/* Real-Time Data Observability */}
         {currentView === 'real-time-data-observability' && <RealTimeDataObservabilityCenter />}
+        
+        {/* Executive Business Intelligence */}
+        {currentView === 'executive-business-intelligence' && <ExecutiveBusinessIntelligenceCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
