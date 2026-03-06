@@ -95,6 +95,7 @@ import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestration
 import RealTimeDataObservabilityCenter from '../components/RealTimeDataObservabilityCenter';
 import ExecutiveBusinessIntelligenceCenter from '../components/ExecutiveBusinessIntelligenceCenter';
 import EnterpriseNetworkOperationsCenter from '../components/EnterpriseNetworkOperationsCenter';
+import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -605,6 +606,13 @@ export default function MissionControl() {
       icon: '🌐', 
       color: 'text-emerald-500',
       description: '24/7 telecommunications monitoring, network security, and infrastructure performance analysis'
+    },
+    { 
+      id: 'financial-trading-floor', 
+      name: '💰 Financial Trading Floor', 
+      icon: '💰', 
+      color: 'text-yellow-500',
+      description: 'Ultra-low latency trading infrastructure, real-time market monitoring, and risk management'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1441,6 +1449,9 @@ export default function MissionControl() {
         
         {/* Enterprise Network Operations */}
         {currentView === 'enterprise-network-operations' && <EnterpriseNetworkOperationsCenter />}
+        
+        {/* Financial Trading Floor */}
+        {currentView === 'financial-trading-floor' && <FinancialTradingFloorCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
