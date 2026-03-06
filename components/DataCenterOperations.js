@@ -1,584 +1,475 @@
-// DataCenterOperations.js - Data Center Operations Control (NOC/DCIM) & Infrastructure Management Dashboard
+// DataCenterOperations.js - Data Center Operations Center & Network Operations Center Dashboard
 import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, RadialBarChart, RadialBar } from 'recharts';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const DataCenterOperations = () => {
-  const [servers, setServers] = useState([
-    {
-      id: 'srv_001',
-      hostname: 'web-prod-01.dc1.company.com',
-      role: 'Web Server',
-      rack: 'R42-A-15',
-      location: 'DC1-Floor2-Row4',
-      status: 'ONLINE',
-      uptime: 1247567, // seconds
-      cpuUsage: 67.8,
-      memoryUsage: 78.3,
-      diskUsage: 45.2,
-      networkThroughput: 1250, // Mbps
-      temperature: 42.5, // Celsius
-      powerUsage: 285, // Watts
-      alerts: 0,
-      os: 'Ubuntu 22.04 LTS',
-      ipAddress: '192.168.1.15',
-      manufacturer: 'Dell',
-      model: 'PowerEdge R750',
-      serialNumber: 'DLL7X5G3',
-      warranty: '2026-12-15',
-      lastUpdate: Date.now() - 15 * 1000,
-      applications: ['nginx', 'node.js', 'redis'],
-      monitoring: true,
-      backup: 'COMPLETED',
-      maintenanceWindow: null
-    },
-    {
-      id: 'srv_002',
-      hostname: 'db-primary-01.dc1.company.com',
-      role: 'Database Server',
-      rack: 'R42-A-20',
-      location: 'DC1-Floor2-Row4',
-      status: 'ONLINE',
-      uptime: 2345234,
-      cpuUsage: 89.2,
-      memoryUsage: 92.1,
-      diskUsage: 71.8,
-      networkThroughput: 2100,
-      temperature: 48.7,
-      powerUsage: 420,
-      alerts: 2,
-      os: 'CentOS 8',
-      ipAddress: '192.168.1.20',
-      manufacturer: 'HPE',
-      model: 'ProLiant DL380 Gen10',
-      serialNumber: 'HP2Z9F8K',
-      warranty: '2027-06-20',
-      lastUpdate: Date.now() - 8 * 1000,
-      applications: ['postgresql', 'redis-cluster', 'prometheus'],
-      monitoring: true,
-      backup: 'IN_PROGRESS',
-      maintenanceWindow: null
-    },
-    {
-      id: 'srv_003',
-      hostname: 'cache-cluster-01.dc2.company.com',
-      role: 'Cache Server',
-      rack: 'R35-B-08',
-      location: 'DC2-Floor1-Row3',
-      status: 'WARNING',
-      uptime: 567234,
-      cpuUsage: 34.5,
-      memoryUsage: 95.7,
-      diskUsage: 23.1,
-      networkThroughput: 850,
-      temperature: 51.2,
-      powerUsage: 195,
-      alerts: 3,
-      os: 'Redis Enterprise',
-      ipAddress: '10.0.2.8',
-      manufacturer: 'Supermicro',
-      model: 'SuperServer 2029P',
-      serialNumber: 'SM5L1M9A',
-      warranty: '2025-11-30',
-      lastUpdate: Date.now() - 30 * 1000,
-      applications: ['redis-enterprise', 'sentinel', 'consul'],
-      monitoring: true,
-      backup: 'FAILED',
-      maintenanceWindow: 'SCHEDULED'
-    },
-    {
-      id: 'srv_004',
-      hostname: 'app-worker-05.dc1.company.com',
-      role: 'Application Server',
-      rack: 'R42-C-12',
-      location: 'DC1-Floor2-Row4',
-      status: 'MAINTENANCE',
-      uptime: 0,
-      cpuUsage: 0,
-      memoryUsage: 0,
-      diskUsage: 62.4,
-      networkThroughput: 0,
-      temperature: 25.8,
-      powerUsage: 0,
-      alerts: 0,
-      os: 'Windows Server 2022',
-      ipAddress: '192.168.1.45',
-      manufacturer: 'Lenovo',
-      model: 'ThinkSystem SR650 V2',
-      serialNumber: 'LN8K4P2X',
-      warranty: '2028-03-10',
-      lastUpdate: Date.now() - 2 * 60 * 60 * 1000,
-      applications: ['.NET Core', 'IIS', 'SQL Server'],
-      monitoring: false,
-      backup: 'COMPLETED',
-      maintenanceWindow: 'ACTIVE'
-    },
-    {
-      id: 'srv_005',
-      hostname: 'storage-nas-01.dc1.company.com',
-      role: 'Storage Server',
-      rack: 'R42-D-25',
-      location: 'DC1-Floor2-Row4',
-      status: 'CRITICAL',
-      uptime: 1834567,
-      cpuUsage: 45.2,
-      memoryUsage: 67.8,
-      diskUsage: 96.8,
-      networkThroughput: 4200,
-      temperature: 55.3,
-      powerUsage: 680,
-      alerts: 5,
-      os: 'TrueNAS SCALE',
-      ipAddress: '192.168.1.100',
-      manufacturer: 'QNAP',
-      model: 'TS-2888X',
-      serialNumber: 'QN7R5K9M',
-      warranty: '2026-08-15',
-      lastUpdate: Date.now() - 5 * 1000,
-      applications: ['truenas', 'zfs', 'smb'],
-      monitoring: true,
-      backup: 'DISABLED',
-      maintenanceWindow: null
-    }
-  ]);
+  const [dataCenterStatus, setDataCenterStatus] = useState({
+    operationalStatus: 'OPTIMAL',
+    totalRacks: 240,
+    occupiedRacks: 198,
+    totalServers: 2847,
+    activeServers: 2734,
+    downServers: 8,
+    maintenanceServers: 105,
+    powerConsumption: 2.4, // MW
+    powerCapacity: 3.2, // MW
+    coolingEfficiency: 1.42, // PUE
+    averageTemperature: 22.4, // celsius
+    humidity: 45.2, // percentage
+    networkUtilization: 67.8, // percentage
+    storageUtilization: 78.3, // percentage
+    lastUpdate: Date.now()
+  });
 
-  const [networkDevices, setNetworkDevices] = useState([
+  const [rackStatus, setRackStatus] = useState([
     {
-      id: 'net_001',
-      hostname: 'core-switch-01.dc1',
-      type: 'Core Switch',
-      location: 'DC1-Network-Rack',
-      status: 'ONLINE',
-      uptime: 5234567,
-      portUtilization: 67.5,
-      packetLoss: 0.02,
-      latency: 1.2, // ms
-      bandwidth: 10000, // Mbps total capacity
-      throughput: 6750, // Current Mbps
-      temperature: 38.5,
-      fanSpeed: 3200, // RPM
-      powerUsage: 150,
-      manufacturer: 'Cisco',
-      model: 'Catalyst 9500-48Y4C',
-      firmware: '17.09.04a',
-      ipAddress: '192.168.1.254',
-      managementVlan: 100,
-      ports: 48,
-      portsActive: 32,
-      lastUpdate: Date.now() - 20 * 1000
+      id: 'rack_a01_001',
+      location: 'Row A01 - Position 001',
+      type: 'COMPUTE',
+      status: 'OPERATIONAL',
+      power_usage: 8.2, // kW
+      power_capacity: 12.0, // kW
+      temperature: 21.8, // celsius
+      humidity: 44.5, // percentage
+      u_slots_total: 42,
+      u_slots_occupied: 38,
+      u_slots_available: 4,
+      servers: [
+        {
+          slot: 'U1-U2',
+          hostname: 'compute-01.dc1',
+          type: 'BLADE_SERVER',
+          status: 'RUNNING',
+          cpu_usage: 67.3,
+          memory_usage: 82.1,
+          temperature: 56.2
+        },
+        {
+          slot: 'U3-U4',
+          hostname: 'compute-02.dc1',
+          type: 'BLADE_SERVER',
+          status: 'RUNNING',
+          cpu_usage: 45.8,
+          memory_usage: 69.4,
+          temperature: 52.7
+        },
+        {
+          slot: 'U5-U6',
+          hostname: 'compute-03.dc1',
+          type: 'BLADE_SERVER',
+          status: 'MAINTENANCE',
+          reason: 'MEMORY_UPGRADE',
+          eta_completion: Date.now() + 2 * 60 * 60 * 1000
+        }
+      ],
+      network_ports_active: 48,
+      network_ports_total: 52,
+      last_maintenance: Date.now() - 30 * 24 * 60 * 60 * 1000,
+      alerts: []
     },
     {
-      id: 'net_002',
-      hostname: 'access-switch-02.dc1',
-      type: 'Access Switch',
-      location: 'DC1-Floor2-Row4',
-      status: 'ONLINE',
-      uptime: 2134567,
-      portUtilization: 45.8,
-      packetLoss: 0.01,
-      latency: 0.8,
-      bandwidth: 1000,
-      throughput: 458,
-      temperature: 41.2,
-      fanSpeed: 2800,
-      powerUsage: 85,
-      manufacturer: 'Arista',
-      model: '7050SX3-48YC8',
-      firmware: '4.28.3M',
-      ipAddress: '192.168.1.252',
-      managementVlan: 100,
-      ports: 48,
-      portsActive: 22,
-      lastUpdate: Date.now() - 12 * 1000
-    },
-    {
-      id: 'net_003',
-      hostname: 'firewall-01.dc1',
-      type: 'Firewall',
-      location: 'DC1-Security-Zone',
-      status: 'ONLINE',
-      uptime: 7834567,
-      portUtilization: 23.4,
-      packetLoss: 0.00,
-      latency: 0.5,
-      bandwidth: 10000,
-      throughput: 2340,
-      temperature: 44.7,
-      fanSpeed: 3500,
-      powerUsage: 225,
-      manufacturer: 'Palo Alto',
-      model: 'PA-5220',
-      firmware: 'PAN-OS 11.0.3',
-      ipAddress: '10.0.0.1',
-      managementVlan: 200,
-      ports: 16,
-      portsActive: 8,
-      lastUpdate: Date.now() - 25 * 1000
-    },
-    {
-      id: 'net_004',
-      hostname: 'load-balancer-01.dc2',
-      type: 'Load Balancer',
-      location: 'DC2-Edge-Rack',
-      status: 'WARNING',
-      uptime: 1234567,
-      portUtilization: 78.9,
-      packetLoss: 0.05,
-      latency: 2.8,
-      bandwidth: 20000,
-      throughput: 15780,
-      temperature: 52.1,
-      fanSpeed: 4200,
-      powerUsage: 380,
-      manufacturer: 'F5',
-      model: 'BIG-IP i4800',
-      firmware: 'TMOS 17.1.0',
-      ipAddress: '10.0.1.10',
-      managementVlan: 300,
-      ports: 8,
-      portsActive: 6,
-      lastUpdate: Date.now() - 45 * 1000
-    }
-  ]);
-
-  const [environmentalSensors, setEnvironmentalSensors] = useState([
-    {
-      id: 'env_001',
-      location: 'DC1-Floor2-Cold-Aisle-A',
-      type: 'Temperature/Humidity',
-      temperature: 20.5,
-      humidity: 42.3,
-      status: 'NORMAL',
-      thresholds: { tempMin: 18, tempMax: 25, humidityMin: 40, humidityMax: 60 },
-      lastUpdate: Date.now() - 10 * 1000
-    },
-    {
-      id: 'env_002',
-      location: 'DC1-Floor2-Hot-Aisle-A',
-      type: 'Temperature/Humidity',
-      temperature: 28.7,
-      humidity: 38.9,
-      status: 'NORMAL',
-      thresholds: { tempMin: 25, tempMax: 35, humidityMin: 35, humidityMax: 65 },
-      lastUpdate: Date.now() - 15 * 1000
-    },
-    {
-      id: 'env_003',
-      location: 'DC2-Floor1-CRAC-Unit-01',
-      type: 'HVAC Monitor',
-      temperature: 22.1,
-      humidity: 45.2,
-      status: 'WARNING',
-      thresholds: { tempMin: 18, tempMax: 24, humidityMin: 40, humidityMax: 50 },
-      lastUpdate: Date.now() - 5 * 1000
-    },
-    {
-      id: 'env_004',
-      location: 'DC1-Entrance-Smoke-Detector',
-      type: 'Smoke Detection',
+      id: 'rack_b05_012',
+      location: 'Row B05 - Position 012',
+      type: 'STORAGE',
+      status: 'HIGH_LOAD',
+      power_usage: 9.8,
+      power_capacity: 12.0,
       temperature: 24.3,
-      humidity: 35.7,
-      status: 'NORMAL',
-      smokeLevel: 0.02, // ppm
-      thresholds: { smokeMax: 0.1 },
-      lastUpdate: Date.now() - 8 * 1000
+      humidity: 47.2,
+      u_slots_total: 42,
+      u_slots_occupied: 42,
+      u_slots_available: 0,
+      storage_systems: [
+        {
+          slot: 'U1-U4',
+          hostname: 'storage-pri-01.dc1',
+          type: 'NAS_ARRAY',
+          status: 'RUNNING',
+          capacity_total: 500, // TB
+          capacity_used: 387, // TB
+          iops: 14567,
+          latency: 2.4 // ms
+        },
+        {
+          slot: 'U5-U8',
+          hostname: 'storage-sec-01.dc1',
+          type: 'SAN_ARRAY',
+          status: 'WARNING',
+          capacity_total: 1000, // TB
+          capacity_used: 834, // TB
+          iops: 8923,
+          latency: 5.7,
+          alerts: ['DISK_FAILURE_IMMINENT']
+        }
+      ],
+      network_ports_active: 24,
+      network_ports_total: 24,
+      last_maintenance: Date.now() - 7 * 24 * 60 * 60 * 1000,
+      alerts: ['HIGH_TEMPERATURE', 'STORAGE_WARNING']
+    },
+    {
+      id: 'rack_c03_007',
+      location: 'Row C03 - Position 007',
+      type: 'NETWORK',
+      status: 'OPERATIONAL',
+      power_usage: 6.4,
+      power_capacity: 8.0,
+      temperature: 20.1,
+      humidity: 42.8,
+      u_slots_total: 42,
+      u_slots_occupied: 18,
+      u_slots_available: 24,
+      network_devices: [
+        {
+          slot: 'U1-U2',
+          hostname: 'core-sw-01.dc1',
+          type: 'CORE_SWITCH',
+          status: 'RUNNING',
+          ports_total: 48,
+          ports_active: 46,
+          throughput: 89.2, // percentage
+          packet_loss: 0.01 // percentage
+        },
+        {
+          slot: 'U3-U4',
+          hostname: 'dist-sw-01.dc1',
+          type: 'DISTRIBUTION_SWITCH',
+          status: 'RUNNING',
+          ports_total: 24,
+          ports_active: 22,
+          throughput: 67.8,
+          packet_loss: 0.03
+        },
+        {
+          slot: 'U5-U6',
+          hostname: 'firewall-01.dc1',
+          type: 'FIREWALL',
+          status: 'RUNNING',
+          connections_active: 15647,
+          connections_max: 50000,
+          blocked_attempts: 234,
+          cpu_usage: 34.2
+        }
+      ],
+      network_ports_active: 98,
+      network_ports_total: 120,
+      last_maintenance: Date.now() - 14 * 24 * 60 * 60 * 1000,
+      alerts: []
     }
   ]);
 
-  const [powerSystems, setPowerSystems] = useState([
+  const [environmentalSystems, setEnvironmentalSystems] = useState({
+    hvac_systems: [
+      {
+        id: 'HVAC_UNIT_01',
+        location: 'North Zone',
+        status: 'OPERATIONAL',
+        mode: 'COOLING',
+        supply_temp: 18.2, // celsius
+        return_temp: 25.7,
+        fan_speed: 78.5, // percentage
+        power_consumption: 245.8, // kW
+        efficiency: 94.2, // percentage
+        filter_status: 'GOOD',
+        last_maintenance: Date.now() - 45 * 24 * 60 * 60 * 1000,
+        next_maintenance: Date.now() + 15 * 24 * 60 * 60 * 1000
+      },
+      {
+        id: 'HVAC_UNIT_02',
+        location: 'South Zone',
+        status: 'OPERATIONAL',
+        mode: 'COOLING',
+        supply_temp: 17.9,
+        return_temp: 26.1,
+        fan_speed: 82.3,
+        power_consumption: 267.4,
+        efficiency: 92.8,
+        filter_status: 'NEEDS_REPLACEMENT',
+        last_maintenance: Date.now() - 60 * 24 * 60 * 60 * 1000,
+        next_maintenance: Date.now() + 7 * 24 * 60 * 60 * 1000
+      },
+      {
+        id: 'HVAC_UNIT_03',
+        location: 'East Zone',
+        status: 'MAINTENANCE',
+        mode: 'OFF',
+        maintenance_type: 'COMPRESSOR_REPLACEMENT',
+        eta_completion: Date.now() + 6 * 60 * 60 * 1000,
+        technician: 'HVAC Team Alpha',
+        backup_unit: 'HVAC_UNIT_BACKUP_01'
+      }
+    ],
+    power_distribution: [
+      {
+        id: 'PDU_A_MAIN',
+        location: 'Row A - Main Feed',
+        status: 'OPERATIONAL',
+        load_current: 78.4, // percentage
+        voltage_in: 480, // volts
+        voltage_out: 208,
+        frequency: 60.0, // Hz
+        power_factor: 0.95,
+        total_power: 890.5, // kW
+        max_power: 1200.0,
+        temperature: 42.1,
+        redundancy: 'N+1',
+        bypass_status: 'AVAILABLE'
+      },
+      {
+        id: 'PDU_B_SECONDARY',
+        location: 'Row B - Secondary Feed',
+        status: 'OPERATIONAL',
+        load_current: 65.2,
+        voltage_in: 480,
+        voltage_out: 208,
+        frequency: 60.0,
+        power_factor: 0.93,
+        total_power: 743.8,
+        max_power: 1200.0,
+        temperature: 39.7,
+        redundancy: 'N+1',
+        bypass_status: 'AVAILABLE'
+      },
+      {
+        id: 'UPS_PRIMARY',
+        location: 'UPS Room',
+        status: 'ON_BATTERY',
+        battery_capacity: 87.3, // percentage
+        runtime_remaining: 45, // minutes
+        load_percentage: 68.4,
+        input_voltage: 480,
+        output_voltage: 208,
+        reason: 'UTILITY_POWER_FLUCTUATION',
+        estimated_duration: '15 minutes'
+      }
+    ]
+  });
+
+  const [networkInfrastructure, setNetworkInfrastructure] = useState([
     {
-      id: 'pwr_001',
-      name: 'UPS-01-Main',
-      location: 'DC1-Power-Room',
-      type: 'UPS System',
-      status: 'ONLINE',
-      load: 67.8, // percentage
-      batteryLevel: 100,
-      runtime: 15.5, // minutes at current load
-      inputVoltage: 230.5,
-      outputVoltage: 230.2,
-      frequency: 50.0,
-      powerKW: 45.2,
-      capacity: 100, // kW
-      efficiency: 94.2,
-      temperature: 32.8,
-      lastMaintenance: '2026-01-15',
-      nextMaintenance: '2026-07-15',
-      alerts: 0
+      id: 'CORE_NET_01',
+      hostname: 'core-router-01.dc1',
+      type: 'CORE_ROUTER',
+      status: 'OPERATIONAL',
+      location: 'Network Core - Rack C01-001',
+      cpu_usage: 23.4, // percentage
+      memory_usage: 34.7,
+      temperature: 38.2,
+      uptime: 87.3, // days
+      interfaces: [
+        {
+          name: 'GigE0/0/1',
+          status: 'UP',
+          speed: '10Gbps',
+          utilization_in: 67.8,
+          utilization_out: 45.2,
+          errors: 0,
+          drops: 0
+        },
+        {
+          name: 'GigE0/0/2',
+          status: 'UP',
+          speed: '10Gbps',
+          utilization_in: 34.1,
+          utilization_out: 78.9,
+          errors: 2,
+          drops: 0
+        }
+      ],
+      routing_table_entries: 15847,
+      bgp_sessions: 12,
+      ospf_neighbors: 8
     },
     {
-      id: 'pwr_002',
-      name: 'PDU-R42-A',
-      location: 'DC1-Floor2-Rack42',
-      type: 'Power Distribution Unit',
-      status: 'ONLINE',
-      load: 78.9,
-      batteryLevel: null,
-      runtime: null,
-      inputVoltage: 230.2,
-      outputVoltage: 230.0,
-      frequency: 50.0,
-      powerKW: 15.8,
-      capacity: 20,
-      efficiency: 98.5,
-      temperature: 28.5,
-      lastMaintenance: '2025-12-10',
-      nextMaintenance: '2026-06-10',
-      alerts: 1
+      id: 'FIREWALL_01',
+      hostname: 'fw-perimeter-01.dc1',
+      type: 'PERIMETER_FIREWALL',
+      status: 'OPERATIONAL',
+      location: 'DMZ - Rack C02-003',
+      cpu_usage: 45.7,
+      memory_usage: 67.3,
+      temperature: 41.8,
+      uptime: 156.7,
+      sessions_active: 25678,
+      sessions_max: 100000,
+      threats_blocked_today: 1247,
+      bandwidth_usage: 2.4, // Gbps
+      rules_processed: 8947234,
+      ips_signatures: 45672,
+      last_signature_update: Date.now() - 4 * 60 * 60 * 1000
     },
     {
-      id: 'pwr_003',
-      name: 'Generator-Diesel-01',
-      location: 'DC1-External-Yard',
-      type: 'Backup Generator',
-      status: 'STANDBY',
-      load: 0,
-      batteryLevel: null,
-      runtime: 480, // minutes at full load
-      inputVoltage: null,
-      outputVoltage: 400.0,
-      frequency: 50.0,
-      powerKW: 0,
-      capacity: 500,
-      efficiency: null,
-      temperature: 18.7,
-      fuelLevel: 85.3, // percentage
-      lastTest: '2026-02-28',
-      nextTest: '2026-03-28',
-      alerts: 0
+      id: 'LOAD_BALANCER_01',
+      hostname: 'lb-app-01.dc1',
+      type: 'APPLICATION_LOAD_BALANCER',
+      status: 'OPERATIONAL',
+      location: 'App Tier - Rack B03-005',
+      cpu_usage: 56.2,
+      memory_usage: 71.8,
+      temperature: 47.3,
+      uptime: 234.1,
+      virtual_servers: [
+        {
+          name: 'web-app-pool',
+          status: 'UP',
+          members_total: 8,
+          members_active: 7,
+          members_down: 1,
+          requests_per_second: 1247,
+          response_time: 234 // ms
+        },
+        {
+          name: 'api-service-pool',
+          status: 'UP',
+          members_total: 6,
+          members_active: 6,
+          members_down: 0,
+          requests_per_second: 567,
+          response_time: 156
+        }
+      ]
     }
   ]);
 
-  const [incidents, setIncidents] = useState([
-    {
-      id: 'inc_001',
-      timestamp: Date.now() - 15 * 60 * 1000,
-      severity: 'HIGH',
-      type: 'DISK_SPACE_CRITICAL',
-      device: 'storage-nas-01.dc1.company.com',
-      description: 'Storage server disk usage exceeded 95% threshold',
-      status: 'ACKNOWLEDGED',
-      assignedTo: 'NOC Team',
-      impact: 'Service degradation possible',
-      resolution: 'Cleanup old backups and logs',
-      estimatedResolution: '30 minutes',
-      affected: ['File sharing', 'Backup services']
+  const [securitySystems, setSecuritySystems] = useState({
+    access_control: {
+      status: 'OPERATIONAL',
+      active_badges: 234,
+      failed_access_attempts: 8,
+      doors_secured: 47,
+      doors_total: 48,
+      security_zones_breached: 0,
+      cameras_active: 156,
+      cameras_total: 160,
+      motion_detectors_active: 89,
+      last_security_incident: Date.now() - 15 * 24 * 60 * 60 * 1000
     },
-    {
-      id: 'inc_002',
-      timestamp: Date.now() - 45 * 60 * 1000,
-      severity: 'MEDIUM',
-      type: 'TEMPERATURE_WARNING',
-      device: 'DC2-Floor1-CRAC-Unit-01',
-      description: 'HVAC unit temperature trending above normal range',
-      status: 'IN_PROGRESS',
-      assignedTo: 'Facilities Team',
-      impact: 'Potential equipment overheating',
-      resolution: 'HVAC maintenance scheduled',
-      estimatedResolution: '2 hours',
-      affected: ['DC2 cooling system']
+    fire_suppression: {
+      status: 'ARMED',
+      zones_monitored: 12,
+      smoke_detectors: 145,
+      heat_detectors: 89,
+      suppression_agent: 'CLEAN_AGENT',
+      agent_level: 97.3, // percentage
+      last_test: Date.now() - 30 * 24 * 60 * 60 * 1000,
+      next_test: Date.now() + 60 * 24 * 60 * 60 * 1000
     },
-    {
-      id: 'inc_003',
-      timestamp: Date.now() - 2 * 60 * 60 * 1000,
-      severity: 'LOW',
-      type: 'PACKET_LOSS_DETECTED',
-      device: 'load-balancer-01.dc2',
-      description: 'Minor packet loss detected on load balancer',
-      status: 'MONITORING',
-      assignedTo: 'Network Team',
-      impact: 'Slight performance degradation',
-      resolution: 'Monitoring traffic patterns',
-      estimatedResolution: '1 hour',
-      affected: ['Load balancing efficiency']
-    },
-    {
-      id: 'inc_004',
-      timestamp: Date.now() - 6 * 60 * 60 * 1000,
-      severity: 'HIGH',
-      type: 'BACKUP_FAILURE',
-      device: 'cache-cluster-01.dc2.company.com',
-      description: 'Automated backup process failed multiple times',
-      status: 'RESOLVED',
-      assignedTo: 'Database Team',
-      impact: 'Data recovery risk',
-      resolution: 'Backup configuration corrected',
-      estimatedResolution: 'Completed',
-      affected: ['Data backup integrity']
+    environmental_monitoring: {
+      water_leak_sensors: 67,
+      water_leak_status: 'DRY',
+      vibration_sensors: 23,
+      vibration_status: 'NORMAL',
+      air_quality_sensors: 12,
+      air_quality_status: 'GOOD',
+      emergency_lighting: 'OPERATIONAL',
+      backup_generators: 3,
+      fuel_level: 78.4 // percentage
     }
-  ]);
+  });
 
-  const [performanceTrends, setPerformanceTrends] = useState([]);
-  const [capacityTrends, setCapacityTrends] = useState([]);
+  const [performanceMetrics, setPerformanceMetrics] = useState([]);
 
-  const generatePerformanceTrends = () => {
+  const generatePerformanceMetrics = () => {
     const data = [];
     for (let i = 23; i >= 0; i--) {
-      const time = new Date();
-      time.setHours(time.getHours() - i);
+      const hour = new Date();
+      hour.setHours(hour.getHours() - i);
+      
       data.push({
-        hour: time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
-        cpuAvg: Math.floor(Math.random() * 40) + 40, // 40-80%
-        memoryAvg: Math.floor(Math.random() * 30) + 50, // 50-80%
-        networkThroughput: Math.floor(Math.random() * 2000) + 1000, // 1000-3000 Mbps
-        diskIO: Math.floor(Math.random() * 500) + 200, // 200-700 IOPS
-        powerConsumption: Math.floor(Math.random() * 20) + 80, // 80-100 kW
-        temperature: Math.floor(Math.random() * 10) + 40 // 40-50°C
+        time: hour.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}),
+        power_consumption: 2.0 + Math.random() * 0.8,
+        temperature: 20 + Math.random() * 6,
+        network_utilization: 60 + Math.random() * 25,
+        server_cpu: 40 + Math.random() * 40,
+        storage_iops: 10000 + Math.random() * 8000,
+        cooling_efficiency: 1.2 + Math.random() * 0.4
       });
     }
     return data;
   };
 
-  const generateCapacityTrends = () => {
-    return [
-      { category: 'Compute', used: 68.5, total: 100, available: 31.5 },
-      { category: 'Storage', used: 82.3, total: 100, available: 17.7 },
-      { category: 'Network', used: 45.7, total: 100, available: 54.3 },
-      { category: 'Power', used: 67.8, total: 100, available: 32.2 },
-      { category: 'Cooling', used: 71.2, total: 100, available: 28.8 }
-    ];
-  };
-
   useEffect(() => {
-    setPerformanceTrends(generatePerformanceTrends());
-    setCapacityTrends(generateCapacityTrends());
+    setPerformanceMetrics(generatePerformanceMetrics());
   }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update servers
-      setServers(prev => prev.map(server => {
-        if (server.status === 'MAINTENANCE') return server;
-        
-        return {
-          ...server,
-          cpuUsage: Math.max(10, Math.min(95, server.cpuUsage + (Math.random() - 0.5) * 10)),
-          memoryUsage: Math.max(20, Math.min(98, server.memoryUsage + (Math.random() - 0.5) * 8)),
-          diskUsage: Math.max(10, Math.min(99, server.diskUsage + (Math.random() - 0.5) * 2)),
-          networkThroughput: Math.max(0, server.networkThroughput + (Math.random() - 0.5) * 200),
-          temperature: Math.max(20, Math.min(60, server.temperature + (Math.random() - 0.5) * 5)),
-          powerUsage: Math.max(50, Math.min(700, server.powerUsage + (Math.random() - 0.5) * 50)),
-          uptime: server.status === 'ONLINE' ? server.uptime + 5 : server.uptime,
-          lastUpdate: Date.now(),
-          alerts: server.status === 'CRITICAL' ? Math.max(3, server.alerts) : 
-                 server.status === 'WARNING' ? Math.max(1, server.alerts) : 
-                 Math.max(0, Math.min(2, server.alerts + Math.floor((Math.random() - 0.8) * 2)))
-        };
-      }));
-
-      // Update network devices
-      setNetworkDevices(prev => prev.map(device => ({
-        ...device,
-        portUtilization: Math.max(10, Math.min(90, device.portUtilization + (Math.random() - 0.5) * 10)),
-        packetLoss: Math.max(0, Math.min(1, device.packetLoss + (Math.random() - 0.5) * 0.02)),
-        latency: Math.max(0.1, Math.min(10, device.latency + (Math.random() - 0.5) * 0.5)),
-        throughput: Math.max(100, Math.min(device.bandwidth * 0.9, device.throughput + (Math.random() - 0.5) * 500)),
-        temperature: Math.max(25, Math.min(60, device.temperature + (Math.random() - 0.5) * 3)),
-        powerUsage: Math.max(50, Math.min(500, device.powerUsage + (Math.random() - 0.5) * 20)),
+      // Update data center status
+      setDataCenterStatus(prev => ({
+        ...prev,
+        powerConsumption: Math.max(2.0, Math.min(3.0, prev.powerConsumption + (Math.random() - 0.5) * 0.1)),
+        averageTemperature: Math.max(20.0, Math.min(26.0, prev.averageTemperature + (Math.random() - 0.5) * 0.5)),
+        networkUtilization: Math.max(60.0, Math.min(85.0, prev.networkUtilization + (Math.random() - 0.5) * 5.0)),
+        storageUtilization: Math.max(75.0, Math.min(85.0, prev.storageUtilization + (Math.random() - 0.5) * 2.0)),
         lastUpdate: Date.now()
-      })));
-
-      // Update environmental sensors
-      setEnvironmentalSensors(prev => prev.map(sensor => {
-        const newTemp = Math.max(15, Math.min(40, sensor.temperature + (Math.random() - 0.5) * 2));
-        const newHumidity = Math.max(30, Math.min(70, sensor.humidity + (Math.random() - 0.5) * 3));
-        
-        let status = 'NORMAL';
-        if (sensor.thresholds) {
-          if (newTemp < sensor.thresholds.tempMin || newTemp > sensor.thresholds.tempMax ||
-              newHumidity < sensor.thresholds.humidityMin || newHumidity > sensor.thresholds.humidityMax) {
-            status = 'WARNING';
-          }
-        }
-
-        return {
-          ...sensor,
-          temperature: newTemp,
-          humidity: newHumidity,
-          status: status,
-          smokeLevel: sensor.smokeLevel ? Math.max(0, Math.min(0.2, sensor.smokeLevel + (Math.random() - 0.5) * 0.01)) : undefined,
-          lastUpdate: Date.now()
-        };
       }));
 
-      // Update power systems
-      setPowerSystems(prev => prev.map(power => ({
-        ...power,
-        load: power.status === 'STANDBY' ? 0 : Math.max(20, Math.min(95, power.load + (Math.random() - 0.5) * 5)),
-        batteryLevel: power.batteryLevel !== null ? Math.max(80, Math.min(100, power.batteryLevel + (Math.random() - 0.5) * 2)) : null,
-        inputVoltage: power.inputVoltage ? Math.max(220, Math.min(240, power.inputVoltage + (Math.random() - 0.5) * 2)) : null,
-        outputVoltage: Math.max(220, Math.min(240, power.outputVoltage + (Math.random() - 0.5) * 1)),
-        powerKW: power.status === 'STANDBY' ? 0 : Math.max(5, Math.min(power.capacity, power.powerKW + (Math.random() - 0.5) * 5)),
-        temperature: Math.max(15, Math.min(45, power.temperature + (Math.random() - 0.5) * 3)),
-        fuelLevel: power.fuelLevel ? Math.max(75, Math.min(100, power.fuelLevel + (Math.random() - 0.5) * 1)) : undefined
-      })));
+      // Update environmental systems
+      setEnvironmentalSystems(prev => ({
+        ...prev,
+        hvac_systems: prev.hvac_systems.map(hvac => ({
+          ...hvac,
+          supply_temp: Math.max(17.0, Math.min(20.0, hvac.supply_temp + (Math.random() - 0.5) * 0.3)),
+          fan_speed: Math.max(70.0, Math.min(90.0, hvac.fan_speed + (Math.random() - 0.5) * 2.0))
+        }))
+      }));
 
-      // Occasionally generate new incidents
-      if (Math.random() > 0.99) {
-        const incidentTypes = ['DISK_SPACE_WARNING', 'NETWORK_LATENCY', 'HIGH_CPU_USAGE', 'MEMORY_LEAK'];
-        const severities = ['LOW', 'MEDIUM', 'HIGH'];
-        const devices = servers.map(s => s.hostname).concat(networkDevices.map(n => n.hostname));
-        
-        const newIncident = {
-          id: `inc_${Date.now()}`,
-          timestamp: Date.now(),
-          severity: severities[Math.floor(Math.random() * severities.length)],
-          type: incidentTypes[Math.floor(Math.random() * incidentTypes.length)],
-          device: devices[Math.floor(Math.random() * devices.length)],
-          description: 'Automated monitoring alert generated',
-          status: 'NEW',
-          assignedTo: 'NOC Team',
-          impact: 'Performance monitoring required',
-          resolution: 'Investigating root cause',
-          estimatedResolution: '1 hour',
-          affected: ['System performance']
-        };
-        
-        setIncidents(prev => [newIncident, ...prev.slice(0, 9)]);
-      }
-    }, 4000);
+    }, 20000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getServerStatusColor = (status) => {
+  const getStatusColor = (status) => {
     switch (status) {
-      case 'ONLINE': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'WARNING': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
+      case 'OPTIMAL':
+      case 'OPERATIONAL':
+      case 'RUNNING':
+      case 'UP':
+      case 'ARMED':
+      case 'AVAILABLE':
+      case 'GOOD':
+      case 'DRY':
+      case 'NORMAL': return 'text-green-400 bg-green-400/20 border-green-400/30';
+      case 'HIGH_LOAD':
+      case 'ON_BATTERY':
+      case 'NEEDS_REPLACEMENT': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
+      case 'WARNING': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
+      case 'MAINTENANCE':
+      case 'OFF': return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
+      case 'DOWN':
+      case 'ERROR':
       case 'CRITICAL': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      case 'MAINTENANCE': return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
-      case 'OFFLINE': return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
       default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
     }
   };
 
-  const getIncidentSeverityColor = (severity) => {
-    switch (severity) {
-      case 'HIGH': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      case 'MEDIUM': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'LOW': return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
-    }
+  const formatNumber = (num, decimals = 0) => {
+    return num.toFixed(decimals);
   };
 
-  const getUsageColor = (percentage) => {
-    if (percentage >= 90) return 'text-red-400';
-    if (percentage >= 75) return 'text-yellow-400';
-    if (percentage >= 50) return 'text-orange-400';
-    return 'text-green-400';
-  };
-
-  const formatUptime = (seconds) => {
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    if (days > 0) return `${days}d ${hours}h`;
-    return `${hours}h ${Math.floor((seconds % 3600) / 60)}m`;
+  const formatLargeNumber = (num) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
+    return num.toString();
   };
 
   const formatTime = (timestamp) => {
-    const diff = Date.now() - timestamp;
-    if (diff < 60000) return 'now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    return `${Math.floor(diff / 3600000)}h ago`;
+    if (!timestamp) return 'N/A';
+    const diff = timestamp - Date.now();
+    if (Math.abs(diff) < 60000) return 'now';
+    if (diff > 0) {
+      if (diff < 3600000) return `in ${Math.floor(diff / 60000)}min`;
+      return `in ${Math.floor(diff / 3600000)}h`;
+    } else {
+      const absDiff = Math.abs(diff);
+      if (absDiff < 3600000) return `${Math.floor(absDiff / 60000)}m ago`;
+      return `${Math.floor(absDiff / 3600000)}h ago`;
+    }
+  };
+
+  const formatUptime = (days) => {
+    if (days < 1) return `${Math.floor(days * 24)}h`;
+    return `${Math.floor(days)}d ${Math.floor((days % 1) * 24)}h`;
   };
 
   return (
@@ -586,77 +477,80 @@ const DataCenterOperations = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-white font-mono">
-          🏢 DATA CENTER OPERATIONS CONTROL (NOC/DCIM)
+          🏢 DATA CENTER OPERATIONS CENTER
         </h2>
         <div className="flex items-center space-x-4">
           <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            {servers.filter(s => s.status === 'ONLINE').length}/{servers.length} Online
+            {formatNumber(((dataCenterStatus.powerConsumption / dataCenterStatus.powerCapacity) * 100), 1)}% Power
           </div>
           <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono border border-blue-500/30">
-            {incidents.filter(i => i.status === 'NEW' || i.status === 'ACKNOWLEDGED').length} Active Incidents
+            {dataCenterStatus.activeServers} Servers
+          </div>
+          <div className="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-mono border border-purple-500/30">
+            {formatNumber(dataCenterStatus.coolingEfficiency, 2)} PUE
           </div>
           <div className="text-sm text-gray-400 font-mono">
-            Siemens Datacenter Clarity LC
+            NOC & DCIM Systems
           </div>
         </div>
       </div>
 
-      {/* Infrastructure Overview */}
+      {/* Data Center Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">SERVERS ONLINE</div>
-              <div className="text-2xl font-bold text-green-100">
-                {servers.filter(s => s.status === 'ONLINE').length}/{servers.length}
-              </div>
-              <div className="text-xs text-green-300">
-                {((servers.filter(s => s.status === 'ONLINE').length / servers.length) * 100).toFixed(1)}% uptime
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🖥️</div>
-          </div>
-        </div>
-
         <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs text-blue-200">NETWORK THROUGHPUT</div>
+              <div className="text-xs text-blue-200">POWER CONSUMPTION</div>
               <div className="text-2xl font-bold text-blue-100">
-                {Math.floor(networkDevices.reduce((sum, dev) => sum + dev.throughput, 0))} Mbps
+                {formatNumber(dataCenterStatus.powerConsumption, 1)}MW
               </div>
               <div className="text-xs text-blue-300">
-                {networkDevices.filter(n => n.status === 'ONLINE').length}/{networkDevices.length} devices
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🌐</div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">POWER CONSUMPTION</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {Math.floor(powerSystems.reduce((sum, pwr) => sum + pwr.powerKW, 0))} kW
-              </div>
-              <div className="text-xs text-purple-300">
-                {powerSystems.filter(p => p.status === 'ONLINE').length}/{powerSystems.length} systems
+                of {formatNumber(dataCenterStatus.powerCapacity, 1)}MW capacity
               </div>
             </div>
             <div className="text-3xl opacity-60">⚡</div>
           </div>
         </div>
 
+        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs text-green-200">ACTIVE SERVERS</div>
+              <div className="text-2xl font-bold text-green-100">
+                {dataCenterStatus.activeServers}
+              </div>
+              <div className="text-xs text-green-300">
+                of {dataCenterStatus.totalServers} total
+              </div>
+            </div>
+            <div className="text-3xl opacity-60">🖥️</div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs text-purple-200">COOLING EFFICIENCY</div>
+              <div className="text-2xl font-bold text-purple-100">
+                {formatNumber(dataCenterStatus.coolingEfficiency, 2)}
+              </div>
+              <div className="text-xs text-purple-300">
+                PUE Ratio
+              </div>
+            </div>
+            <div className="text-3xl opacity-60">❄️</div>
+          </div>
+        </div>
+
         <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs text-orange-200">AVG TEMPERATURE</div>
+              <div className="text-xs text-orange-200">TEMPERATURE</div>
               <div className="text-2xl font-bold text-orange-100">
-                {(environmentalSensors.reduce((sum, env) => sum + env.temperature, 0) / environmentalSensors.length).toFixed(1)}°C
+                {formatNumber(dataCenterStatus.averageTemperature, 1)}°C
               </div>
               <div className="text-xs text-orange-300">
-                {environmentalSensors.filter(e => e.status === 'NORMAL').length}/{environmentalSensors.length} normal
+                {formatNumber(dataCenterStatus.humidity, 1)}% humidity
               </div>
             </div>
             <div className="text-3xl opacity-60">🌡️</div>
@@ -664,515 +558,525 @@ const DataCenterOperations = () => {
         </div>
       </div>
 
-      {/* Servers and Network Devices */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Server Infrastructure */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🖥️ SERVER INFRASTRUCTURE
-          </h3>
-          <div className="space-y-3 max-h-96 overflow-y-auto">
-            {servers.map((server) => (
-              <div key={server.id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getServerStatusColor(server.status)}`}>
-                      {server.status}
+      {/* Rack Status */}
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h3 className="text-lg font-bold text-white mb-4 font-mono">
+          🗄️ RACK STATUS & INFRASTRUCTURE MONITORING
+        </h3>
+        <div className="space-y-3">
+          {rackStatus.map((rack) => (
+            <div key={rack.id} className="bg-gray-700 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="text-sm font-bold text-white">{rack.location}</div>
+                  <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(rack.status)}`}>
+                    {rack.status.replace(/_/g, ' ')}
+                  </span>
+                  <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
+                    {rack.type}
+                  </span>
+                  {rack.alerts.length > 0 && (
+                    <span className="text-xs px-2 py-1 rounded bg-red-500 text-white animate-pulse">
+                      {rack.alerts.length} ALERT{rack.alerts.length > 1 ? 'S' : ''}
                     </span>
-                    {server.alerts > 0 && (
-                      <span className="text-xs px-2 py-1 rounded bg-red-500 text-white">
-                        {server.alerts} alerts
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {formatTime(server.lastUpdate)}
-                  </div>
-                </div>
-                
-                <div className="text-sm font-bold text-white mb-1">{server.hostname}</div>
-                <div className="text-xs text-purple-400 mb-2">{server.role} | {server.location}</div>
-                <div className="text-xs text-cyan-400 mb-3">
-                  {server.manufacturer} {server.model} | {server.os}
-                </div>
-                
-                <div className="grid grid-cols-3 gap-3 text-xs mb-3">
-                  <div>
-                    <div className="text-gray-400">CPU Usage</div>
-                    <div className={getUsageColor(server.cpuUsage)}>{server.cpuUsage.toFixed(1)}%</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Memory</div>
-                    <div className={getUsageColor(server.memoryUsage)}>{server.memoryUsage.toFixed(1)}%</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Disk Usage</div>
-                    <div className={getUsageColor(server.diskUsage)}>{server.diskUsage.toFixed(1)}%</div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3 text-xs mb-3">
-                  <div>
-                    <div className="text-gray-400">Network</div>
-                    <div className="text-blue-400">{server.networkThroughput.toFixed(0)} Mbps</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Temperature</div>
-                    <div className="text-orange-400">{server.temperature.toFixed(1)}°C</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Power</div>
-                    <div className="text-yellow-400">{server.powerUsage}W</div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs mb-2">
-                  <div>
-                    <div className="text-gray-400">Uptime</div>
-                    <div className="text-green-400">{formatUptime(server.uptime)}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">IP Address</div>
-                    <div className="text-indigo-400">{server.ipAddress}</div>
-                  </div>
-                </div>
-
-                <div className="text-xs">
-                  <span className="text-gray-400">Apps: </span>
-                  <span className="text-pink-400">{server.applications.join(', ')}</span>
+                  )}
                 </div>
               </div>
-            ))}
+
+              <div className="text-xs mb-3">
+                <span className="text-gray-400">Power: </span>
+                <span className="text-yellow-400">{formatNumber(rack.power_usage, 1)}kW</span>
+                <span className="text-gray-400">/</span>
+                <span className="text-blue-400">{formatNumber(rack.power_capacity, 1)}kW</span>
+                <span className="text-gray-400"> | Temp: </span>
+                <span className={rack.temperature > 23 ? 'text-red-400' : 'text-green-400'}>
+                  {formatNumber(rack.temperature, 1)}°C
+                </span>
+                <span className="text-gray-400"> | Humidity: </span>
+                <span className="text-cyan-400">{formatNumber(rack.humidity, 1)}%</span>
+              </div>
+
+              <div className="text-xs mb-3">
+                <span className="text-gray-400">U Slots: </span>
+                <span className="text-orange-400">{rack.u_slots_occupied}</span>
+                <span className="text-gray-400">/</span>
+                <span className="text-blue-400">{rack.u_slots_total} occupied</span>
+                <span className="text-gray-400"> | Available: </span>
+                <span className="text-green-400">{rack.u_slots_available}</span>
+                <span className="text-gray-400"> | Network Ports: </span>
+                <span className="text-purple-400">{rack.network_ports_active}</span>
+                <span className="text-gray-400">/</span>
+                <span className="text-blue-400">{rack.network_ports_total}</span>
+              </div>
+
+              {rack.servers && (
+                <div className="text-xs mb-3">
+                  <div className="text-gray-400 mb-1">Servers:</div>
+                  {rack.servers.map((server, index) => (
+                    <div key={index} className="ml-2 mb-1">
+                      <span className="text-cyan-400">{server.hostname}</span>
+                      <span className="text-gray-400"> ({server.slot}) - </span>
+                      <span className={`${getStatusColor(server.status).split(' ')[0]}`}>
+                        {server.status.replace(/_/g, ' ')}
+                      </span>
+                      {server.status === 'RUNNING' && (
+                        <>
+                          <span className="text-gray-400"> | CPU: </span>
+                          <span className="text-green-400">{formatNumber(server.cpu_usage, 1)}%</span>
+                          <span className="text-gray-400"> | RAM: </span>
+                          <span className="text-blue-400">{formatNumber(server.memory_usage, 1)}%</span>
+                        </>
+                      )}
+                      {server.reason && (
+                        <>
+                          <span className="text-gray-400"> | </span>
+                          <span className="text-orange-400">{server.reason.replace(/_/g, ' ')}</span>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {rack.storage_systems && (
+                <div className="text-xs mb-3">
+                  <div className="text-gray-400 mb-1">Storage Systems:</div>
+                  {rack.storage_systems.map((storage, index) => (
+                    <div key={index} className="ml-2 mb-1">
+                      <span className="text-cyan-400">{storage.hostname}</span>
+                      <span className="text-gray-400"> ({storage.slot}) - </span>
+                      <span className={`${getStatusColor(storage.status).split(' ')[0]}`}>
+                        {storage.status}
+                      </span>
+                      <span className="text-gray-400"> | Capacity: </span>
+                      <span className="text-purple-400">{storage.capacity_used}TB</span>
+                      <span className="text-gray-400">/</span>
+                      <span className="text-blue-400">{storage.capacity_total}TB</span>
+                      <span className="text-gray-400"> | IOPS: </span>
+                      <span className="text-green-400">{formatLargeNumber(storage.iops)}</span>
+                      {storage.alerts && storage.alerts.length > 0 && (
+                        <>
+                          <span className="text-gray-400"> | </span>
+                          <span className="text-red-400">{storage.alerts[0].replace(/_/g, ' ')}</span>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {rack.network_devices && (
+                <div className="text-xs mb-3">
+                  <div className="text-gray-400 mb-1">Network Devices:</div>
+                  {rack.network_devices.map((device, index) => (
+                    <div key={index} className="ml-2 mb-1">
+                      <span className="text-cyan-400">{device.hostname}</span>
+                      <span className="text-gray-400"> ({device.slot}) - </span>
+                      <span className={`${getStatusColor(device.status).split(' ')[0]}`}>
+                        {device.status}
+                      </span>
+                      {device.ports_total && (
+                        <>
+                          <span className="text-gray-400"> | Ports: </span>
+                          <span className="text-green-400">{device.ports_active}</span>
+                          <span className="text-gray-400">/</span>
+                          <span className="text-blue-400">{device.ports_total}</span>
+                        </>
+                      )}
+                      {device.connections_active && (
+                        <>
+                          <span className="text-gray-400"> | Connections: </span>
+                          <span className="text-purple-400">{formatLargeNumber(device.connections_active)}</span>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {rack.alerts.length > 0 && (
+                <div className="text-xs">
+                  <div className="text-gray-400">Alerts:</div>
+                  {rack.alerts.map((alert, index) => (
+                    <div key={index} className="text-red-400">🚨 {alert.replace(/_/g, ' ')}</div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Environmental Systems and Network Infrastructure */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Environmental Systems */}
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 className="text-lg font-bold text-white mb-4 font-mono">
+            🌡️ ENVIRONMENTAL SYSTEMS & POWER MANAGEMENT
+          </h3>
+          
+          {/* HVAC Systems */}
+          <div className="bg-gray-700 rounded-lg p-4 mb-4">
+            <h4 className="text-sm font-bold text-white mb-3">HVAC Systems</h4>
+            <div className="space-y-2">
+              {environmentalSystems.hvac_systems.map((hvac) => (
+                <div key={hvac.id} className="bg-gray-600 rounded p-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-white">{hvac.id}</span>
+                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(hvac.status)}`}>
+                      {hvac.status}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-300">
+                    {hvac.location} - {hvac.mode}
+                  </div>
+                  {hvac.status === 'OPERATIONAL' && (
+                    <div className="text-xs mt-1">
+                      <span className="text-gray-400">Supply: </span>
+                      <span className="text-cyan-400">{formatNumber(hvac.supply_temp, 1)}°C</span>
+                      <span className="text-gray-400"> | Fan: </span>
+                      <span className="text-green-400">{formatNumber(hvac.fan_speed, 1)}%</span>
+                      <span className="text-gray-400"> | Power: </span>
+                      <span className="text-yellow-400">{formatNumber(hvac.power_consumption, 1)}kW</span>
+                    </div>
+                  )}
+                  {hvac.maintenance_type && (
+                    <div className="text-xs mt-1">
+                      <span className="text-orange-400">{hvac.maintenance_type.replace(/_/g, ' ')}</span>
+                      <span className="text-gray-400"> | ETA: </span>
+                      <span className="text-yellow-400">{formatTime(hvac.eta_completion)}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Power Distribution */}
+          <div className="bg-gray-700 rounded-lg p-4">
+            <h4 className="text-sm font-bold text-white mb-3">Power Distribution</h4>
+            <div className="space-y-2">
+              {environmentalSystems.power_distribution.map((pdu) => (
+                <div key={pdu.id} className="bg-gray-600 rounded p-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-white">{pdu.id}</span>
+                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(pdu.status)}`}>
+                      {pdu.status}
+                    </span>
+                  </div>
+                  {pdu.status === 'OPERATIONAL' && (
+                    <div className="text-xs mt-1">
+                      <span className="text-gray-400">Load: </span>
+                      <span className={pdu.load_current > 80 ? 'text-red-400' : 'text-green-400'}>
+                        {formatNumber(pdu.load_current, 1)}%
+                      </span>
+                      <span className="text-gray-400"> | Power: </span>
+                      <span className="text-purple-400">{formatNumber(pdu.total_power, 1)}kW</span>
+                      <span className="text-gray-400"> | PF: </span>
+                      <span className="text-cyan-400">{formatNumber(pdu.power_factor, 2)}</span>
+                    </div>
+                  )}
+                  {pdu.status === 'ON_BATTERY' && (
+                    <div className="text-xs mt-1">
+                      <span className="text-gray-400">Battery: </span>
+                      <span className="text-orange-400">{formatNumber(pdu.battery_capacity, 1)}%</span>
+                      <span className="text-gray-400"> | Runtime: </span>
+                      <span className="text-red-400">{pdu.runtime_remaining}min</span>
+                      <div className="text-yellow-400">{pdu.reason.replace(/_/g, ' ')}</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Network Infrastructure */}
         <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
           <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🌐 NETWORK INFRASTRUCTURE
+            🌐 NETWORK INFRASTRUCTURE & CONNECTIVITY
           </h3>
-          <div className="space-y-3">
-            {networkDevices.map((device) => (
-              <div key={device.id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
+          <div className="space-y-3 max-h-80 overflow-y-auto">
+            {networkInfrastructure.map((device) => (
+              <div key={device.id} className="bg-gray-700 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getServerStatusColor(device.status)}`}>
+                    <span className="text-sm font-bold text-white">{device.hostname}</span>
+                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(device.status)}`}>
                       {device.status}
                     </span>
                     <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                      {device.type}
+                      {device.type.replace(/_/g, ' ')}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-400">
-                    {formatTime(device.lastUpdate)}
-                  </div>
-                </div>
-                
-                <div className="text-sm font-bold text-white mb-1">{device.hostname}</div>
-                <div className="text-xs text-cyan-400 mb-3">{device.location}</div>
-                <div className="text-xs text-purple-400 mb-3">
-                  {device.manufacturer} {device.model} | {device.firmware}
                 </div>
 
-                <div className="grid grid-cols-3 gap-3 text-xs mb-3">
-                  <div>
-                    <div className="text-gray-400">Port Utilization</div>
-                    <div className={getUsageColor(device.portUtilization)}>{device.portUtilization.toFixed(1)}%</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Throughput</div>
-                    <div className="text-blue-400">{device.throughput.toFixed(0)} Mbps</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Latency</div>
-                    <div className="text-green-400">{device.latency.toFixed(1)}ms</div>
-                  </div>
+                <div className="text-xs mb-2">
+                  <span className="text-gray-400">Location: </span>
+                  <span className="text-cyan-400">{device.location}</span>
+                  <span className="text-gray-400"> | Uptime: </span>
+                  <span className="text-green-400">{formatUptime(device.uptime)}</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3 text-xs mb-2">
-                  <div>
-                    <div className="text-gray-400">Packet Loss</div>
-                    <div className="text-orange-400">{device.packetLoss.toFixed(2)}%</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Temperature</div>
-                    <div className="text-red-400">{device.temperature.toFixed(1)}°C</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Power</div>
-                    <div className="text-yellow-400">{device.powerUsage}W</div>
-                  </div>
+                <div className="text-xs mb-2">
+                  <span className="text-gray-400">CPU: </span>
+                  <span className={device.cpu_usage > 80 ? 'text-red-400' : 'text-green-400'}>
+                    {formatNumber(device.cpu_usage, 1)}%
+                  </span>
+                  <span className="text-gray-400"> | Memory: </span>
+                  <span className={device.memory_usage > 85 ? 'text-red-400' : 'text-blue-400'}>
+                    {formatNumber(device.memory_usage, 1)}%
+                  </span>
+                  <span className="text-gray-400"> | Temp: </span>
+                  <span className={device.temperature > 50 ? 'text-red-400' : 'text-orange-400'}>
+                    {formatNumber(device.temperature, 1)}°C
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3 text-xs">
-                  <div>
-                    <div className="text-gray-400">Active Ports</div>
-                    <div className="text-indigo-400">{device.portsActive}/{device.ports}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">IP Address</div>
-                    <div className="text-pink-400">{device.ipAddress}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Uptime</div>
-                    <div className="text-green-400">{formatUptime(device.uptime)}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Environmental and Power Systems */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Environmental Monitoring */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🌡️ ENVIRONMENTAL MONITORING
-          </h3>
-          <div className="space-y-3">
-            {environmentalSensors.map((sensor) => (
-              <div key={sensor.id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getServerStatusColor(sensor.status)}`}>
-                      {sensor.status}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                      {sensor.type}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {formatTime(sensor.lastUpdate)}
-                  </div>
-                </div>
-                
-                <div className="text-sm font-bold text-white mb-1">{sensor.location}</div>
-
-                <div className="grid grid-cols-2 gap-3 text-xs mb-3">
-                  <div>
-                    <div className="text-gray-400">Temperature</div>
-                    <div className="text-orange-400">{sensor.temperature.toFixed(1)}°C</div>
-                    {sensor.thresholds && (
-                      <div className="text-gray-500 text-xs">
-                        ({sensor.thresholds.tempMin}-{sensor.thresholds.tempMax}°C)
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Humidity</div>
-                    <div className="text-blue-400">{sensor.humidity.toFixed(1)}%</div>
-                    {sensor.thresholds && (
-                      <div className="text-gray-500 text-xs">
-                        ({sensor.thresholds.humidityMin}-{sensor.thresholds.humidityMax}%)
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {sensor.smokeLevel !== undefined && (
-                  <div className="text-xs">
-                    <div className="text-gray-400">Smoke Level</div>
-                    <div className="text-red-400">{sensor.smokeLevel.toFixed(3)} ppm</div>
-                    <div className="text-gray-500 text-xs">
-                      (max {sensor.thresholds?.smokeMax} ppm)
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Power Systems */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            ⚡ POWER SYSTEMS
-          </h3>
-          <div className="space-y-3">
-            {powerSystems.map((power) => (
-              <div key={power.id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getServerStatusColor(power.status)}`}>
-                      {power.status}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                      {power.type}
-                    </span>
-                    {power.alerts > 0 && (
-                      <span className="text-xs px-2 py-1 rounded bg-red-500 text-white">
-                        {power.alerts} alerts
-                      </span>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="text-sm font-bold text-white mb-1">{power.name}</div>
-                <div className="text-xs text-cyan-400 mb-3">{power.location}</div>
-
-                <div className="grid grid-cols-3 gap-3 text-xs mb-3">
-                  <div>
-                    <div className="text-gray-400">Load</div>
-                    <div className={getUsageColor(power.load)}>{power.load.toFixed(1)}%</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Power</div>
-                    <div className="text-yellow-400">{power.powerKW.toFixed(1)} kW</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400">Capacity</div>
-                    <div className="text-green-400">{power.capacity} kW</div>
-                  </div>
-                </div>
-
-                {power.batteryLevel !== null && (
-                  <div className="grid grid-cols-3 gap-3 text-xs mb-2">
-                    <div>
-                      <div className="text-gray-400">Battery</div>
-                      <div className="text-blue-400">{power.batteryLevel.toFixed(0)}%</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-400">Runtime</div>
-                      <div className="text-purple-400">{power.runtime.toFixed(1)} min</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-400">Efficiency</div>
-                      <div className="text-orange-400">{power.efficiency?.toFixed(1)}%</div>
-                    </div>
-                  </div>
-                )}
-
-                {power.fuelLevel && (
+                {device.interfaces && (
                   <div className="text-xs mb-2">
-                    <div className="text-gray-400">Fuel Level</div>
-                    <div className="text-indigo-400">{power.fuelLevel.toFixed(1)}%</div>
+                    <div className="text-gray-400 mb-1">Interfaces:</div>
+                    {device.interfaces.map((intf, index) => (
+                      <div key={index} className="ml-2 text-xs">
+                        <span className="text-cyan-400">{intf.name}</span>
+                        <span className="text-gray-400"> - </span>
+                        <span className={getStatusColor(intf.status).split(' ')[0]}>{intf.status}</span>
+                        <span className="text-gray-400"> | In: </span>
+                        <span className="text-green-400">{formatNumber(intf.utilization_in, 1)}%</span>
+                        <span className="text-gray-400"> | Out: </span>
+                        <span className="text-purple-400">{formatNumber(intf.utilization_out, 1)}%</span>
+                      </div>
+                    ))}
                   </div>
                 )}
 
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div>
-                    <div className="text-gray-400">Input/Output Voltage</div>
-                    <div className="text-pink-400">
-                      {power.inputVoltage ? power.inputVoltage.toFixed(1) : 'N/A'} / {power.outputVoltage.toFixed(1)}V
-                    </div>
+                {device.sessions_active && (
+                  <div className="text-xs mb-2">
+                    <span className="text-gray-400">Active Sessions: </span>
+                    <span className="text-purple-400">{formatLargeNumber(device.sessions_active)}</span>
+                    <span className="text-gray-400">/</span>
+                    <span className="text-blue-400">{formatLargeNumber(device.sessions_max)}</span>
+                    <span className="text-gray-400"> | Threats Blocked: </span>
+                    <span className="text-red-400">{formatLargeNumber(device.threats_blocked_today)}</span>
                   </div>
-                  <div>
-                    <div className="text-gray-400">Temperature</div>
-                    <div className="text-red-400">{power.temperature.toFixed(1)}°C</div>
+                )}
+
+                {device.virtual_servers && (
+                  <div className="text-xs">
+                    <div className="text-gray-400 mb-1">Virtual Servers:</div>
+                    {device.virtual_servers.map((vs, index) => (
+                      <div key={index} className="ml-2 text-xs">
+                        <span className="text-cyan-400">{vs.name}</span>
+                        <span className="text-gray-400"> - </span>
+                        <span className={getStatusColor(vs.status).split(' ')[0]}>{vs.status}</span>
+                        <span className="text-gray-400"> | Members: </span>
+                        <span className="text-green-400">{vs.members_active}</span>
+                        <span className="text-gray-400">/</span>
+                        <span className="text-blue-400">{vs.members_total}</span>
+                        <span className="text-gray-400"> | RPS: </span>
+                        <span className="text-orange-400">{vs.requests_per_second}</span>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Performance Trends and Incidents */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Performance Trends */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📈 INFRASTRUCTURE PERFORMANCE (24H)
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={performanceTrends}>
-              <defs>
-                <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-              <XAxis dataKey="hour" stroke="#9CA3AF" fontSize={12}/>
-              <YAxis stroke="#9CA3AF" fontSize={12}/>
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#F9FAFB'
-                }}
-              />
-              <Legend />
-              <Area 
-                type="monotone" 
-                dataKey="cpuAvg" 
-                stroke="#3B82F6" 
-                fill="url(#cpuGradient)" 
-                name="CPU Avg %"
-              />
-              <Area 
-                type="monotone" 
-                dataKey="memoryAvg" 
-                stroke="#10B981" 
-                fill="url(#memoryGradient)" 
-                name="Memory Avg %"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="temperature" 
-                stroke="#F59E0B" 
-                strokeWidth={2}
-                name="Temperature °C"
-              />
-              <Bar 
-                dataKey="powerConsumption" 
-                fill="#8B5CF6" 
-                name="Power kW"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Active Incidents */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🚨 ACTIVE INCIDENTS & ALERTS
-          </h3>
-          
-          {incidents.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-green-400 text-lg mb-2">✅</div>
-              <div className="text-green-400 font-bold">NO ACTIVE INCIDENTS</div>
-              <div className="text-gray-400 text-sm mt-2">All systems operational</div>
-            </div>
-          ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto">
-              {incidents.map((incident) => (
-                <div key={incident.id} className="bg-gray-700 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 rounded text-xs font-mono border ${getIncidentSeverityColor(incident.severity)}`}>
-                        {incident.severity}
-                      </span>
-                      <span className={`text-xs px-2 py-1 rounded ${
-                        incident.status === 'NEW' ? 'bg-red-500 text-white' :
-                        incident.status === 'ACKNOWLEDGED' ? 'bg-yellow-500 text-black' :
-                        incident.status === 'IN_PROGRESS' ? 'bg-blue-500 text-white' :
-                        incident.status === 'RESOLVED' ? 'bg-green-500 text-white' :
-                        'bg-gray-500 text-white'
-                      }`}>
-                        {incident.status.replace('_', ' ')}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      {formatTime(incident.timestamp)}
-                    </div>
-                  </div>
-                  
-                  <div className="text-sm text-white mb-2">{incident.description}</div>
-                  <div className="text-xs text-cyan-400 mb-1">🖥️ {incident.device}</div>
-                  <div className="text-xs text-purple-400 mb-1">📊 Type: {incident.type.replace(/_/g, ' ')}</div>
-                  
-                  <div className="grid grid-cols-2 gap-3 text-xs mb-2">
-                    <div>
-                      <div className="text-gray-400">Impact</div>
-                      <div className="text-orange-400">{incident.impact}</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-400">ETA Resolution</div>
-                      <div className="text-green-400">{incident.estimatedResolution}</div>
-                    </div>
-                  </div>
-
-                  <div className="text-xs">
-                    <span className="text-gray-400">Assigned to: </span>
-                    <span className="text-yellow-400">{incident.assignedTo}</span>
-                  </div>
-                  
-                  {incident.affected && incident.affected.length > 0 && (
-                    <div className="text-xs mt-1">
-                      <span className="text-gray-400">Affected: </span>
-                      <span className="text-red-400">{incident.affected.join(', ')}</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Capacity Planning */}
+      {/* Data Center Performance Trends */}
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
         <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📊 CAPACITY PLANNING & RESOURCE UTILIZATION
+          📈 DATA CENTER PERFORMANCE TRENDS (24 HOURS)
         </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Capacity Overview */}
-          <div>
-            <h4 className="text-sm font-bold text-white mb-2">Resource Capacity Overview</h4>
-            <div className="space-y-3">
-              {capacityTrends.map((capacity, index) => (
-                <div key={index} className="bg-gray-700 rounded p-3">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-white">{capacity.category}</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs text-gray-400">{capacity.used.toFixed(1)}% used</span>
-                      <span className="text-xs font-bold text-green-400">
-                        {capacity.available.toFixed(1)}% available
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-full bg-gray-600 rounded-full h-3 mb-1">
-                    <div 
-                      className={`h-3 rounded-full ${
-                        capacity.used >= 90 ? 'bg-red-400' :
-                        capacity.used >= 75 ? 'bg-yellow-400' :
-                        'bg-green-400'
-                      }`}
-                      style={{ width: `${capacity.used}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    Utilization: {capacity.used.toFixed(1)}% | Available: {capacity.available.toFixed(1)}%
-                  </div>
-                </div>
-              ))}
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={performanceMetrics}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
+            <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10}/>
+            <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12}/>
+            <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12}/>
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: '#1F2937', 
+                border: '1px solid #374151',
+                borderRadius: '8px',
+                color: '#F9FAFB'
+              }}
+            />
+            <Legend />
+            <Line 
+              yAxisId="left"
+              type="monotone" 
+              dataKey="power_consumption" 
+              stroke="#10B981" 
+              strokeWidth={2}
+              name="Power Consumption (MW)"
+            />
+            <Line 
+              yAxisId="right"
+              type="monotone" 
+              dataKey="temperature" 
+              stroke="#EF4444" 
+              strokeWidth={2}
+              name="Avg Temperature (°C)"
+            />
+            <Line 
+              yAxisId="right"
+              type="monotone" 
+              dataKey="network_utilization" 
+              stroke="#3B82F6" 
+              strokeWidth={2}
+              name="Network Utilization %"
+            />
+            <Line 
+              yAxisId="right"
+              type="monotone" 
+              dataKey="server_cpu" 
+              stroke="#8B5CF6" 
+              strokeWidth={2}
+              name="Avg Server CPU %"
+            />
+            <Line 
+              yAxisId="left"
+              type="monotone" 
+              dataKey="storage_iops" 
+              stroke="#F59E0B" 
+              strokeWidth={2}
+              name="Storage IOPS (K)"
+            />
+            <Line 
+              yAxisId="left"
+              type="monotone" 
+              dataKey="cooling_efficiency" 
+              stroke="#06B6D4" 
+              strokeWidth={2}
+              name="PUE Ratio"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Security & Safety and Performance KPIs */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Security & Safety */}
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 className="text-lg font-bold text-white mb-4 font-mono">
+            🛡️ SECURITY & SAFETY SYSTEMS
+          </h3>
+          
+          <div className="bg-gray-700 rounded-lg p-4 mb-4">
+            <h4 className="text-sm font-bold text-white mb-3">Physical Security</h4>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Access Control:</span>
+                <span className="text-green-400">{securitySystems.access_control.status}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Active Badges:</span>
+                <span className="text-blue-400">{securitySystems.access_control.active_badges}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Failed Attempts:</span>
+                <span className="text-yellow-400">{securitySystems.access_control.failed_access_attempts}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Cameras Active:</span>
+                <span className="text-cyan-400">{securitySystems.access_control.cameras_active}/{securitySystems.access_control.cameras_total}</span>
+              </div>
             </div>
           </div>
 
-          {/* Data Center Statistics */}
-          <div>
-            <h4 className="text-sm font-bold text-white mb-2">Data Center Statistics</h4>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-gray-400">Total Racks</div>
-                <div className="text-white font-bold text-lg">42</div>
-                <div className="text-green-400">38 occupied</div>
+          <div className="bg-gray-700 rounded-lg p-4 mb-4">
+            <h4 className="text-sm font-bold text-white mb-3">Fire Suppression</h4>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-400">System Status:</span>
+                <span className="text-green-400">{securitySystems.fire_suppression.status}</span>
               </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-gray-400">Floor Space</div>
-                <div className="text-white font-bold text-lg">2,400 ft²</div>
-                <div className="text-blue-400">2 floors</div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Agent Level:</span>
+                <span className="text-blue-400">{formatNumber(securitySystems.fire_suppression.agent_level, 1)}%</span>
               </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-gray-400">Cooling Efficiency</div>
-                <div className="text-white font-bold text-lg">1.45 PUE</div>
-                <div className="text-orange-400">Very efficient</div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Smoke Detectors:</span>
+                <span className="text-green-400">{securitySystems.fire_suppression.smoke_detectors}</span>
               </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-gray-400">Redundancy</div>
-                <div className="text-white font-bold text-lg">N+1</div>
-                <div className="text-purple-400">Full backup</div>
+            </div>
+          </div>
+
+          <div className="bg-gray-700 rounded-lg p-4">
+            <h4 className="text-sm font-bold text-white mb-3">Environmental Safety</h4>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Water Leak Status:</span>
+                <span className="text-green-400">{securitySystems.environmental_monitoring.water_leak_status}</span>
               </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-gray-400">Avg Availability</div>
-                <div className="text-white font-bold text-lg">99.98%</div>
-                <div className="text-green-400">Tier III</div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Vibration Status:</span>
+                <span className="text-green-400">{securitySystems.environmental_monitoring.vibration_status}</span>
               </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-gray-400">Carbon Footprint</div>
-                <div className="text-white font-bold text-lg">0.42 kg CO2/kWh</div>
-                <div className="text-green-400">Carbon neutral</div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Fuel Level:</span>
+                <span className="text-orange-400">{formatNumber(securitySystems.environmental_monitoring.fuel_level, 1)}%</span>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Performance KPIs */}
+        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+          <h3 className="text-lg font-bold text-white mb-4 font-mono">
+            🎯 DATA CENTER PERFORMANCE KPIs
+          </h3>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-xs text-gray-400">Rack Utilization</div>
+              <div className="text-white font-bold text-lg">
+                {formatNumber((dataCenterStatus.occupiedRacks / dataCenterStatus.totalRacks) * 100, 1)}%
+              </div>
+              <div className="text-green-400 text-xs">{dataCenterStatus.occupiedRacks}/{dataCenterStatus.totalRacks} racks</div>
+            </div>
+            
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-xs text-gray-400">Server Uptime</div>
+              <div className="text-white font-bold text-lg">
+                {formatNumber((dataCenterStatus.activeServers / dataCenterStatus.totalServers) * 100, 1)}%
+              </div>
+              <div className="text-blue-400 text-xs">availability rate</div>
+            </div>
+            
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-xs text-gray-400">Power Usage</div>
+              <div className="text-white font-bold text-lg">
+                {formatNumber((dataCenterStatus.powerConsumption / dataCenterStatus.powerCapacity) * 100, 1)}%
+              </div>
+              <div className="text-purple-400 text-xs">of capacity</div>
+            </div>
+            
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-xs text-gray-400">Cooling Efficiency</div>
+              <div className="text-white font-bold text-lg">
+                {formatNumber(dataCenterStatus.coolingEfficiency, 2)}
+              </div>
+              <div className="text-orange-400 text-xs">PUE ratio</div>
+            </div>
+            
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-xs text-gray-400">Network Utilization</div>
+              <div className="text-white font-bold text-lg">
+                {formatNumber(dataCenterStatus.networkUtilization, 1)}%
+              </div>
+              <div className="text-cyan-400 text-xs">bandwidth usage</div>
+            </div>
+            
+            <div className="bg-gray-700 rounded-lg p-3">
+              <div className="text-xs text-gray-400">Storage Utilization</div>
+              <div className="text-white font-bold text-lg">
+                {formatNumber(dataCenterStatus.storageUtilization, 1)}%
+              </div>
+              <div className="text-yellow-400 text-xs">capacity used</div>
             </div>
           </div>
         </div>

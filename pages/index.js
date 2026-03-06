@@ -45,6 +45,46 @@ import AgriculturalOperations from '../components/AgriculturalOperations';
 import RetailOperations from '../components/RetailOperations';
 import OilGasOperations from '../components/OilGasOperations';
 import TelecomOperations from '../components/TelecomOperations';
+import MediaOperations from '../components/MediaOperations';
+import AviationOperations from '../components/AviationOperations';
+import MiningOperations from '../components/MiningOperations';
+import ConstructionOperations from '../components/ConstructionOperations';
+import ShippingOperations from '../components/ShippingOperations';
+import FoodSafetyOperations from '../components/FoodSafetyOperations';
+import WasteManagementOperations from '../components/WasteManagementOperations';
+import PharmaceuticalOperations from '../components/PharmaceuticalOperations';
+import ChemicalPlantOperations from '../components/ChemicalPlantOperations';
+import PowerGridOperations from '../components/PowerGridOperations';
+import WaterTreatmentOperations from '../components/WaterTreatmentOperations';
+import FireEmergencyOperations from '../components/FireEmergencyOperations';
+import PoliceOperations from '../components/PoliceOperations';
+import HospitalOperations from '../components/HospitalOperations';
+import AirportOperations from '../components/AirportOperations';
+import SubwayOperations from '../components/SubwayOperations';
+import MaritimeOperations from '../components/MaritimeOperations';
+import WarehouseOperations from '../components/WarehouseOperations';
+import SmartBuildingOperations from '../components/SmartBuildingOperations';
+import SportsVenueOperations from '../components/SportsVenueOperations';
+import FleetOperationsCenter from '../components/FleetOperationsCenter';
+import FinancialTradingOperations from '../components/FinancialTradingOperations';
+import CybersecurityOperationsCenter from '../components/CybersecurityOperationsCenter';
+import ManufacturingOperationsCenter from '../components/ManufacturingOperationsCenter';
+import LogisticsOperationsCenter from '../components/LogisticsOperationsCenter';
+import TransportationOperationsCenter from '../components/TransportationOperationsCenter';
+import WaterUtilityOperationsCenter from '../components/WaterUtilityOperationsCenter';
+import HealthcareOperationsCenter from '../components/HealthcareOperationsCenter';
+import AviationOperationsCenter from '../components/AviationOperationsCenter';
+import EnergyOperationsCenter from '../components/EnergyOperationsCenter';
+import TelecommunicationsOperationsCenter from '../components/TelecommunicationsOperationsCenter';
+import FinancialOperationsCenter from '../components/FinancialOperationsCenter';
+import EMSOperationsCenter from '../components/EMSOperationsCenter';
+import DisasterRecoveryOperationsCenter from '../components/DisasterRecoveryOperationsCenter';
+import IndustrialAutomationOperationsCenter from '../components/IndustrialAutomationOperationsCenter';
+import EnvironmentalMonitoringOperationsCenter from '../components/EnvironmentalMonitoringOperationsCenter';
+import SeismicMonitoringOperationsCenter from '../components/SeismicMonitoringOperationsCenter';
+import AgriculturalOperationsCenter from '../components/AgriculturalOperationsCenter';
+import SpaceOperationsCenter from '../components/SpaceOperationsCenter';
+import RetailOperationsCenter from '../components/RetailOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -725,6 +765,300 @@ export default function MissionControl() {
       description: 'Telecommunications network operations center & 5G infrastructure'
     },
     { 
+      id: 'media-operations', 
+      name: '📺 Media & Broadcast Operations', 
+      icon: '📺', 
+      color: 'text-red-400',
+      description: 'Media operations control center & content delivery network monitoring'
+    },
+    { 
+      id: 'aviation-operations', 
+      name: '✈️ Aviation Operations Center', 
+      icon: '✈️', 
+      color: 'text-sky-400',
+      description: 'Flight operations control center & airline dispatch management'
+    },
+    { 
+      id: 'mining-operations', 
+      name: '⛏️ Mining Operations Center', 
+      icon: '⛏️', 
+      color: 'text-orange-400',
+      description: 'Mining equipment monitoring & underground/surface operations control'
+    },
+    { 
+      id: 'construction-operations', 
+      name: '🏗️ Construction Operations Center', 
+      icon: '🏗️', 
+      color: 'text-amber-400',
+      description: 'Construction project management & site operations control'
+    },
+    { 
+      id: 'shipping-operations', 
+      name: '🚢 Shipping Operations Center', 
+      icon: '🚢', 
+      color: 'text-blue-400',
+      description: 'Maritime shipping operations & port logistics management'
+    },
+    { 
+      id: 'food-safety-operations', 
+      name: '🍽️ Food Safety Operations Center', 
+      icon: '🍽️', 
+      color: 'text-green-400',
+      description: 'HACCP compliance & food quality assurance monitoring'
+    },
+    { 
+      id: 'waste-management-operations', 
+      name: '🗑️ Waste Management Operations Center', 
+      icon: '🗑️', 
+      color: 'text-emerald-400',
+      description: 'Smart waste collection, recycling & environmental monitoring'
+    },
+    { 
+      id: 'pharmaceutical-operations', 
+      name: '💊 Pharmaceutical Operations Center', 
+      icon: '💊', 
+      color: 'text-violet-400',
+      description: 'GMP compliance, batch tracking & FDA regulatory monitoring'
+    },
+    { 
+      id: 'chemical-plant-operations', 
+      name: '🏭 Chemical Plant Operations Center', 
+      icon: '🏭', 
+      color: 'text-red-400',
+      description: 'Process safety management, environmental compliance & refinery control'
+    },
+    { 
+      id: 'power-grid-operations', 
+      name: '⚡ Power Grid Operations Control Center', 
+      icon: '⚡', 
+      color: 'text-yellow-400',
+      description: 'SCADA systems, smart grid monitoring & electrical transmission control'
+    },
+    { 
+      id: 'water-treatment-operations', 
+      name: '💧 Water Treatment Plant Operations Center', 
+      icon: '💧', 
+      color: 'text-cyan-400',
+      description: 'Water quality monitoring, treatment process control & SCADA management'
+    },
+    { 
+      id: 'fire-emergency-operations', 
+      name: '🚒 Fire Emergency Operations Center', 
+      icon: '🚒', 
+      color: 'text-red-400',
+      description: 'Incident command, CAD system integration & emergency response coordination'
+    },
+    { 
+      id: 'police-operations', 
+      name: '🚔 Police Operations Center', 
+      icon: '🚔', 
+      color: 'text-blue-400',
+      description: 'Law enforcement CAD system, 911 dispatch & crime analysis operations'
+    },
+    { 
+      id: 'hospital-operations', 
+      name: '🏥 Hospital Operations Center', 
+      icon: '🏥', 
+      color: 'text-green-400',
+      description: 'Healthcare management, patient flow monitoring & medical facility control'
+    },
+    { 
+      id: 'airport-operations', 
+      name: '✈️ Airport Operations Center', 
+      icon: '✈️', 
+      color: 'text-purple-400',
+      description: 'Air traffic control, terminal management & aviation operations monitoring'
+    },
+    { 
+      id: 'subway-operations', 
+      name: '🚇 Subway/Metro Operations Center', 
+      icon: '🚇', 
+      color: 'text-cyan-400',
+      description: 'Transit control, train dispatch, passenger flow & SCADA monitoring'
+    },
+    { 
+      id: 'maritime-operations', 
+      name: '🚢 Maritime/Port Operations Center', 
+      icon: '🚢', 
+      color: 'text-blue-400',
+      description: 'VTS, vessel traffic, port logistics, cargo handling & maritime safety'
+    },
+    { 
+      id: 'warehouse-operations', 
+      name: '📦 Warehouse Operations Center', 
+      icon: '📦', 
+      color: 'text-orange-400',
+      description: 'WMS, inventory management, order fulfillment, automation & robotics'
+    },
+    { 
+      id: 'smart-building-operations', 
+      name: '🏢 Smart Building Operations Center', 
+      icon: '🏢', 
+      color: 'text-emerald-400',
+      description: 'BMS, IoT sensors, HVAC automation, security & environmental control'
+    },
+    { 
+      id: 'sports-venue-operations', 
+      name: '🏟️ Sports Venue Operations Center', 
+      icon: '🏟️', 
+      color: 'text-lime-400',
+      description: 'Stadium management, crowd control, security, concessions & event operations'
+    },
+    { 
+      id: 'retail-operations-center', 
+      name: '🛍️ Retail Operations Center', 
+      icon: '🛍️', 
+      color: 'text-pink-400',
+      description: 'Store management, inventory analytics, POS operations, customer insights & loss prevention'
+    },
+    { 
+      id: 'fleet-operations-center', 
+      name: '🚛 Fleet Operations Center', 
+      icon: '🚛', 
+      color: 'text-amber-400',
+      description: 'Vehicle tracking, GPS monitoring, dispatch operations, maintenance & driver management'
+    },
+    { 
+      id: 'financial-trading-operations', 
+      name: '💹 Financial Trading Operations Center', 
+      icon: '💹', 
+      color: 'text-yellow-400',
+      description: 'Risk management, compliance monitoring, market surveillance, portfolio analytics & trading systems'
+    },
+    { 
+      id: 'cybersecurity-operations-center', 
+      name: '🛡️ Cybersecurity Operations Center (SOC)', 
+      icon: '🛡️', 
+      color: 'text-red-400',
+      description: 'Threat intelligence, SIEM analytics, incident response, security controls & SOAR automation'
+    },
+    { 
+      id: 'manufacturing-operations-center', 
+      name: '🏭 Manufacturing Operations Center', 
+      icon: '🏭', 
+      color: 'text-orange-400',
+      description: 'Production monitoring, OEE tracking, quality control, inventory management & maintenance operations'
+    },
+    { 
+      id: 'logistics-operations-center', 
+      name: '🚚 Logistics Operations Center', 
+      icon: '🚚', 
+      color: 'text-teal-400',
+      description: 'Supply chain visibility, shipment tracking, warehouse operations, inventory management & carrier performance'
+    },
+    { 
+      id: 'transportation-operations-center', 
+      name: '🚦 Transportation Operations Center', 
+      icon: '🚦', 
+      color: 'text-indigo-400',
+      description: 'Traffic management, route optimization, fleet dispatch, driver behavior monitoring & predictive maintenance'
+    },
+    { 
+      id: 'energy-operations-center', 
+      name: '⚡ Energy Operations Center', 
+      icon: '⚡', 
+      color: 'text-yellow-400',
+      description: 'Smart grid management, renewable energy monitoring, SCADA operations, power quality & market trading'
+    },
+    { 
+      id: 'telecommunications-operations-center', 
+      name: '📡 Telecommunications Operations Center', 
+      icon: '📡', 
+      color: 'text-cyan-400',
+      description: 'Network operations NOC, 5G/fiber monitoring, service quality, security & incident management'
+    },
+    { 
+      id: 'financial-operations-center', 
+      name: '💹 Financial Operations Center', 
+      icon: '💹', 
+      color: 'text-emerald-400',
+      description: 'Trading floor operations, risk management, compliance monitoring, fraud detection & AI transaction analysis'
+    },
+    { 
+      id: 'retail-operations-center', 
+      name: '🛍️ Retail Operations Center', 
+      icon: '🛍️', 
+      color: 'text-pink-400',
+      description: 'Omnichannel store management, inventory analytics, POS operations, customer experience & mobile-first retail'
+    },
+    { 
+      id: 'ems-operations-center', 
+      name: '🚑 EMS Operations Center', 
+      icon: '🚑', 
+      color: 'text-red-500',
+      description: 'Emergency Medical Services dispatch, paramedic coordination, CAD integration & patient care management'
+    },
+    { 
+      id: 'disaster-recovery-operations-center', 
+      name: '🛡️ Disaster Recovery Operations Center', 
+      icon: '🛡️', 
+      color: 'text-slate-400',
+      description: 'Business continuity, COOP framework, disaster scenarios, recovery operations & DR testing validation'
+    },
+    { 
+      id: 'industrial-automation-operations-center', 
+      name: '🏭 Industrial Automation Operations Center', 
+      icon: '🏭', 
+      color: 'text-amber-500',
+      description: 'SCADA systems, PLC controllers, IIoT devices, smart factory operations & Industry 4.0 integration'
+    },
+    { 
+      id: 'environmental-monitoring-operations-center', 
+      name: '🌍 Environmental Monitoring Operations Center', 
+      icon: '🌍', 
+      color: 'text-emerald-500',
+      description: 'Weather stations, air quality sensors, water monitoring, noise pollution, climate data & environmental alerts'
+    },
+    { 
+      id: 'seismic-monitoring-operations-center', 
+      name: '🌏 Seismic Monitoring Operations Center', 
+      icon: '🌏', 
+      color: 'text-teal-500',
+      description: 'Earthquake early warning, seismograph networks, tsunami detection, geological hazards & DART buoy monitoring'
+    },
+    { 
+      id: 'agricultural-operations-center', 
+      name: '🌾 Agricultural Operations Center', 
+      icon: '🌾', 
+      color: 'text-lime-500',
+      description: 'Precision farming, IoT sensors, crop monitoring, livestock tracking, smart irrigation & autonomous equipment'
+    },
+    { 
+      id: 'space-operations-center', 
+      name: '🚀 Space Operations Center', 
+      icon: '🚀', 
+      color: 'text-indigo-400',
+      description: 'Satellite mission control, ground stations, telemetry tracking, launch operations & space debris monitoring'
+    },
+    { 
+      id: 'transportation-operations-center', 
+      name: '🚦 Transportation Operations Center', 
+      icon: '🚦', 
+      color: 'text-green-400',
+      description: 'Smart mobility ITS, traffic management, autonomous vehicles, public transit & urban planning analytics'
+    },
+    { 
+      id: 'water-utility-operations-center', 
+      name: '💧 Water Utility Operations Center', 
+      icon: '💧', 
+      color: 'text-cyan-400',
+      description: 'SCADA integrated water/wastewater treatment, distribution systems, stormwater management & quality monitoring'
+    },
+    { 
+      id: 'healthcare-operations-center', 
+      name: '🏥 Healthcare Operations Center', 
+      icon: '🏥', 
+      color: 'text-red-400',
+      description: 'Patient flow management, bed management, clinical operations, quality metrics & emergency preparedness'
+    },
+    { 
+      id: 'aviation-operations-center', 
+      name: '✈️ Aviation Operations Center', 
+      icon: '✈️', 
+      color: 'text-sky-400',
+      description: 'AOCC integrated flight operations, air traffic control, ground handling, baggage operations & airport management'
+    },
+    { 
       id: 'content-pipeline', 
       name: '🎬 Content Processing Pipeline', 
       icon: '🎬', 
@@ -1092,6 +1426,129 @@ export default function MissionControl() {
         
         {/* Telecommunications NOC */}
         {currentView === 'telecom-operations' && <TelecomOperations />}
+        
+        {/* Media & Broadcast Operations */}
+        {currentView === 'media-operations' && <MediaOperations />}
+        
+        {/* Aviation Operations Center */}
+        {currentView === 'aviation-operations' && <AviationOperations />}
+        
+        {/* Mining Operations Center */}
+        {currentView === 'mining-operations' && <MiningOperations />}
+        
+        {/* Construction Operations Center */}
+        {currentView === 'construction-operations' && <ConstructionOperations />}
+        
+        {/* Shipping Operations Center */}
+        {currentView === 'shipping-operations' && <ShippingOperations />}
+        
+        {/* Food Safety Operations Center */}
+        {currentView === 'food-safety-operations' && <FoodSafetyOperations />}
+        
+        {/* Waste Management Operations Center */}
+        {currentView === 'waste-management-operations' && <WasteManagementOperations />}
+        
+        {/* Pharmaceutical Operations Center */}
+        {currentView === 'pharmaceutical-operations' && <PharmaceuticalOperations />}
+        
+        {/* Chemical Plant Operations Center */}
+        {currentView === 'chemical-plant-operations' && <ChemicalPlantOperations />}
+        
+        {/* Power Grid Operations Control Center */}
+        {currentView === 'power-grid-operations' && <PowerGridOperations />}
+        
+        {/* Water Treatment Plant Operations Center */}
+        {currentView === 'water-treatment-operations' && <WaterTreatmentOperations />}
+        
+        {/* Fire Emergency Operations Center */}
+        {currentView === 'fire-emergency-operations' && <FireEmergencyOperations />}
+        
+        {/* Police Operations Center */}
+        {currentView === 'police-operations' && <PoliceOperations />}
+        
+        {/* Hospital Operations Center */}
+        {currentView === 'hospital-operations' && <HospitalOperations />}
+        
+        {/* Airport Operations Center */}
+        {currentView === 'airport-operations' && <AirportOperations />}
+        
+        {/* Subway/Metro Operations Center */}
+        {currentView === 'subway-operations' && <SubwayOperations />}
+        
+        {/* Maritime/Port Operations Center */}
+        {currentView === 'maritime-operations' && <MaritimeOperations />}
+        
+        {/* Warehouse Operations Center */}
+        {currentView === 'warehouse-operations' && <WarehouseOperations />}
+        
+        {/* Smart Building Operations Center */}
+        {currentView === 'smart-building-operations' && <SmartBuildingOperations />}
+        
+        {/* Sports Venue Operations Center */}
+        {currentView === 'sports-venue-operations' && <SportsVenueOperations />}
+        
+        {/* Retail Operations Center */}
+        {currentView === 'retail-operations-center' && <RetailOperationsCenter />}
+        
+        {/* Fleet Operations Center */}
+        {currentView === 'fleet-operations-center' && <FleetOperationsCenter />}
+        
+        {/* Financial Trading Operations Center */}
+        {currentView === 'financial-trading-operations' && <FinancialTradingOperations />}
+        
+        {/* Cybersecurity Operations Center (SOC) */}
+        {currentView === 'cybersecurity-operations-center' && <CybersecurityOperationsCenter />}
+        
+        {/* Manufacturing Operations Center */}
+        {currentView === 'manufacturing-operations-center' && <ManufacturingOperationsCenter />}
+        
+        {/* Logistics Operations Center */}
+        {currentView === 'logistics-operations-center' && <LogisticsOperationsCenter />}
+        
+        {/* Transportation Operations Center */}
+        {currentView === 'transportation-operations-center' && <TransportationOperationsCenter />}
+        
+        {/* Water Utility Operations Center */}
+        {currentView === 'water-utility-operations-center' && <WaterUtilityOperationsCenter />}
+        
+        {/* Healthcare Operations Center */}
+        {currentView === 'healthcare-operations-center' && <HealthcareOperationsCenter />}
+        
+        {/* Aviation Operations Center */}
+        {currentView === 'aviation-operations-center' && <AviationOperationsCenter />}
+        
+        {/* Energy Operations Center */}
+        {currentView === 'energy-operations-center' && <EnergyOperationsCenter />}
+        
+        {/* Telecommunications Operations Center */}
+        {currentView === 'telecommunications-operations-center' && <TelecommunicationsOperationsCenter />}
+        
+        {/* Financial Operations Center */}
+        {currentView === 'financial-operations-center' && <FinancialOperationsCenter />}
+        
+        {/* Retail Operations Center */}
+        {currentView === 'retail-operations-center' && <RetailOperationsCenter />}
+        
+        {/* EMS Operations Center */}
+        {currentView === 'ems-operations-center' && <EMSOperationsCenter />}
+        
+        {/* Disaster Recovery Operations Center */}
+        {currentView === 'disaster-recovery-operations-center' && <DisasterRecoveryOperationsCenter />}
+        
+        {/* Industrial Automation Operations Center */}
+        {currentView === 'industrial-automation-operations-center' && <IndustrialAutomationOperationsCenter />}
+        
+        {/* Environmental Monitoring Operations Center */}
+        {currentView === 'environmental-monitoring-operations-center' && <EnvironmentalMonitoringOperationsCenter />}
+        
+        {/* Seismic Monitoring Operations Center */}
+        {currentView === 'seismic-monitoring-operations-center' && <SeismicMonitoringOperationsCenter />}
+        
+        {/* Agricultural Operations Center */}
+        {currentView === 'agricultural-operations-center' && <AgriculturalOperationsCenter />}
+        
+        {/* Space Operations Center */}
+        {currentView === 'space-operations-center' && <SpaceOperationsCenter />}
         
         {/* Content Processing Pipeline */}
         {currentView === 'content-pipeline' && <ContentPipelineStatus />}
