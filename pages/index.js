@@ -91,6 +91,7 @@ import CostTrackingCenter from '../components/CostTrackingCenter';
 import TaskManagementCenter from '../components/TaskManagementCenter';
 import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligenceCenter';
 import EnterpriseSecurityCenter from '../components/SecurityOperationsCenter';
+import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestrationCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -566,6 +567,13 @@ export default function MissionControl() {
       icon: '🛡️', 
       color: 'text-red-400',
       description: 'Real-time threat detection, incident response, and security intelligence'
+    },
+    { 
+      id: 'multi-agent-orchestration', 
+      name: '🤝 Multi-Agent Orchestration', 
+      icon: '🤝', 
+      color: 'text-blue-500',
+      description: 'Enterprise agent coordination, workflow automation, and crew management'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1387,6 +1395,9 @@ export default function MissionControl() {
         
         {/* Enterprise Security Center */}
         {currentView === 'enterprise-security' && <EnterpriseSecurityCenter />}
+        
+        {/* Multi-Agent Orchestration */}
+        {currentView === 'multi-agent-orchestration' && <MultiAgentOrchestrationCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
