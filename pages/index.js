@@ -99,6 +99,7 @@ import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCent
 import SpaceMissionControlCenter from '../components/SpaceMissionControlCenter';
 import EmergencyOperationsCenter from '../components/EmergencyOperationsCenter';
 import AirTrafficControlCenter from '../components/AirTrafficControlCenter';
+import EnergyOperationsCenter from '../components/EnergyOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
