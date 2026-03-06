@@ -648,7 +648,7 @@ const InfrastructureDevOpsCenter = () => {
                 <Zap className="w-4 h-4 text-yellow-400" />
               </div>
               <div className="text-xl font-bold text-white">12.4min</div>
-              <div className="text-xs text-green-400">Target: <15min</div>
+              <div className="text-xs text-green-400">Target: &lt;15min</div>
             </div>
             
             <div className="bg-gray-800 rounded-lg p-3">
@@ -657,7 +657,7 @@ const InfrastructureDevOpsCenter = () => {
                 <Activity className="w-4 h-4 text-purple-400" />
               </div>
               <div className="text-xl font-bold text-white">2.1%</div>
-              <div className="text-xs text-green-400">Target: <5%</div>
+              <div className="text-xs text-green-400">Target: &lt;5%</div>
             </div>
           </div>
           
