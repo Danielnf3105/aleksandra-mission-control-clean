@@ -85,6 +85,7 @@ import SeismicMonitoringOperationsCenter from '../components/SeismicMonitoringOp
 import AgriculturalOperationsCenter from '../components/AgriculturalOperationsCenter';
 import SpaceOperationsCenter from '../components/SpaceOperationsCenter';
 import RetailOperationsCenter from '../components/RetailOperationsCenter';
+import HealthcareOperationsCenter from '../components/HealthcareOperationsCenter';
 import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
@@ -1702,6 +1703,9 @@ export default function MissionControl() {
         
         {/* Retail Operations Center */}
         {currentView === 'retail-operations-center' && <RetailOperationsCenter />}
+        
+        {/* Healthcare Operations Center */}
+        {currentView === 'healthcare-operations-center' && <HealthcareOperationsCenter />}
         
         {/* EMS Operations Center */}
         {currentView === 'ems-operations-center' && <EMSOperationsCenter />}

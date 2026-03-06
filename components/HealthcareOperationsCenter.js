@@ -1,993 +1,1036 @@
-// HealthcareOperationsCenter.js - Healthcare Operations Center & Patient Flow Management
-import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
+import { Heart, Activity, Users, AlertTriangle, TrendingUp, Eye, Shield, Clock, MapPin, Settings, Zap, Stethoscope } from 'lucide-react';
 
 const HealthcareOperationsCenter = () => {
-  const [hospitalStatus, setHospitalStatus] = useState({
-    operationalStatus: 'PATIENT_FLOW_ACTIVE',
-    totalBeds: 647,
-    occupiedBeds: 523,
-    availableBeds: 124,
-    occupancyRate: 80.8, // percentage
-    totalPatients: 612,
-    emergencyDepartmentStatus: 'NORMAL',
-    icuCapacity: 85.7, // percentage
-    averageWaitTime: 23.4, // minutes
-    lastUpdate: Date.now()
+  const [hospitalMetrics, setHospitalMetrics] = useState({
+    totalPatients: 1847,
+    admissions: 247,
+    discharges: 189,
+    occupancyRate: 78.4, // %
+    averageStayDuration: 4.2, // days
+    emergencyWaitTime: 12.7, // minutes
+    staffUtilization: 84.3, // %
+    patientSatisfaction: 4.3 // /5.0
   });
 
-  const [patientFlowManagement, setPatientFlowManagement] = useState({
-    emergency_department: {
-      total_ed_beds: 45,
-      occupied_ed_beds: 37,
-      ed_occupancy_rate: 82.2,
-      triage_levels: {
-        level_1_critical: 3,
-        level_2_emergent: 8,
-        level_3_urgent: 15,
-        level_4_semi_urgent: 9,
-        level_5_non_urgent: 2
+  const [patientMonitoring, setPatientMonitoring] = useState([
+    {
+      id: 'ICU-001',
+      patientId: 'PT-45789',
+      name: 'Sarah Johnson',
+      age: 67,
+      condition: 'Post-Surgical Recovery',
+      ward: 'ICU',
+      vitals: {
+        heartRate: 78,
+        bloodPressure: '128/82',
+        oxygenSat: 97,
+        temperature: 98.6,
+        respiratoryRate: 16
       },
-      average_wait_time_minutes: 23.4,
-      left_without_being_seen_rate: 4.7, // percentage
-      ambulance_diversions_today: 2,
-      ed_length_of_stay_hours: 4.2,
-      fast_track_patients: 12,
-      trauma_cases_today: 6,
-      psychiatric_evaluations: 3
+      alerts: 0,
+      status: 'stable',
+      physician: 'Dr. Williams',
+      admissionDate: '2026-03-04',
+      riskScore: 2.3
     },
-    inpatient_units: {
-      medical_surgical_units: {
-        total_beds: 245,
-        occupied_beds: 198,
-        occupancy_rate: 80.8,
-        pending_admissions: 12,
-        pending_discharges: 18,
-        average_length_of_stay_days: 4.7
+    {
+      id: 'ICU-002',
+      patientId: 'PT-23456',
+      name: 'Michael Chen',
+      age: 45,
+      condition: 'Cardiac Monitoring',
+      ward: 'CCU',
+      vitals: {
+        heartRate: 102,
+        bloodPressure: '145/95',
+        oxygenSat: 94,
+        temperature: 99.2,
+        respiratoryRate: 20
       },
-      intensive_care_unit: {
-        total_icu_beds: 28,
-        occupied_icu_beds: 24,
-        icu_occupancy_rate: 85.7,
-        ventilator_beds: 16,
-        ventilators_in_use: 11,
-        icu_mortality_rate: 8.9, // percentage for this period
-        average_icu_stay_days: 6.8
+      alerts: 2,
+      status: 'elevated_risk',
+      physician: 'Dr. Rodriguez',
+      admissionDate: '2026-03-05',
+      riskScore: 6.7
+    },
+    {
+      id: 'MED-001',
+      patientId: 'PT-67890',
+      name: 'Emma Davis',
+      age: 34,
+      condition: 'Pneumonia Treatment',
+      ward: 'Medical',
+      vitals: {
+        heartRate: 89,
+        bloodPressure: '118/76',
+        oxygenSat: 96,
+        temperature: 100.4,
+        respiratoryRate: 18
       },
-      pediatric_unit: {
-        total_peds_beds: 35,
-        occupied_peds_beds: 22,
-        peds_occupancy_rate: 62.9,
-        nicu_beds: 12,
-        nicu_occupied: 8,
-        peds_er_visits_today: 15
+      alerts: 1,
+      status: 'monitoring',
+      physician: 'Dr. Thompson',
+      admissionDate: '2026-03-03',
+      riskScore: 4.1
+    },
+    {
+      id: 'ER-001',
+      patientId: 'PT-12345',
+      name: 'David Wilson',
+      age: 52,
+      condition: 'Chest Pain Evaluation',
+      ward: 'Emergency',
+      vitals: {
+        heartRate: 115,
+        bloodPressure: '165/98',
+        oxygenSat: 98,
+        temperature: 98.8,
+        respiratoryRate: 22
       },
-      maternity_ward: {
-        total_ob_beds: 25,
-        occupied_ob_beds: 18,
-        ob_occupancy_rate: 72.0,
-        deliveries_today: 4,
-        c_sections_today: 2,
-        labor_rooms: 8,
-        labor_rooms_occupied: 3
-      }
+      alerts: 3,
+      status: 'critical_watch',
+      physician: 'Dr. Martinez',
+      admissionDate: '2026-03-06',
+      riskScore: 8.2
     },
-    bed_management: {
-      bed_turnover_time_minutes: 87.3,
-      housekeeping_response_time_minutes: 12.4,
-      bed_assignment_time_minutes: 8.7,
-      discharge_planning_efficiency: 89.4, // percentage
-      same_day_discharge_rate: 23.7, // percentage
-      readmission_rate_30_day: 11.2, // percentage
-      patient_satisfaction_score: 87.6,
-      bed_utilization_efficiency: 91.3
+    {
+      id: 'PEDS-001',
+      patientId: 'PT-98765',
+      name: 'Lily Anderson',
+      age: 8,
+      condition: 'Asthma Exacerbation',
+      ward: 'Pediatrics',
+      vitals: {
+        heartRate: 125,
+        bloodPressure: '95/60',
+        oxygenSat: 95,
+        temperature: 99.1,
+        respiratoryRate: 28
+      },
+      alerts: 1,
+      status: 'monitoring',
+      physician: 'Dr. Kim',
+      admissionDate: '2026-03-05',
+      riskScore: 5.4
     }
+  ]);
+
+  const [departmentMetrics, setDepartmentMetrics] = useState([
+    {
+      id: 'ICU',
+      name: 'Intensive Care',
+      totalBeds: 24,
+      occupiedBeds: 19,
+      totalStaff: 48,
+      staffOnDuty: 12,
+      averageStay: 3.8,
+      mortalityRate: 5.2,
+      nursePaitentRatio: 1.5,
+      status: 'optimal',
+      alerts: 0
+    },
+    {
+      id: 'CCU',
+      name: 'Cardiac Care',
+      totalBeds: 16,
+      occupiedBeds: 14,
+      totalStaff: 32,
+      staffOnDuty: 8,
+      averageStay: 4.2,
+      mortalityRate: 3.8,
+      nursePaitentRatio: 1.8,
+      status: 'attention',
+      alerts: 2
+    },
+    {
+      id: 'EMERGENCY',
+      name: 'Emergency Dept',
+      totalBeds: 32,
+      occupiedBeds: 28,
+      totalStaff: 64,
+      staffOnDuty: 16,
+      averageStay: 0.8,
+      mortalityRate: 1.2,
+      nursePaitentRatio: 3.5,
+      status: 'busy',
+      alerts: 1
+    },
+    {
+      id: 'MEDICAL',
+      name: 'General Medical',
+      totalBeds: 120,
+      occupiedBeds: 89,
+      totalStaff: 96,
+      staffOnDuty: 24,
+      averageStay: 5.7,
+      mortalityRate: 2.1,
+      nursePaitentRatio: 4.2,
+      status: 'optimal',
+      alerts: 0
+    },
+    {
+      id: 'SURGICAL',
+      name: 'Surgical Ward',
+      totalBeds: 80,
+      occupiedBeds: 67,
+      totalStaff: 72,
+      staffOnDuty: 18,
+      averageStay: 3.4,
+      mortalityRate: 1.8,
+      nursePaitentRatio: 3.7,
+      status: 'optimal',
+      alerts: 0
+    }
+  ]);
+
+  const [medicalDeviceStatus, setMedicalDeviceStatus] = useState([
+    {
+      id: 'DEVICE-001',
+      name: 'MRI Scanner #1',
+      type: 'Imaging',
+      location: 'Radiology A',
+      status: 'operational',
+      utilization: 89.4, // %
+      lastMaintenance: '2026-02-28',
+      nextMaintenance: '2026-03-15',
+      operatingHours: 2847.5,
+      faultCount: 2,
+      availability: 97.8
+    },
+    {
+      id: 'DEVICE-002',
+      name: 'CT Scanner #2',
+      type: 'Imaging',
+      location: 'Radiology B',
+      status: 'maintenance',
+      utilization: 0,
+      lastMaintenance: '2026-03-06',
+      nextMaintenance: '2026-03-20',
+      operatingHours: 3245.2,
+      faultCount: 5,
+      availability: 92.4
+    },
+    {
+      id: 'DEVICE-003',
+      name: 'Ventilator Bank ICU',
+      type: 'Life Support',
+      location: 'ICU',
+      status: 'operational',
+      utilization: 78.3,
+      lastMaintenance: '2026-03-01',
+      nextMaintenance: '2026-03-08',
+      operatingHours: 8760.0,
+      faultCount: 0,
+      availability: 99.9
+    },
+    {
+      id: 'DEVICE-004',
+      name: 'Cardiac Monitors',
+      type: 'Monitoring',
+      location: 'CCU',
+      status: 'alert',
+      utilization: 94.7,
+      lastMaintenance: '2026-02-25',
+      nextMaintenance: '2026-03-10',
+      operatingHours: 4356.8,
+      faultCount: 8,
+      availability: 89.2
+    },
+    {
+      id: 'DEVICE-005',
+      name: 'OR Equipment Suite',
+      type: 'Surgical',
+      location: 'OR 1-6',
+      status: 'operational',
+      utilization: 82.1,
+      lastMaintenance: '2026-03-03',
+      nextMaintenance: '2026-03-17',
+      operatingHours: 2156.4,
+      faultCount: 1,
+      availability: 98.7
+    }
+  ]);
+
+  const [emergencyMetrics, setEmergencyMetrics] = useState([
+    {
+      time: new Date(Date.now() - 300000).toLocaleTimeString(),
+      admissions: 234,
+      waitTime: 13.2,
+      occupancy: 76.8,
+      staffUtilization: 82.4
+    },
+    {
+      time: new Date(Date.now() - 240000).toLocaleTimeString(),
+      admissions: 238,
+      waitTime: 13.8,
+      occupancy: 77.1,
+      staffUtilization: 83.2
+    },
+    {
+      time: new Date(Date.now() - 180000).toLocaleTimeString(),
+      admissions: 241,
+      waitTime: 12.9,
+      occupancy: 77.8,
+      staffUtilization: 83.8
+    },
+    {
+      time: new Date(Date.now() - 120000).toLocaleTimeString(),
+      admissions: 244,
+      waitTime: 12.5,
+      occupancy: 78.2,
+      staffUtilization: 84.1
+    },
+    {
+      time: new Date(Date.now() - 60000).toLocaleTimeString(),
+      admissions: 246,
+      waitTime: 12.8,
+      occupancy: 78.1,
+      staffUtilization: 84.0
+    },
+    {
+      time: new Date().toLocaleTimeString(),
+      admissions: 247,
+      waitTime: 12.7,
+      occupancy: 78.4,
+      staffUtilization: 84.3
+    }
+  ]);
+
+  const [healthcareAlerts, setHealthcareAlerts] = useState([
+    {
+      id: 'MED-001',
+      severity: 'critical',
+      type: 'Patient Emergency',
+      message: 'David Wilson (PT-12345) - elevated cardiac markers, chest pain assessment needed',
+      timestamp: new Date(),
+      status: 'active',
+      department: 'Emergency',
+      impact: 'immediate'
+    },
+    {
+      id: 'MED-002',
+      severity: 'warning',
+      type: 'Equipment Alert',
+      message: 'Cardiac monitors in CCU showing intermittent connectivity issues',
+      timestamp: new Date(Date.now() - 120000),
+      status: 'investigating',
+      department: 'Cardiac Care',
+      impact: 'high'
+    },
+    {
+      id: 'MED-003',
+      severity: 'info',
+      type: 'Staffing Update',
+      message: 'Night shift coverage at 95% - all departments adequately staffed',
+      timestamp: new Date(Date.now() - 300000),
+      status: 'resolved',
+      department: 'Hospital-wide',
+      impact: 'positive'
+    }
+  ]);
+
+  const [clinicalDecisionSupport, setClinicalDecisionSupport] = useState([
+    {
+      patientId: 'PT-23456',
+      recommendation: 'Consider beta-blocker adjustment based on BP trends',
+      confidence: 87.3,
+      category: 'Medication',
+      physician: 'Dr. Rodriguez',
+      aiModel: 'Clinical-AI-v2.1',
+      timestamp: new Date(Date.now() - 60000)
+    },
+    {
+      patientId: 'PT-67890',
+      recommendation: 'Chest X-ray follow-up recommended within 24 hours',
+      confidence: 92.1,
+      category: 'Diagnostic',
+      physician: 'Dr. Thompson',
+      aiModel: 'Radiology-AI-v3.4',
+      timestamp: new Date(Date.now() - 180000)
+    },
+    {
+      patientId: 'PT-98765',
+      recommendation: 'Nebulizer frequency may be reduced based on improved O2 sat',
+      confidence: 78.9,
+      category: 'Treatment',
+      physician: 'Dr. Kim',
+      aiModel: 'Pediatric-AI-v1.8',
+      timestamp: new Date(Date.now() - 240000)
+    },
+    {
+      patientId: 'PT-12345',
+      recommendation: 'ECG monitoring suggest possible ST elevation - cardiology consult',
+      confidence: 94.7,
+      category: 'Emergency',
+      physician: 'Dr. Martinez',
+      aiModel: 'Cardiac-AI-v4.2',
+      timestamp: new Date(Date.now() - 30000)
+    }
+  ]);
+
+  const [staffMetrics, setStaffMetrics] = useState([
+    {
+      department: 'Nursing',
+      totalStaff: 180,
+      onDuty: 45,
+      efficiency: 88.7,
+      patientRatio: 3.2,
+      overtimeHours: 23.4
+    },
+    {
+      department: 'Physicians',
+      totalStaff: 72,
+      onDuty: 18,
+      efficiency: 92.4,
+      patientRatio: 10.3,
+      overtimeHours: 8.7
+    },
+    {
+      department: 'Technicians',
+      totalStaff: 96,
+      onDuty: 24,
+      efficiency: 85.9,
+      patientRatio: 7.7,
+      overtimeHours: 12.6
+    },
+    {
+      department: 'Support Staff',
+      totalStaff: 124,
+      onDuty: 31,
+      efficiency: 79.2,
+      patientRatio: 6.0,
+      overtimeHours: 15.8
+    }
+  ]);
+
+  const [systemMetrics, setSystemMetrics] = useState({
+    ehrSystem: 99.94, // uptime %
+    patientMonitoring: 99.97,
+    medicalDevices: 97.83,
+    labSystem: 99.89,
+    averageResponseTime: 0.234, // seconds
+    dataIntegrity: 99.97, // %
+    aiAccuracy: 91.7, // %
+    complianceScore: 98.2 // %
   });
 
-  const [clinicalOperations, setClinicalOperations] = useState({
-    surgical_services: {
-      operating_rooms: 18,
-      or_utilization_rate: 87.4, // percentage
-      surgeries_scheduled_today: 24,
-      surgeries_completed: 18,
-      surgeries_in_progress: 3,
-      surgeries_cancelled: 1,
-      emergency_surgeries: 2,
-      average_case_length_minutes: 127,
-      first_case_on_time_starts: 89.2, // percentage
-      turnover_time_minutes: 23.4
-    },
-    diagnostic_services: {
-      radiology_studies_today: 156,
-      ct_scans: 34,
-      mri_scans: 12,
-      ultrasounds: 45,
-      x_rays: 65,
-      mammograms: 8,
-      average_report_turnaround_hours: 2.3,
-      radiology_backlog: 12,
-      equipment_utilization: 78.9 // percentage
-    },
-    laboratory_services: {
-      lab_tests_today: 2347,
-      stat_lab_results_avg_minutes: 18.7,
-      routine_lab_results_avg_hours: 4.2,
-      microbiology_cultures: 87,
-      blood_bank_units_available: 234,
-      blood_bank_units_crossmatched: 45,
-      lab_quality_score: 98.7,
-      critical_value_alerts: 12
-    },
-    pharmacy_operations: {
-      medications_dispensed_today: 1456,
-      medication_errors: 0,
-      pharmacy_response_time_minutes: 15.7,
-      controlled_substances_count: 'VERIFIED',
-      drug_inventory_status: 'ADEQUATE',
-      clinical_interventions: 23,
-      medication_reconciliation_rate: 94.7, // percentage
-      iv_admixture_preparations: 89
-    }
-  });
-
-  const [qualityMetrics, setQualityMetrics] = useState({
-    patient_safety: {
-      infection_control_compliance: 97.8, // percentage
-      hand_hygiene_compliance: 89.4,
-      fall_incidents_today: 1,
-      medication_safety_score: 98.9,
-      pressure_ulcer_rate: 2.1, // per 1000 patient days
-      catheter_associated_uti_rate: 0.8,
-      central_line_infection_rate: 1.2,
-      surgical_site_infection_rate: 2.3
-    },
-    regulatory_compliance: {
-      joint_commission_readiness: 92.7, // percentage
-      cms_quality_measures: 94.3,
-      dnv_accreditation_status: 'CURRENT',
-      fire_safety_compliance: 98.2,
-      environment_of_care_score: 96.8,
-      emergency_preparedness_score: 91.4,
-      data_privacy_compliance: 99.1,
-      documentation_compliance: 88.7
-    },
-    clinical_outcomes: {
-      mortality_index: 0.87, // risk adjusted
-      patient_satisfaction_hcahps: 87.6,
-      core_measures_compliance: 94.8,
-      sepsis_bundle_compliance: 89.7,
-      stroke_care_measures: 92.4,
-      heart_attack_care_measures: 95.1,
-      pneumonia_care_measures: 91.8,
-      surgical_care_improvement: 93.6
-    }
-  });
-
-  const [resourceManagement, setResourceManagement] = useState({
-    staffing_levels: {
-      nursing_staff_present: 89,
-      nursing_staff_scheduled: 94,
-      nursing_fill_rate: 94.7, // percentage
-      physician_coverage: 'ADEQUATE',
-      respiratory_therapists: 12,
-      pharmacy_staff: 8,
-      environmental_services: 15,
-      security_staff: 6,
-      overtime_hours_today: 23.7,
-      agency_staff_today: 4
-    },
-    equipment_status: {
-      ventilators_total: 45,
-      ventilators_available: 23,
-      iv_pumps_total: 234,
-      iv_pumps_available: 189,
-      patient_monitors_total: 156,
-      patient_monitors_available: 134,
-      wheelchairs_available: 45,
-      stretchers_available: 23,
-      equipment_maintenance_due: 12,
-      biomedical_alerts: 3
-    },
-    supply_chain: {
-      inventory_status: 'GREEN',
-      ppe_stock_level: 'ADEQUATE',
-      medical_supplies_stock: 94.7, // percentage of target
-      pharmaceutical_stock: 92.3,
-      blood_products_stock: 87.6,
-      food_service_stock: 96.8,
-      linen_availability: 'SUFFICIENT',
-      supply_chain_disruptions: 0
-    }
-  });
-
-  const [emergencyPreparedness, setEmergencyPreparedness] = useState({
-    disaster_response: {
-      emergency_management_status: 'STANDBY',
-      surge_capacity_beds: 45,
-      surge_capacity_available: 38,
-      emergency_supplies_status: 'STOCKED',
-      backup_power_status: 'TESTED_OK',
-      communication_systems: 'OPERATIONAL',
-      evacuation_plan_current: true,
-      mass_casualty_protocol: 'READY',
-      hazmat_response_team: 'ON_CALL'
-    },
-    infection_prevention: {
-      isolation_rooms: 12,
-      isolation_rooms_available: 8,
-      negative_pressure_rooms: 6,
-      negative_pressure_operational: 5,
-      ppe_consumption_rate: 'NORMAL',
-      isolation_precautions_active: 15,
-      outbreak_investigations: 0,
-      environmental_cleaning_score: 95.7,
-      air_quality_monitoring: 'NORMAL'
-    },
-    security_operations: {
-      security_incidents_today: 2,
-      workplace_violence_alerts: 0,
-      visitor_screening_status: 'ACTIVE',
-      access_control_compliance: 97.8,
-      surveillance_system_status: 'OPERATIONAL',
-      panic_button_tests: 'CURRENT',
-      psychiatric_security_calls: 3,
-      infant_security_system: 'ARMED'
-    }
-  });
-
-  const [healthcareHistory, setHealthcareHistory] = useState([]);
-
-  const generateHealthcareHistory = () => {
-    const data = [];
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    
-    for (let i = 0; i <= 23; i++) { // 24 hours of healthcare data
-      const hour = i;
-      let patientLoadMultiplier = 0.5; // Base patient load
-      
-      // Hospital patient flow patterns
-      if (hour >= 6 && hour <= 10) patientLoadMultiplier = 1.1; // Morning admission surge
-      if (hour >= 14 && hour <= 18) patientLoadMultiplier = 1.0; // Afternoon activity
-      if (hour >= 20 && hour <= 22) patientLoadMultiplier = 0.8; // Evening discharge
-      if (hour >= 23 || hour <= 5) patientLoadMultiplier = 0.4; // Night/early morning
-      if ([8, 9, 15, 16].includes(hour)) patientLoadMultiplier = 1.3; // Peak admission times
-      
-      data.push({
-        hour: `${hour.toString().padStart(2, '0')}:00`,
-        bed_occupancy: Math.max(70, Math.min(95, 80 + patientLoadMultiplier * 10 + Math.random() * 8)),
-        ed_volume: Math.floor((20 + patientLoadMultiplier * 25) + Math.random() * 10),
-        icu_occupancy: Math.max(60, Math.min(100, 85 + patientLoadMultiplier * 8 + Math.random() * 6)),
-        surgery_cases: Math.floor(patientLoadMultiplier * 6 + Math.random() * 4),
-        average_wait_time: Math.max(5, Math.min(60, 25 - patientLoadMultiplier * 8 + Math.random() * 15)),
-        patient_satisfaction: Math.max(75, Math.min(95, 87 - patientLoadMultiplier * 3 + Math.random() * 5)),
-        nursing_ratio: Math.max(3.0, Math.min(8.0, 5.5 + (1 - patientLoadMultiplier) * 1.5 + Math.random() * 1.0)),
-        lab_turnaround: Math.max(2, Math.min(8, 4 + patientLoadMultiplier * 2 + Math.random() * 1.5)),
-        medication_errors: Math.floor(patientLoadMultiplier * 0.5 + Math.random() * 0.8),
-        infection_rate: Math.max(0, Math.min(5, 2.1 + (Math.random() - 0.5) * 1.0)),
-        discharge_rate: Math.max(5, Math.min(25, 15 + (1 - patientLoadMultiplier) * 8 + Math.random() * 5)),
-        emergency_cases: Math.floor(patientLoadMultiplier * 4 + Math.random() * 3)
-      });
-    }
-    return data;
-  };
-
-  useEffect(() => {
-    setHealthcareHistory(generateHealthcareHistory());
-  }, []);
-
+  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update hospital status
-      setHospitalStatus(prev => ({
+      // Update hospital metrics
+      setHospitalMetrics(prev => ({
         ...prev,
-        occupiedBeds: Math.max(450, Math.min(647, prev.occupiedBeds + Math.floor((Math.random() - 0.5) * 10))),
-        totalPatients: Math.max(500, Math.min(700, prev.totalPatients + Math.floor((Math.random() - 0.5) * 8))),
-        occupancyRate: Math.max(70.0, Math.min(95.0, prev.occupancyRate + (Math.random() - 0.5) * 3.0)),
-        averageWaitTime: Math.max(10.0, Math.min(45.0, prev.averageWaitTime + (Math.random() - 0.5) * 5.0)),
-        lastUpdate: Date.now()
+        totalPatients: Math.max(1500, Math.min(2000, prev.totalPatients + Math.floor((Math.random() - 0.5) * 10))),
+        admissions: prev.admissions + Math.floor(Math.random() * 3),
+        discharges: prev.discharges + Math.floor(Math.random() * 3),
+        occupancyRate: Math.max(70, Math.min(95, prev.occupancyRate + (Math.random() - 0.5) * 1)),
+        emergencyWaitTime: Math.max(8, Math.min(25, prev.emergencyWaitTime + (Math.random() - 0.5) * 1)),
+        staffUtilization: Math.max(75, Math.min(95, prev.staffUtilization + (Math.random() - 0.5) * 1)),
+        patientSatisfaction: Math.max(3.5, Math.min(5.0, prev.patientSatisfaction + (Math.random() - 0.5) * 0.05))
       }));
 
-      // Update patient flow management
-      setPatientFlowManagement(prev => ({
-        ...prev,
-        emergency_department: {
-          ...prev.emergency_department,
-          occupied_ed_beds: Math.max(25, Math.min(45, prev.emergency_department.occupied_ed_beds + Math.floor((Math.random() - 0.5) * 3))),
-          average_wait_time_minutes: Math.max(10.0, Math.min(45.0, prev.emergency_department.average_wait_time_minutes + (Math.random() - 0.5) * 4.0)),
-          trauma_cases_today: prev.emergency_department.trauma_cases_today + Math.floor(Math.random() * 0.3)
-        },
-        inpatient_units: {
-          ...prev.inpatient_units,
-          intensive_care_unit: {
-            ...prev.inpatient_units.intensive_care_unit,
-            occupied_icu_beds: Math.max(18, Math.min(28, prev.inpatient_units.intensive_care_unit.occupied_icu_beds + Math.floor((Math.random() - 0.6) * 2))),
-            ventilators_in_use: Math.max(6, Math.min(16, prev.inpatient_units.intensive_care_unit.ventilators_in_use + Math.floor((Math.random() - 0.5) * 2)))
-          }
-        },
-        bed_management: {
-          ...prev.bed_management,
-          bed_turnover_time_minutes: Math.max(60.0, Math.min(120.0, prev.bed_management.bed_turnover_time_minutes + (Math.random() - 0.5) * 10.0))
+      // Update patient monitoring
+      setPatientMonitoring(prev => prev.map(patient => {
+        const newVitals = { ...patient.vitals };
+        
+        // Simulate realistic vital sign changes
+        if (patient.status === 'critical_watch') {
+          newVitals.heartRate = Math.max(90, Math.min(140, patient.vitals.heartRate + (Math.random() - 0.4) * 8));
+          newVitals.oxygenSat = Math.max(92, Math.min(100, patient.vitals.oxygenSat + (Math.random() - 0.6) * 2));
+        } else if (patient.status === 'elevated_risk') {
+          newVitals.heartRate = Math.max(80, Math.min(120, patient.vitals.heartRate + (Math.random() - 0.5) * 5));
+          newVitals.oxygenSat = Math.max(94, Math.min(100, patient.vitals.oxygenSat + (Math.random() - 0.3) * 1));
+        } else {
+          newVitals.heartRate = Math.max(60, Math.min(100, patient.vitals.heartRate + (Math.random() - 0.5) * 3));
+          newVitals.oxygenSat = Math.max(96, Math.min(100, patient.vitals.oxygenSat + (Math.random() - 0.2) * 1));
         }
-      }));
+        
+        newVitals.temperature = Math.max(97.0, Math.min(103.0, patient.vitals.temperature + (Math.random() - 0.5) * 0.2));
+        newVitals.respiratoryRate = Math.max(12, Math.min(35, patient.vitals.respiratoryRate + Math.floor((Math.random() - 0.5) * 2)));
 
-      // Update clinical operations
-      setClinicalOperations(prev => ({
-        ...prev,
-        surgical_services: {
-          ...prev.surgical_services,
-          surgeries_completed: Math.min(prev.surgical_services.surgeries_scheduled_today, prev.surgical_services.surgeries_completed + Math.floor(Math.random() * 2)),
-          surgeries_in_progress: Math.max(0, Math.min(6, prev.surgical_services.surgeries_in_progress + Math.floor((Math.random() - 0.6) * 2)))
-        },
-        laboratory_services: {
-          ...prev.laboratory_services,
-          lab_tests_today: prev.laboratory_services.lab_tests_today + Math.floor(Math.random() * 50) + 25,
-          critical_value_alerts: Math.max(0, prev.laboratory_services.critical_value_alerts + Math.floor((Math.random() - 0.8) * 2))
+        // Update risk score based on vitals
+        let newRiskScore = patient.riskScore;
+        if (newVitals.heartRate > 110 || newVitals.oxygenSat < 95 || newVitals.temperature > 101) {
+          newRiskScore = Math.min(10, newRiskScore + 0.1);
+        } else if (newVitals.heartRate < 90 && newVitals.oxygenSat > 97 && newVitals.temperature < 99) {
+          newRiskScore = Math.max(1, newRiskScore - 0.05);
         }
+
+        return {
+          ...patient,
+          vitals: newVitals,
+          riskScore: newRiskScore,
+          alerts: newRiskScore > 7 ? 3 : newRiskScore > 5 ? 2 : newRiskScore > 3 ? 1 : 0
+        };
       }));
 
-      // Update quality metrics
-      setQualityMetrics(prev => ({
+      // Update department metrics
+      setDepartmentMetrics(prev => prev.map(dept => ({
+        ...dept,
+        occupiedBeds: Math.max(Math.floor(dept.totalBeds * 0.4), Math.min(dept.totalBeds, dept.occupiedBeds + Math.floor((Math.random() - 0.5) * 3))),
+        staffOnDuty: Math.max(Math.floor(dept.totalStaff * 0.2), Math.min(Math.floor(dept.totalStaff * 0.4), dept.staffOnDuty + Math.floor((Math.random() - 0.5) * 2))),
+        averageStay: Math.max(0.5, Math.min(10, dept.averageStay + (Math.random() - 0.5) * 0.1)),
+        nursePaitentRatio: Math.max(1.0, Math.min(6.0, dept.nursePaitentRatio + (Math.random() - 0.5) * 0.1))
+      })));
+
+      // Update medical device status
+      setMedicalDeviceStatus(prev => prev.map(device => ({
+        ...device,
+        utilization: device.status === 'operational' ? Math.max(60, Math.min(100, device.utilization + (Math.random() - 0.5) * 5)) : 0,
+        operatingHours: device.status === 'operational' ? device.operatingHours + 0.1 : device.operatingHours,
+        availability: Math.max(85, Math.min(100, device.availability + (Math.random() - 0.5) * 0.5))
+      })));
+
+      // Update emergency metrics
+      const newEmergencyData = {
+        time: new Date().toLocaleTimeString(),
+        admissions: hospitalMetrics.admissions,
+        waitTime: hospitalMetrics.emergencyWaitTime,
+        occupancy: hospitalMetrics.occupancyRate,
+        staffUtilization: hospitalMetrics.staffUtilization
+      };
+      
+      setEmergencyMetrics(prev => [...prev.slice(1), newEmergencyData]);
+
+      // Update system metrics
+      setSystemMetrics(prev => ({
         ...prev,
-        patient_safety: {
-          ...prev.patient_safety,
-          infection_control_compliance: Math.max(90.0, Math.min(100.0, prev.patient_safety.infection_control_compliance + (Math.random() - 0.5) * 1.0)),
-          hand_hygiene_compliance: Math.max(80.0, Math.min(98.0, prev.patient_safety.hand_hygiene_compliance + (Math.random() - 0.5) * 2.0))
-        }
+        ehrSystem: Math.max(99.8, Math.min(100, prev.ehrSystem + (Math.random() - 0.3) * 0.01)),
+        patientMonitoring: Math.max(99.8, Math.min(100, prev.patientMonitoring + (Math.random() - 0.3) * 0.01)),
+        medicalDevices: Math.max(95, Math.min(100, prev.medicalDevices + (Math.random() - 0.5) * 0.5)),
+        averageResponseTime: Math.max(0.1, Math.min(1.0, prev.averageResponseTime + (Math.random() - 0.5) * 0.05)),
+        aiAccuracy: Math.max(85, Math.min(95, prev.aiAccuracy + (Math.random() - 0.5) * 0.2))
       }));
 
-    }, 35000);
+      // Occasionally add new healthcare alerts
+      if (Math.random() > 0.94) {
+        const alertTypes = ['Patient Emergency', 'Equipment Alert', 'Staffing Update', 'System Alert', 'Compliance Issue'];
+        const severities = ['info', 'warning', 'critical'];
+        const departments = departmentMetrics.map(d => d.name);
+        
+        const newAlert = {
+          id: `MED-${Date.now()}`,
+          severity: severities[Math.floor(Math.random() * severities.length)],
+          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+          message: 'Real-time healthcare operations alert generated',
+          timestamp: new Date(),
+          status: 'active',
+          department: departments[Math.floor(Math.random() * departments.length)],
+          impact: ['low', 'medium', 'high', 'immediate'][Math.floor(Math.random() * 4)]
+        };
+        
+        setHealthcareAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+      }
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [hospitalMetrics.admissions, hospitalMetrics.emergencyWaitTime, hospitalMetrics.occupancyRate, hospitalMetrics.staffUtilization]);
 
-  const getStatusColor = (status) => {
+  const getPatientStatusColor = (status) => {
     switch (status) {
-      case 'PATIENT_FLOW_ACTIVE':
-      case 'NORMAL':
-      case 'ADEQUATE':
-      case 'GREEN':
-      case 'SUFFICIENT':
-      case 'STOCKED':
-      case 'TESTED_OK':
-      case 'OPERATIONAL':
-      case 'READY':
-      case 'ON_CALL':
-      case 'ACTIVE':
-      case 'CURRENT':
-      case 'ARMED':
-      case 'VERIFIED':
-      case 'STANDBY': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'MODERATE':
-      case 'YELLOW':
-      case 'SCHEDULED': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'HIGH':
-      case 'RED':
-      case 'CRITICAL':
-      case 'ALERT': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      default: return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
+      case 'stable': return '#10B981';
+      case 'monitoring': return '#3B82F6';
+      case 'elevated_risk': return '#F59E0B';
+      case 'critical_watch': return '#EF4444';
+      default: return '#6B7280';
     }
   };
 
-  const formatNumber = (num, decimals = 1) => {
-    if (!num && num !== 0) return 'N/A';
-    return num.toFixed(decimals);
+  const getDepartmentStatusColor = (status) => {
+    switch (status) {
+      case 'optimal': return '#10B981';
+      case 'attention': return '#F59E0B';
+      case 'busy': return '#8B5CF6';
+      case 'critical': return '#EF4444';
+      default: return '#6B7280';
+    }
   };
 
-  const formatLargeNumber = (num) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
-    return num.toString();
+  const getDeviceStatusColor = (status) => {
+    switch (status) {
+      case 'operational': return '#10B981';
+      case 'maintenance': return '#F59E0B';
+      case 'alert': return '#EF4444';
+      case 'offline': return '#6B7280';
+      default: return '#6B7280';
+    }
   };
 
-  const formatPercentage = (num) => {
-    return `${formatNumber(num)}%`;
+  const getAlertSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#EF4444';
+      case 'warning': return '#F59E0B';
+      case 'info': return '#10B981';
+      default: return '#6B7280';
+    }
   };
 
-  // Calculate derived values
-  const availableBeds = hospitalStatus.totalBeds - hospitalStatus.occupiedBeds;
-  const edOccupancyRate = (patientFlowManagement.emergency_department.occupied_ed_beds / patientFlowManagement.emergency_department.total_ed_beds) * 100;
-  const icuOccupancyRate = (patientFlowManagement.inpatient_units.intensive_care_unit.occupied_icu_beds / patientFlowManagement.inpatient_units.intensive_care_unit.total_icu_beds) * 100;
+  const patientDemographics = [
+    { name: 'ICU', value: 19, color: '#EF4444' },
+    { name: 'Medical', value: 89, color: '#3B82F6' },
+    { name: 'Surgical', value: 67, color: '#8B5CF6' },
+    { name: 'Emergency', value: 28, color: '#F59E0B' },
+    { name: 'Cardiac', value: 14, color: '#10B981' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          🏥 HEALTHCARE OPERATIONS CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className={`px-3 py-1 rounded-full text-sm font-mono border ${getStatusColor(hospitalStatus.operationalStatus)}`}>
-            {hospitalStatus.operationalStatus.replace(/_/g, ' ')}
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <Heart className="w-8 h-8 text-red-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">HEALTHCARE OPERATIONS CENTER</h1>
+            <p className="text-gray-400">Real-time patient monitoring, medical device integration, clinical decision support & hospital resource management</p>
           </div>
-          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            {hospitalStatus.occupiedBeds}/{hospitalStatus.totalBeds} Beds
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">
+              {hospitalMetrics.totalPatients}
+            </div>
+            <div className="text-xs text-gray-400">PATIENTS</div>
           </div>
-          <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono border border-blue-500/30">
-            {formatPercentage(hospitalStatus.occupancyRate)} Occupancy
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">
+              {hospitalMetrics.occupancyRate.toFixed(1)}%
+            </div>
+            <div className="text-xs text-gray-400">OCCUPANCY</div>
           </div>
-          <div className="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-mono border border-purple-500/30">
-            {formatNumber(hospitalStatus.averageWaitTime)} min Wait
-          </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Real-Time Patient Flow & Clinical Operations
+          <div className="text-center">
+            <div className="text-2xl font-bold text-yellow-400">{hospitalMetrics.emergencyWaitTime.toFixed(1)}min</div>
+            <div className="text-xs text-gray-400">ER WAIT</div>
           </div>
         </div>
       </div>
 
-      {/* Hospital Status Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">BED OCCUPANCY</div>
-              <div className="text-2xl font-bold text-green-100">
-                {formatPercentage(hospitalStatus.occupancyRate)}
-              </div>
-              <div className="text-xs text-green-300">
-                {hospitalStatus.occupiedBeds} / {hospitalStatus.totalBeds} beds
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🛏️</div>
+      {/* Healthcare KPIs */}
+      <div className="grid grid-cols-6 gap-4 mb-6">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Activity className="w-5 h-5 text-green-400" />
+            <span className="text-xs text-gray-400">ADMISSIONS</span>
           </div>
+          <div className="text-xl font-bold text-white">{hospitalMetrics.admissions}</div>
+          <div className="text-xs text-gray-400">Today</div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">ED STATUS</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {formatPercentage(edOccupancyRate)}
-              </div>
-              <div className="text-xs text-blue-300">
-                {patientFlowManagement.emergency_department.occupied_ed_beds} / {patientFlowManagement.emergency_department.total_ed_beds} ED beds
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🚑</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Users className="w-5 h-5 text-blue-400" />
+            <span className="text-xs text-gray-400">DISCHARGES</span>
           </div>
+          <div className="text-xl font-bold text-white">{hospitalMetrics.discharges}</div>
+          <div className="text-xs text-gray-400">Today</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">ICU CAPACITY</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {formatPercentage(icuOccupancyRate)}
-              </div>
-              <div className="text-xs text-purple-300">
-                {patientFlowManagement.inpatient_units.intensive_care_unit.occupied_icu_beds} / {patientFlowManagement.inpatient_units.intensive_care_unit.total_icu_beds} ICU beds
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">🏥</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Clock className="w-5 h-5 text-purple-400" />
+            <span className="text-xs text-gray-400">AVG STAY</span>
           </div>
+          <div className="text-xl font-bold text-white">{hospitalMetrics.averageStayDuration.toFixed(1)}d</div>
+          <div className="text-xs text-gray-400">Duration</div>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">TOTAL PATIENTS</div>
-              <div className="text-2xl font-bold text-orange-100">
-                {hospitalStatus.totalPatients}
-              </div>
-              <div className="text-xs text-orange-300">
-                Active patient census
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">👥</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <TrendingUp className="w-5 h-5 text-orange-400" />
+            <span className="text-xs text-gray-400">STAFF UTIL</span>
           </div>
+          <div className="text-xl font-bold text-white">{hospitalMetrics.staffUtilization.toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Rate</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Heart className="w-5 h-5 text-red-400" />
+            <span className="text-xs text-gray-400">SATISFACTION</span>
+          </div>
+          <div className="text-xl font-bold text-white">{hospitalMetrics.patientSatisfaction.toFixed(1)}/5.0</div>
+          <div className="text-xs text-gray-400">Score</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Stethoscope className="w-5 h-5 text-cyan-400" />
+            <span className="text-xs text-gray-400">EHR UPTIME</span>
+          </div>
+          <div className="text-xl font-bold text-white">{systemMetrics.ehrSystem.toFixed(2)}%</div>
+          <div className="text-xs text-gray-400">System</div>
         </div>
       </div>
 
-      {/* Patient Flow Performance Trends */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📈 PATIENT FLOW & CLINICAL PERFORMANCE TRENDS (24 HOURS)
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={healthcareHistory}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-            <XAxis dataKey="hour" stroke="#9CA3AF" fontSize={10}/>
-            <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12}/>
-            <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12}/>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB'
-              }}
-            />
-            <Legend />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="bed_occupancy"
-              stroke="#10B981"
-              fill="#10B981"
-              fillOpacity={0.2}
-              strokeWidth={2}
-              name="Bed Occupancy %"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="ed_volume" 
-              stroke="#3B82F6" 
-              strokeWidth={2}
-              name="ED Volume"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="icu_occupancy" 
-              stroke="#EF4444" 
-              strokeWidth={2}
-              name="ICU Occupancy %"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="surgery_cases" 
-              stroke="#8B5CF6" 
-              strokeWidth={2}
-              name="Surgery Cases"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="average_wait_time" 
-              stroke="#F59E0B" 
-              strokeWidth={2}
-              name="Wait Time (min)"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="patient_satisfaction" 
-              stroke="#06B6D4" 
-              strokeWidth={2}
-              name="Satisfaction %"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="discharge_rate" 
-              stroke="#84CC16" 
-              strokeWidth={2}
-              name="Discharges"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Patient Flow Management & Clinical Operations */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Patient Flow Management */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🚑 PATIENT FLOW & BED MANAGEMENT
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Patient Monitoring */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Activity className="w-5 h-5 mr-2 text-red-400" />
+            PATIENT MONITORING
           </h3>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Emergency Department</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ED Beds:</span>
-                  <span className="text-blue-400">{patientFlowManagement.emergency_department.occupied_ed_beds}/{patientFlowManagement.emergency_department.total_ed_beds}</span>
+          <div className="space-y-3">
+            {patientMonitoring.map(patient => (
+              <div key={patient.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getPatientStatusColor(patient.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{patient.name}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getPatientStatusColor(patient.status)}20`, 
+                      color: getPatientStatusColor(patient.status) 
+                    }}>
+                      {patient.status.toUpperCase().replace('_', ' ')}
+                    </span>
+                    {patient.alerts > 0 && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-red-900 text-red-400">
+                        {patient.alerts} Alert{patient.alerts > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ED Occupancy:</span>
-                  <span className="text-green-400">{formatPercentage(edOccupancyRate)}</span>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  ID: <span className="text-blue-400">{patient.patientId}</span> • 
+                  Age: <span className="text-purple-400">{patient.age}</span> • 
+                  Ward: <span className="text-green-400">{patient.ward}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Avg Wait Time:</span>
-                  <span className="text-purple-400">{formatNumber(patientFlowManagement.emergency_department.average_wait_time_minutes)} min</span>
+                
+                <div className="text-xs text-gray-300 mb-2">{patient.condition}</div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">HR</span>
+                    <span className="text-red-400">{patient.vitals.heartRate} bpm</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">O2 Sat</span>
+                    <span className="text-blue-400">{patient.vitals.oxygenSat}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">BP</span>
+                    <span className="text-purple-400">{patient.vitals.bloodPressure}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Temp</span>
+                    <span className="text-white">{patient.vitals.temperature}°F</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">LWBS Rate:</span>
-                  <span className="text-orange-400">{formatPercentage(patientFlowManagement.emergency_department.left_without_being_seen_rate)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Diversions Today:</span>
-                  <span className="text-red-400">{patientFlowManagement.emergency_department.ambulance_diversions_today}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Trauma Cases:</span>
-                  <span className="text-yellow-400">{patientFlowManagement.emergency_department.trauma_cases_today}</span>
-                </div>
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Triage Levels: </span>
-                  <span className="text-red-400">L1:{patientFlowManagement.emergency_department.triage_levels.level_1_critical}</span>
-                  <span className="text-orange-400"> L2:{patientFlowManagement.emergency_department.triage_levels.level_2_emergent}</span>
-                  <span className="text-yellow-400"> L3:{patientFlowManagement.emergency_department.triage_levels.level_3_urgent}</span>
-                  <span className="text-green-400"> L4:{patientFlowManagement.emergency_department.triage_levels.level_4_semi_urgent}</span>
-                  <span className="text-blue-400"> L5:{patientFlowManagement.emergency_department.triage_levels.level_5_non_urgent}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Intensive Care Unit</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ICU Beds:</span>
-                  <span className="text-blue-400">{patientFlowManagement.inpatient_units.intensive_care_unit.occupied_icu_beds}/{patientFlowManagement.inpatient_units.intensive_care_unit.total_icu_beds}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">ICU Occupancy:</span>
-                  <span className="text-green-400">{formatPercentage(icuOccupancyRate)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Ventilators:</span>
-                  <span className="text-purple-400">{patientFlowManagement.inpatient_units.intensive_care_unit.ventilators_in_use}/{patientFlowManagement.inpatient_units.intensive_care_unit.ventilator_beds}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Avg ICU Stay:</span>
-                  <span className="text-orange-400">{formatNumber(patientFlowManagement.inpatient_units.intensive_care_unit.average_icu_stay_days)} days</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Mortality Rate:</span>
-                  <span className="text-red-400">{formatPercentage(patientFlowManagement.inpatient_units.intensive_care_unit.icu_mortality_rate)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Bed Management</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Turnover Time:</span>
-                  <span className="text-blue-400">{formatNumber(patientFlowManagement.bed_management.bed_turnover_time_minutes)} min</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Housekeeping Response:</span>
-                  <span className="text-green-400">{formatNumber(patientFlowManagement.bed_management.housekeeping_response_time_minutes)} min</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Bed Assignment:</span>
-                  <span className="text-purple-400">{formatNumber(patientFlowManagement.bed_management.bed_assignment_time_minutes)} min</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Discharge Planning:</span>
-                  <span className="text-orange-400">{formatPercentage(patientFlowManagement.bed_management.discharge_planning_efficiency)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">30-Day Readmission:</span>
-                  <span className="text-red-400">{formatPercentage(patientFlowManagement.bed_management.readmission_rate_30_day)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Patient Satisfaction:</span>
-                  <span className="text-cyan-400">{formatNumber(patientFlowManagement.bed_management.patient_satisfaction_score)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Clinical Operations */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🏥 CLINICAL OPERATIONS & SERVICES
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Surgical Services</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">OR Utilization:</span>
-                  <span className="text-blue-400">{formatPercentage(clinicalOperations.surgical_services.or_utilization_rate)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Scheduled Today:</span>
-                  <span className="text-green-400">{clinicalOperations.surgical_services.surgeries_scheduled_today}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Completed:</span>
-                  <span className="text-purple-400">{clinicalOperations.surgical_services.surgeries_completed}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">In Progress:</span>
-                  <span className="text-orange-400">{clinicalOperations.surgical_services.surgeries_in_progress}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Emergency Cases:</span>
-                  <span className="text-red-400">{clinicalOperations.surgical_services.emergency_surgeries}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Avg Case Length:</span>
-                  <span className="text-cyan-400">{clinicalOperations.surgical_services.average_case_length_minutes} min</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">On-Time Starts:</span>
-                  <span className="text-yellow-400">{formatPercentage(clinicalOperations.surgical_services.first_case_on_time_starts)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Laboratory Services</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Tests Today:</span>
-                  <span className="text-blue-400">{formatLargeNumber(clinicalOperations.laboratory_services.lab_tests_today)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">STAT Results:</span>
-                  <span className="text-green-400">{formatNumber(clinicalOperations.laboratory_services.stat_lab_results_avg_minutes)} min avg</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Routine Results:</span>
-                  <span className="text-purple-400">{formatNumber(clinicalOperations.laboratory_services.routine_lab_results_avg_hours)} hr avg</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Micro Cultures:</span>
-                  <span className="text-orange-400">{clinicalOperations.laboratory_services.microbiology_cultures}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Blood Bank Units:</span>
-                  <span className="text-red-400">{clinicalOperations.laboratory_services.blood_bank_units_available}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Quality Score:</span>
-                  <span className="text-cyan-400">{formatPercentage(clinicalOperations.laboratory_services.lab_quality_score)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Critical Alerts:</span>
-                  <span className="text-yellow-400">{clinicalOperations.laboratory_services.critical_value_alerts}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Pharmacy Operations</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Meds Dispensed:</span>
-                  <span className="text-blue-400">{formatLargeNumber(clinicalOperations.pharmacy_operations.medications_dispensed_today)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Medication Errors:</span>
-                  <span className="text-green-400">{clinicalOperations.pharmacy_operations.medication_errors}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Response Time:</span>
-                  <span className="text-purple-400">{formatNumber(clinicalOperations.pharmacy_operations.pharmacy_response_time_minutes)} min</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Controlled Substances:</span>
-                  <span className={`${getStatusColor(clinicalOperations.pharmacy_operations.controlled_substances_count)?.split(' ')[0] || 'text-green-400'}`}>
-                    {clinicalOperations.pharmacy_operations.controlled_substances_count}
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">
+                    Risk Score: {patient.riskScore.toFixed(1)}
+                  </span>
+                  <span className="text-gray-500">
+                    {patient.physician}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Inventory Status:</span>
-                  <span className={`${getStatusColor(clinicalOperations.pharmacy_operations.drug_inventory_status)?.split(' ')[0] || 'text-green-400'}`}>
-                    {clinicalOperations.pharmacy_operations.drug_inventory_status}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Department Metrics */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <MapPin className="w-5 h-5 mr-2 text-blue-400" />
+            DEPARTMENT METRICS
+          </h3>
+          <div className="space-y-3">
+            {departmentMetrics.map(dept => (
+              <div key={dept.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getDepartmentStatusColor(dept.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{dept.name}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getDepartmentStatusColor(dept.status)}20`, 
+                      color: getDepartmentStatusColor(dept.status) 
+                    }}>
+                      {dept.status.toUpperCase()}
+                    </span>
+                    {dept.alerts > 0 && (
+                      <span className="text-xs px-2 py-1 rounded-full bg-orange-900 text-orange-400">
+                        {dept.alerts} Alert{dept.alerts > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Occupancy</span>
+                    <span className="text-green-400">{Math.round((dept.occupiedBeds/dept.totalBeds)*100)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Beds</span>
+                    <span className="text-blue-400">{dept.occupiedBeds}/{dept.totalBeds}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Staff</span>
+                    <span className="text-purple-400">{dept.staffOnDuty}/{dept.totalStaff}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Avg Stay</span>
+                    <span className="text-white">{dept.averageStay.toFixed(1)}d</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">
+                    Nurse:Patient {dept.nursePaitentRatio.toFixed(1)}:1
+                  </span>
+                  <span className="text-gray-500">
+                    Mortality: {dept.mortalityRate.toFixed(1)}%
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Clinical Interventions:</span>
-                  <span className="text-orange-400">{clinicalOperations.pharmacy_operations.clinical_interventions}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Medical Devices & Alerts */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Zap className="w-5 h-5 mr-2 text-yellow-400" />
+            MEDICAL DEVICES & ALERTS
+          </h3>
+          <div className="space-y-3 mb-4">
+            {medicalDeviceStatus.slice(0, 4).map(device => (
+              <div key={device.id} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{device.name}</span>
+                  <span 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: getDeviceStatusColor(device.status) }}
+                  />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Med Reconciliation:</span>
-                  <span className="text-cyan-400">{formatPercentage(clinicalOperations.pharmacy_operations.medication_reconciliation_rate)}</span>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  {device.type} • <MapPin className="w-3 h-3 inline" /> {device.location}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Utilization</span>
+                    <span className="text-green-400">{device.utilization.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Availability</span>
+                    <span className="text-blue-400">{device.availability.toFixed(1)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Op Hours</span>
+                    <span className="text-purple-400">{device.operatingHours.toFixed(0)}h</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Faults</span>
+                    <span className={device.faultCount > 3 ? "text-red-400" : "text-white"}>{device.faultCount}</span>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-300">
+                  Next Maintenance: <span className="text-yellow-400">{device.nextMaintenance}</span>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Healthcare Alerts */}
+          <div className="border-t border-gray-700 pt-3">
+            <div className="text-sm text-white font-semibold mb-2">Clinical Alerts</div>
+            <div className="space-y-2">
+              {healthcareAlerts.slice(0, 3).map(alert => (
+                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-white">{alert.type}</span>
+                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
+                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
+                      color: getAlertSeverityColor(alert.severity) 
+                    }}>
+                      {alert.severity.toUpperCase()}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-400">{alert.department}</span>
+                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quality Metrics & Resource Management */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Quality Metrics */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📊 QUALITY METRICS & PATIENT SAFETY
-          </h3>
-          
-          <div className="space-y-4">
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Patient Safety</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Infection Control:</span>
-                  <span className="text-blue-400">{formatPercentage(qualityMetrics.patient_safety.infection_control_compliance)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Hand Hygiene:</span>
-                  <span className="text-green-400">{formatPercentage(qualityMetrics.patient_safety.hand_hygiene_compliance)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Falls Today:</span>
-                  <span className="text-red-400">{qualityMetrics.patient_safety.fall_incidents_today}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Med Safety Score:</span>
-                  <span className="text-purple-400">{formatPercentage(qualityMetrics.patient_safety.medication_safety_score)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Pressure Ulcers:</span>
-                  <span className="text-orange-400">{formatNumber(qualityMetrics.patient_safety.pressure_ulcer_rate)} per 1k</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">CAUTI Rate:</span>
-                  <span className="text-cyan-400">{formatNumber(qualityMetrics.patient_safety.catheter_associated_uti_rate)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">CLABSI Rate:</span>
-                  <span className="text-yellow-400">{formatNumber(qualityMetrics.patient_safety.central_line_infection_rate)}</span>
-                </div>
-              </div>
-            </div>
+      {/* Healthcare Analytics */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Real-time Hospital Metrics */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME HOSPITAL METRICS</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={emergencyMetrics}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
+              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="admissions" 
+                stroke="#10B981" 
+                strokeWidth={3}
+                name="Admissions"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="waitTime" 
+                stroke="#EF4444" 
+                strokeWidth={2}
+                name="ER Wait (min)"
+                dot={false}
+              />
+              <Line 
+                yAxisid="right"
+                type="monotone" 
+                dataKey="occupancy" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Occupancy %"
+                dot={false}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="staffUtilization" 
+                stroke="#8B5CF6" 
+                strokeWidth={2}
+                name="Staff Utilization %"
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Clinical Outcomes</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Mortality Index:</span>
-                  <span className="text-blue-400">{formatNumber(qualityMetrics.clinical_outcomes.mortality_index, 2)}</span>
+        {/* Patient Distribution & System Status */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">PATIENT DISTRIBUTION & SYSTEM STATUS</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={patientDemographics}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {patientDemographics.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value) => [`${value} patients`, 'Department Census']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-2 mt-2">
+              {patientDemographics.map((dept, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: dept.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{dept.name}</span>
+                  </div>
+                  <span className="text-white font-semibold">{dept.value}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Patient Satisfaction:</span>
-                  <span className="text-green-400">{formatNumber(qualityMetrics.clinical_outcomes.patient_satisfaction_hcahps)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Core Measures:</span>
-                  <span className="text-purple-400">{formatPercentage(qualityMetrics.clinical_outcomes.core_measures_compliance)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Sepsis Bundle:</span>
-                  <span className="text-orange-400">{formatPercentage(qualityMetrics.clinical_outcomes.sepsis_bundle_compliance)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Stroke Care:</span>
-                  <span className="text-cyan-400">{formatPercentage(qualityMetrics.clinical_outcomes.stroke_care_measures)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Heart Attack Care:</span>
-                  <span className="text-yellow-400">{formatPercentage(qualityMetrics.clinical_outcomes.heart_attack_care_measures)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Regulatory Compliance</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Joint Commission:</span>
-                  <span className="text-blue-400">{formatPercentage(qualityMetrics.regulatory_compliance.joint_commission_readiness)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">CMS Quality:</span>
-                  <span className="text-green-400">{formatPercentage(qualityMetrics.regulatory_compliance.cms_quality_measures)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">DNV Status:</span>
-                  <span className={`${getStatusColor(qualityMetrics.regulatory_compliance.dnv_accreditation_status)?.split(' ')[0] || 'text-green-400'}`}>
-                    {qualityMetrics.regulatory_compliance.dnv_accreditation_status}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Fire Safety:</span>
-                  <span className="text-purple-400">{formatPercentage(qualityMetrics.regulatory_compliance.fire_safety_compliance)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Environment of Care:</span>
-                  <span className="text-orange-400">{formatPercentage(qualityMetrics.regulatory_compliance.environment_of_care_score)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Data Privacy:</span>
-                  <span className="text-cyan-400">{formatPercentage(qualityMetrics.regulatory_compliance.data_privacy_compliance)}</span>
+              ))}
+              
+              {/* System Status */}
+              <div className="mt-4 pt-3 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-2">System Status</div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">EHR System</span>
+                    <span className="text-green-400">{systemMetrics.ehrSystem.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Patient Monitoring</span>
+                    <span className="text-blue-400">{systemMetrics.patientMonitoring.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Response Time</span>
+                    <span className="text-purple-400">{systemMetrics.averageResponseTime.toFixed(3)}s</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">AI Accuracy</span>
+                    <span className="text-green-400">{systemMetrics.aiAccuracy.toFixed(1)}%</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Resource Management */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            👥 RESOURCE MANAGEMENT & EMERGENCY PREPAREDNESS
-          </h3>
           
-          <div className="space-y-4">
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Staffing Levels</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Nursing Staff:</span>
-                  <span className="text-blue-400">{resourceManagement.staffing_levels.nursing_staff_present}/{resourceManagement.staffing_levels.nursing_staff_scheduled}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Nursing Fill Rate:</span>
-                  <span className="text-green-400">{formatPercentage(resourceManagement.staffing_levels.nursing_fill_rate)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Physician Coverage:</span>
-                  <span className={`${getStatusColor(resourceManagement.staffing_levels.physician_coverage)?.split(' ')[0] || 'text-green-400'}`}>
-                    {resourceManagement.staffing_levels.physician_coverage}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Respiratory Therapists:</span>
-                  <span className="text-purple-400">{resourceManagement.staffing_levels.respiratory_therapists}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Overtime Hours:</span>
-                  <span className="text-orange-400">{formatNumber(resourceManagement.staffing_levels.overtime_hours_today)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Agency Staff:</span>
-                  <span className="text-red-400">{resourceManagement.staffing_levels.agency_staff_today}</span>
-                </div>
-              </div>
+          {/* Clinical Decision Support Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm text-white font-semibold">AI Clinical Decision Support</span>
+              <span className="text-xs text-gray-400">Real-time Recommendations</span>
             </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Equipment Status</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Ventilators:</span>
-                  <span className="text-blue-400">{resourceManagement.equipment_status.ventilators_available}/{resourceManagement.equipment_status.ventilators_total}</span>
+            <div className="space-y-2">
+              {clinicalDecisionSupport.slice(0, 2).map((rec, index) => (
+                <div key={index} className="bg-gray-800 rounded-lg p-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-blue-400">{rec.patientId}</span>
+                    <span className="text-xs text-green-400">{rec.confidence.toFixed(1)}%</span>
+                  </div>
+                  <p className="text-xs text-gray-300 mb-1">{rec.recommendation}</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-purple-400">{rec.category}</span>
+                    <span className="text-gray-500">{rec.aiModel}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">IV Pumps:</span>
-                  <span className="text-green-400">{resourceManagement.equipment_status.iv_pumps_available}/{resourceManagement.equipment_status.iv_pumps_total}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Patient Monitors:</span>
-                  <span className="text-purple-400">{resourceManagement.equipment_status.patient_monitors_available}/{resourceManagement.equipment_status.patient_monitors_total}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Wheelchairs:</span>
-                  <span className="text-orange-400">{resourceManagement.equipment_status.wheelchairs_available}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Maintenance Due:</span>
-                  <span className="text-red-400">{resourceManagement.equipment_status.equipment_maintenance_due}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Biomedical Alerts:</span>
-                  <span className="text-yellow-400">{resourceManagement.equipment_status.biomedical_alerts}</span>
-                </div>
-              </div>
+              ))}
             </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-bold text-white mb-3">Emergency Preparedness</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Emergency Status:</span>
-                  <span className={`${getStatusColor(emergencyPreparedness.disaster_response.emergency_management_status)?.split(' ')[0] || 'text-green-400'}`}>
-                    {emergencyPreparedness.disaster_response.emergency_management_status}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Surge Capacity:</span>
-                  <span className="text-blue-400">{emergencyPreparedness.disaster_response.surge_capacity_available}/{emergencyPreparedness.disaster_response.surge_capacity_beds}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Isolation Rooms:</span>
-                  <span className="text-green-400">{emergencyPreparedness.infection_prevention.isolation_rooms_available}/{emergencyPreparedness.infection_prevention.isolation_rooms}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Negative Pressure:</span>
-                  <span className="text-purple-400">{emergencyPreparedness.infection_prevention.negative_pressure_operational}/{emergencyPreparedness.infection_prevention.negative_pressure_rooms}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Security Incidents:</span>
-                  <span className="text-orange-400">{emergencyPreparedness.security_operations.security_incidents_today}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Backup Power:</span>
-                  <span className={`${getStatusColor(emergencyPreparedness.disaster_response.backup_power_status)?.split(' ')[0] || 'text-green-400'}`}>
-                    {emergencyPreparedness.disaster_response.backup_power_status.replace(/_/g, ' ')}
-                  </span>
-                </div>
+          </div>
+          
+          {/* Healthcare Control Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">Healthcare Operations Control</span>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors">
+                  <Heart className="w-3 h-3 inline mr-1" />
+                  Patient Care
+                </button>
+                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                  <Activity className="w-3 h-3 inline mr-1" />
+                  Vital Monitoring
+                </button>
+                <button className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 rounded text-xs transition-colors">
+                  <Zap className="w-3 h-3 inline mr-1" />
+                  Device Status
+                </button>
               </div>
             </div>
           </div>
