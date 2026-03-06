@@ -1,1035 +1,890 @@
-// LogisticsOperationsCenter.js - Logistics Operations Center & Supply Chain Visibility Dashboard
-import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
+import { Truck, Package, MapPin, Clock, TrendingUp, AlertTriangle, CheckCircle, Zap, Activity, Eye, Navigation, Route } from 'lucide-react';
 
 const LogisticsOperationsCenter = () => {
   const [logisticsStatus, setLogisticsStatus] = useState({
-    operationalStatus: 'ACTIVE_SHIPPING',
-    totalShipments: 2847,
-    inTransitShipments: 1247,
-    deliveredToday: 896,
-    delayedShipments: 89,
-    onTimeDeliveryRate: 94.7, // percentage
-    averageDeliveryTime: 2.3, // days
-    warehouseUtilization: 78.9, // percentage
-    inventoryTurnover: 6.8,
-    transportationCosts: 284739, // USD today
-    lastUpdate: Date.now()
+    totalShipments: 8247,
+    inTransit: 2847,
+    delivered: 5234,
+    delayed: 166,
+    onTimeDelivery: 94.8,
+    warehouseUtilization: 87.3,
+    fleetUtilization: 89.6,
+    avgDeliveryTime: 2.4 // days
   });
-
-  const [shipmentTracking, setShipmentTracking] = useState([
-    {
-      shipment_id: 'SHP-2026-030501',
-      order_number: 'ORD-2847392',
-      customer: 'TechCorp Industries',
-      destination: 'New York, NY',
-      origin: 'Distribution Center A',
-      status: 'IN_TRANSIT',
-      carrier: 'Express Logistics',
-      tracking_number: 'EL1234567890',
-      shipped_date: Date.now() - 1.5 * 24 * 60 * 60 * 1000,
-      estimated_delivery: Date.now() + 0.5 * 24 * 60 * 60 * 1000,
-      actual_delivery: null,
-      current_location: 'Philadelphia, PA',
-      transit_time: 2.5, // days
-      delivery_priority: 'STANDARD',
-      weight: 156.7, // kg
-      value: 15647, // USD
-      temperature_controlled: false,
-      route_progress: 78.5 // percentage
-    },
-    {
-      shipment_id: 'SHP-2026-030502',
-      order_number: 'ORD-2847393',
-      customer: 'MedDevice Solutions',
-      destination: 'Chicago, IL',
-      origin: 'Distribution Center B',
-      status: 'DELIVERED',
-      carrier: 'Premium Freight',
-      tracking_number: 'PF9876543210',
-      shipped_date: Date.now() - 3 * 24 * 60 * 60 * 1000,
-      estimated_delivery: Date.now() - 1 * 24 * 60 * 60 * 1000,
-      actual_delivery: Date.now() - 0.8 * 24 * 60 * 60 * 1000,
-      current_location: 'Chicago, IL',
-      transit_time: 2.2,
-      delivery_priority: 'EXPRESS',
-      weight: 89.3,
-      value: 23456,
-      temperature_controlled: true,
-      route_progress: 100,
-      delivery_performance: 'EARLY'
-    },
-    {
-      shipment_id: 'SHP-2026-030503',
-      order_number: 'ORD-2847394',
-      customer: 'Global Manufacturing',
-      destination: 'Los Angeles, CA',
-      origin: 'Distribution Center A',
-      status: 'DELAYED',
-      carrier: 'Cross Country Transport',
-      tracking_number: 'CCT5555666777',
-      shipped_date: Date.now() - 4 * 24 * 60 * 60 * 1000,
-      estimated_delivery: Date.now() - 1 * 24 * 60 * 60 * 1000,
-      actual_delivery: null,
-      current_location: 'Denver, CO',
-      delay_reason: 'WEATHER_CONDITIONS',
-      new_estimated_delivery: Date.now() + 1 * 24 * 60 * 60 * 1000,
-      transit_time: 6.0,
-      delivery_priority: 'STANDARD',
-      weight: 234.5,
-      value: 8765,
-      temperature_controlled: false,
-      route_progress: 65.2
-    },
-    {
-      shipment_id: 'SHP-2026-030504',
-      order_number: 'ORD-2847395',
-      customer: 'Retail Chain Plus',
-      destination: 'Miami, FL',
-      origin: 'Distribution Center C',
-      status: 'PREPARING',
-      carrier: 'Southern Express',
-      tracking_number: 'SE1111222333',
-      shipped_date: null,
-      estimated_ship_date: Date.now() + 0.5 * 24 * 60 * 60 * 1000,
-      estimated_delivery: Date.now() + 3 * 24 * 60 * 60 * 1000,
-      current_location: 'Distribution Center C',
-      delivery_priority: 'OVERNIGHT',
-      weight: 67.8,
-      value: 12890,
-      temperature_controlled: false,
-      preparation_progress: 87.5 // percentage
-    }
-  ]);
 
   const [warehouseOperations, setWarehouseOperations] = useState([
     {
-      warehouse_id: 'DC_EAST_001',
-      location: 'Distribution Center East',
-      address: 'Newark, NJ',
-      type: 'FULFILLMENT_CENTER',
-      status: 'OPERATIONAL',
-      manager: 'Sarah Johnson',
-      capacity: 50000, // units
-      current_inventory: 38456,
-      utilization: 76.9, // percentage
-      inbound_shipments: 23,
-      outbound_shipments: 156,
-      picking_orders: 89,
-      packing_orders: 67,
-      staff_on_shift: 34,
-      automation_level: 'HIGH',
-      technologies: ['AGV', 'AS/RS', 'WMS'],
-      daily_throughput: 2847,
-      accuracy_rate: 99.7 // percentage
+      id: 'WH-001',
+      name: 'Distribution Center East',
+      location: 'New York, NY',
+      status: 'operational',
+      capacity: 50000,
+      currentStock: 43567,
+      utilization: 87.1,
+      inbound: 234,
+      outbound: 456,
+      picking: 89,
+      packing: 67,
+      staff: 45,
+      roboticSystems: 12,
+      temperature: 22.5
     },
     {
-      warehouse_id: 'DC_WEST_002',
-      location: 'Distribution Center West',
-      address: 'Los Angeles, CA',
-      type: 'CROSS_DOCK',
-      status: 'OPERATIONAL',
-      manager: 'Mike Chen',
-      capacity: 75000,
-      current_inventory: 52341,
-      utilization: 69.8,
-      inbound_shipments: 45,
-      outbound_shipments: 234,
-      picking_orders: 156,
-      packing_orders: 123,
-      staff_on_shift: 56,
-      automation_level: 'MEDIUM',
-      technologies: ['WMS', 'RFID', 'Conveyor'],
-      daily_throughput: 4523,
-      accuracy_rate: 98.9
+      id: 'WH-002',
+      name: 'Distribution Center West',
+      location: 'Los Angeles, CA',
+      status: 'operational',
+      capacity: 45000,
+      currentStock: 38923,
+      utilization: 86.5,
+      inbound: 189,
+      outbound: 378,
+      picking: 74,
+      packing: 52,
+      staff: 38,
+      roboticSystems: 10,
+      temperature: 21.8
     },
     {
-      warehouse_id: 'DC_CENTRAL_003',
-      location: 'Distribution Center Central',
-      address: 'Chicago, IL',
-      type: 'RETURNS_PROCESSING',
-      status: 'MAINTENANCE',
-      maintenance_type: 'CONVEYOR_UPGRADE',
-      maintenance_start: Date.now() - 4 * 60 * 60 * 1000,
-      eta_completion: Date.now() + 2 * 60 * 60 * 1000,
+      id: 'WH-003',
+      name: 'Distribution Center Central',
+      location: 'Chicago, IL',
+      status: 'operational',
+      capacity: 40000,
+      currentStock: 35612,
+      utilization: 89.0,
+      inbound: 167,
+      outbound: 323,
+      picking: 68,
+      packing: 49,
+      staff: 34,
+      roboticSystems: 8,
+      temperature: 22.1
+    },
+    {
+      id: 'WH-004',
+      name: 'Distribution Center South',
+      location: 'Atlanta, GA',
+      status: 'maintenance',
+      capacity: 35000,
+      currentStock: 28457,
+      utilization: 81.3,
+      inbound: 98,
+      outbound: 156,
+      picking: 32,
+      packing: 24,
+      staff: 28,
+      roboticSystems: 6,
+      temperature: 23.2
+    },
+    {
+      id: 'WH-005',
+      name: 'Distribution Center North',
+      location: 'Minneapolis, MN',
+      status: 'operational',
       capacity: 30000,
-      current_inventory: 18765,
-      utilization: 62.6,
-      estimated_downtime_cost: 25000 // USD
+      currentStock: 26789,
+      utilization: 89.3,
+      inbound: 143,
+      outbound: 267,
+      picking: 58,
+      packing: 42,
+      staff: 29,
+      roboticSystems: 7,
+      temperature: 20.9
     }
   ]);
 
-  const [inventoryManagement, setInventoryManagement] = useState({
-    total_sku_count: 15647,
-    total_inventory_value: 8967432, // USD
-    stock_levels: [
-      {
-        category: 'Electronics',
-        total_units: 8947,
-        available_units: 7834,
-        reserved_units: 1113,
-        reorder_alerts: 23,
-        stock_out_risk: 'LOW'
-      },
-      {
-        category: 'Automotive Parts',
-        total_units: 15647,
-        available_units: 12456,
-        reserved_units: 3191,
-        reorder_alerts: 89,
-        stock_out_risk: 'MEDIUM'
-      },
-      {
-        category: 'Industrial Equipment',
-        total_units: 2847,
-        available_units: 1567,
-        reserved_units: 1280,
-        reorder_alerts: 156,
-        stock_out_risk: 'HIGH'
-      },
-      {
-        category: 'Consumer Goods',
-        total_units: 23456,
-        available_units: 19234,
-        reserved_units: 4222,
-        reorder_alerts: 45,
-        stock_out_risk: 'LOW'
-      }
-    ],
-    abc_analysis: {
-      'A_items': { count: 1564, value_percentage: 78.9, inventory_percentage: 15.2 },
-      'B_items': { count: 4692, value_percentage: 15.6, inventory_percentage: 32.1 },
-      'C_items': { count: 9391, value_percentage: 5.5, inventory_percentage: 52.7 }
-    },
-    demand_forecasting: {
-      accuracy: 87.3, // percentage
-      forecast_horizon: 90, // days
-      seasonal_adjustment: 'ENABLED',
-      ai_enhanced: true
-    }
-  });
-
-  const [carrierPerformance, setCarrierPerformance] = useState([
+  const [fleetTracking, setFleetTracking] = useState([
     {
-      carrier: 'Express Logistics',
-      total_shipments: 1247,
-      on_time_deliveries: 1182,
-      on_time_rate: 94.8,
-      average_transit_time: 2.1, // days
-      cost_per_shipment: 45.67,
-      damage_rate: 0.3,
-      customer_rating: 4.6,
-      preferred_status: 'PRIMARY'
+      id: 'TRK-1001',
+      driver: 'Michael Johnson',
+      route: 'NYC → Boston',
+      status: 'in-transit',
+      location: 'Hartford, CT',
+      progress: 78,
+      eta: '14:30',
+      cargo: 'Electronics',
+      weight: 8500, // kg
+      fuelLevel: 67,
+      speed: 65, // mph
+      mileage: 287
     },
     {
-      carrier: 'Premium Freight',
-      total_shipments: 892,
-      on_time_deliveries: 856,
-      on_time_rate: 96.0,
-      average_transit_time: 1.8,
-      cost_per_shipment: 67.89,
-      damage_rate: 0.1,
-      customer_rating: 4.8,
-      preferred_status: 'PRIMARY'
+      id: 'TRK-1002',
+      driver: 'Sarah Williams',
+      route: 'LA → San Francisco',
+      status: 'loading',
+      location: 'Los Angeles, CA',
+      progress: 5,
+      eta: '18:45',
+      cargo: 'Fashion Items',
+      weight: 12000,
+      fuelLevel: 95,
+      speed: 0,
+      mileage: 0
     },
     {
-      carrier: 'Cross Country Transport',
-      total_shipments: 567,
-      on_time_deliveries: 512,
-      on_time_rate: 90.3,
-      average_transit_time: 3.4,
-      cost_per_shipment: 38.92,
-      damage_rate: 0.7,
-      customer_rating: 4.1,
-      preferred_status: 'SECONDARY'
+      id: 'TRK-1003',
+      driver: 'Robert Chen',
+      route: 'Chicago → Detroit',
+      status: 'delivered',
+      location: 'Detroit, MI',
+      progress: 100,
+      eta: 'Completed',
+      cargo: 'Automotive Parts',
+      weight: 9800,
+      fuelLevel: 42,
+      speed: 0,
+      mileage: 284
     },
     {
-      carrier: 'Regional Delivery Co',
-      total_shipments: 234,
-      on_time_deliveries: 198,
-      on_time_rate: 84.6,
-      average_transit_time: 1.5,
-      cost_per_shipment: 29.34,
-      damage_rate: 1.2,
-      customer_rating: 3.8,
-      preferred_status: 'BACKUP'
+      id: 'TRK-1004',
+      driver: 'Amanda Rodriguez',
+      route: 'Atlanta → Miami',
+      status: 'in-transit',
+      location: 'Gainesville, FL',
+      progress: 65,
+      eta: '16:15',
+      cargo: 'Medical Supplies',
+      weight: 6700,
+      fuelLevel: 58,
+      speed: 72,
+      mileage: 298
+    },
+    {
+      id: 'TRK-1005',
+      driver: 'David Thompson',
+      route: 'Minneapolis → Denver',
+      status: 'delayed',
+      location: 'Omaha, NE',
+      progress: 45,
+      eta: '19:30',
+      cargo: 'Food Products',
+      weight: 11200,
+      fuelLevel: 34,
+      speed: 0,
+      mileage: 367
     }
   ]);
 
-  const [supplyChainRisk, setSupplyChainRisk] = useState({
-    risk_level: 'MODERATE',
-    active_disruptions: 3,
-    supplier_risks: [
-      {
-        supplier: 'Global Components Ltd',
-        risk_level: 'HIGH',
-        risk_factors: ['Single Source', 'Geopolitical'],
-        mitigation_plan: 'ALTERNATIVE_SOURCING',
-        impact_assessment: 'CRITICAL'
-      },
-      {
-        supplier: 'Regional Materials Inc',
-        risk_level: 'MEDIUM',
-        risk_factors: ['Quality Issues', 'Capacity'],
-        mitigation_plan: 'QUALITY_AUDIT',
-        impact_assessment: 'MODERATE'
-      },
-      {
-        supplier: 'Tech Solutions Pro',
-        risk_level: 'LOW',
-        risk_factors: ['Price Volatility'],
-        mitigation_plan: 'CONTRACT_HEDGING',
-        impact_assessment: 'LOW'
-      }
-    ],
-    geographic_risks: {
-      weather_alerts: 2,
-      port_congestion: 1,
-      infrastructure_issues: 0,
-      regulatory_changes: 1
+  const [supplyChainMetrics, setSupplyChainMetrics] = useState([
+    {
+      time: new Date(Date.now() - 300000).toLocaleTimeString(),
+      shipments: 8234,
+      onTime: 94.2,
+      warehouse: 86.8,
+      fleet: 88.9
     },
-    contingency_plans: {
-      alternative_routes: 'ACTIVATED',
-      backup_suppliers: 'STANDBY',
-      emergency_inventory: 'ADEQUATE'
+    {
+      time: new Date(Date.now() - 240000).toLocaleTimeString(),
+      shipments: 8241,
+      onTime: 94.5,
+      warehouse: 87.1,
+      fleet: 89.2
+    },
+    {
+      time: new Date(Date.now() - 180000).toLocaleTimeString(),
+      shipments: 8245,
+      onTime: 94.7,
+      warehouse: 87.0,
+      fleet: 89.4
+    },
+    {
+      time: new Date(Date.now() - 120000).toLocaleTimeString(),
+      shipments: 8246,
+      onTime: 94.6,
+      warehouse: 87.2,
+      fleet: 89.3
+    },
+    {
+      time: new Date(Date.now() - 60000).toLocaleTimeString(),
+      shipments: 8247,
+      onTime: 94.8,
+      warehouse: 87.3,
+      fleet: 89.6
+    },
+    {
+      time: new Date().toLocaleTimeString(),
+      shipments: 8247,
+      onTime: 94.8,
+      warehouse: 87.3,
+      fleet: 89.6
     }
-  });
+  ]);
 
-  const [operationsHistory, setOperationsHistory] = useState([]);
-
-  const generateOperationsHistory = () => {
-    const data = [];
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    
-    for (let i = 0; i <= 23; i++) { // 24 hours
-      const time = new Date(startOfDay.getTime() + i * 60 * 60 * 1000);
-      
-      // Simulate realistic logistics patterns
-      const hour = time.getHours();
-      let activityMultiplier = 0.6; // Base activity
-      
-      if (hour >= 6 && hour <= 18) activityMultiplier = 1.0; // Business hours peak
-      if (hour >= 19 && hour <= 22) activityMultiplier = 0.8; // Evening operations
-      if (hour >= 23 || hour <= 5) activityMultiplier = 0.3; // Night hours
-      
-      data.push({
-        time: time.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}),
-        shipments_processed: Math.floor(150 + activityMultiplier * 200 + Math.random() * 50),
-        delivery_rate: 85 + activityMultiplier * 10 + Math.random() * 5,
-        warehouse_throughput: Math.floor(300 + activityMultiplier * 400 + Math.random() * 100),
-        inventory_movements: Math.floor(500 + activityMultiplier * 800 + Math.random() * 200),
-        transportation_cost: Math.floor(8000 + activityMultiplier * 12000 + Math.random() * 3000),
-        delays: Math.floor((1 - activityMultiplier + 0.1) * 15 + Math.random() * 5),
-        accuracy_rate: 95 + activityMultiplier * 3 + Math.random() * 2
-      });
+  const [logisticsAlerts, setLogisticsAlerts] = useState([
+    {
+      id: 'LOG-001',
+      severity: 'warning',
+      type: 'Delivery Delay',
+      message: 'TRK-1005 experiencing traffic delays - ETA extended by 2 hours',
+      timestamp: new Date(),
+      status: 'active',
+      location: 'Omaha, NE',
+      impact: 'medium'
+    },
+    {
+      id: 'LOG-002',
+      severity: 'caution',
+      type: 'Warehouse Capacity',
+      message: 'Distribution Center North approaching 90% capacity - consider redistribution',
+      timestamp: new Date(Date.now() - 180000),
+      status: 'monitoring',
+      location: 'Minneapolis, MN',
+      impact: 'low'
+    },
+    {
+      id: 'LOG-003',
+      severity: 'info',
+      type: 'Maintenance Complete',
+      message: 'Distribution Center South maintenance window completed successfully',
+      timestamp: new Date(Date.now() - 360000),
+      status: 'resolved',
+      location: 'Atlanta, GA',
+      impact: 'none'
     }
-    return data;
-  };
+  ]);
 
-  useEffect(() => {
-    setOperationsHistory(generateOperationsHistory());
-  }, []);
+  const [inventoryLevels, setInventoryLevels] = useState([
+    {
+      category: 'Electronics',
+      current: 12450,
+      target: 15000,
+      status: 'low',
+      value: 2.4, // million USD
+      turnover: 8.2
+    },
+    {
+      category: 'Fashion',
+      current: 8967,
+      target: 9000,
+      status: 'optimal',
+      value: 1.8,
+      turnover: 12.1
+    },
+    {
+      category: 'Automotive',
+      current: 6234,
+      target: 6000,
+      status: 'high',
+      value: 3.2,
+      turnover: 6.7
+    },
+    {
+      category: 'Medical',
+      current: 4567,
+      target: 4500,
+      status: 'optimal',
+      value: 1.9,
+      turnover: 15.3
+    },
+    {
+      category: 'Food',
+      current: 7890,
+      target: 8000,
+      status: 'optimal',
+      value: 1.1,
+      turnover: 24.6
+    }
+  ]);
 
+  const [deliveryZones, setDeliveryZones] = useState([
+    {
+      zone: 'Northeast',
+      orders: 1847,
+      delivered: 1756,
+      inTransit: 67,
+      delayed: 24,
+      performance: 95.1
+    },
+    {
+      zone: 'West Coast',
+      orders: 1634,
+      delivered: 1542,
+      inTransit: 78,
+      delayed: 14,
+      performance: 94.3
+    },
+    {
+      zone: 'Midwest',
+      orders: 1456,
+      delivered: 1378,
+      inTransit: 65,
+      delayed: 13,
+      performance: 94.6
+    },
+    {
+      zone: 'Southeast',
+      orders: 1298,
+      delivered: 1201,
+      inTransit: 89,
+      delayed: 8,
+      performance: 92.5
+    },
+    {
+      zone: 'Southwest',
+      orders: 1123,
+      delivered: 1067,
+      inTransit: 48,
+      delayed: 8,
+      performance: 95.0
+    }
+  ]);
+
+  const [logisticsTeam, setLogisticsTeam] = useState([
+    {
+      name: 'Operations Manager Chen',
+      position: 'Logistics Operations Manager',
+      shift: 'Day Shift',
+      status: 'on-duty',
+      location: 'Control Center',
+      experience: '12 years'
+    },
+    {
+      name: 'Fleet Coordinator Williams',
+      position: 'Fleet Operations Coordinator',
+      shift: 'Day Shift',
+      status: 'on-duty',
+      location: 'Dispatch Center',
+      experience: '8 years'
+    },
+    {
+      name: 'Warehouse Supervisor Johnson',
+      position: 'Warehouse Operations Supervisor',
+      shift: 'Day Shift',
+      status: 'on-floor',
+      location: 'Distribution Center East',
+      experience: '10 years'
+    },
+    {
+      name: 'Supply Chain Analyst Rodriguez',
+      position: 'Supply Chain Analyst',
+      shift: 'Day Shift',
+      status: 'analyzing',
+      location: 'Analytics Center',
+      experience: '6 years'
+    }
+  ]);
+
+  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
       // Update logistics status
       setLogisticsStatus(prev => ({
         ...prev,
-        deliveredToday: prev.deliveredToday + Math.floor(Math.random() * 5),
-        onTimeDeliveryRate: Math.max(85.0, Math.min(98.0, prev.onTimeDeliveryRate + (Math.random() - 0.5) * 1.5)),
-        averageDeliveryTime: Math.max(1.5, Math.min(5.0, prev.averageDeliveryTime + (Math.random() - 0.5) * 0.3)),
-        warehouseUtilization: Math.max(65.0, Math.min(90.0, prev.warehouseUtilization + (Math.random() - 0.5) * 2.0)),
-        transportationCosts: prev.transportationCosts + Math.floor(Math.random() * 1000),
-        lastUpdate: Date.now()
-      }));
-
-      // Update shipment tracking
-      setShipmentTracking(prev => prev.map(shipment => {
-        if (shipment.status === 'IN_TRANSIT') {
-          return {
-            ...shipment,
-            route_progress: Math.min(100, shipment.route_progress + Math.random() * 5)
-          };
-        }
-        if (shipment.status === 'PREPARING') {
-          return {
-            ...shipment,
-            preparation_progress: Math.min(100, shipment.preparation_progress + Math.random() * 3)
-          };
-        }
-        return shipment;
+        inTransit: Math.max(2500, Math.min(3200, prev.inTransit + Math.floor((Math.random() - 0.5) * 20))),
+        delivered: Math.max(5000, Math.min(5500, prev.delivered + Math.floor(Math.random() * 10))),
+        delayed: Math.max(100, Math.min(300, prev.delayed + Math.floor((Math.random() - 0.7) * 5))),
+        onTimeDelivery: Math.max(92, Math.min(97, prev.onTimeDelivery + (Math.random() - 0.5) * 0.5)),
+        warehouseUtilization: Math.max(82, Math.min(92, prev.warehouseUtilization + (Math.random() - 0.5) * 1)),
+        fleetUtilization: Math.max(85, Math.min(95, prev.fleetUtilization + (Math.random() - 0.5) * 1))
       }));
 
       // Update warehouse operations
       setWarehouseOperations(prev => prev.map(warehouse => {
-        if (warehouse.status === 'OPERATIONAL') {
+        if (warehouse.status === 'operational') {
           return {
             ...warehouse,
-            picking_orders: Math.max(0, warehouse.picking_orders + Math.floor((Math.random() - 0.5) * 10)),
-            packing_orders: Math.max(0, warehouse.packing_orders + Math.floor((Math.random() - 0.5) * 8)),
-            daily_throughput: warehouse.daily_throughput + Math.floor(Math.random() * 50)
+            currentStock: Math.max(warehouse.capacity * 0.7, Math.min(warehouse.capacity * 0.95, warehouse.currentStock + Math.floor((Math.random() - 0.5) * 100))),
+            inbound: Math.max(50, Math.min(300, warehouse.inbound + Math.floor((Math.random() - 0.5) * 20))),
+            outbound: Math.max(100, Math.min(500, warehouse.outbound + Math.floor((Math.random() - 0.5) * 30))),
+            picking: Math.max(30, Math.min(120, warehouse.picking + Math.floor((Math.random() - 0.5) * 10))),
+            packing: Math.max(20, Math.min(80, warehouse.packing + Math.floor((Math.random() - 0.5) * 8)))
           };
         }
         return warehouse;
       }));
 
-    }, 20000);
+      // Update fleet tracking
+      setFleetTracking(prev => prev.map(truck => {
+        if (truck.status === 'in-transit') {
+          return {
+            ...truck,
+            progress: Math.max(truck.progress, Math.min(100, truck.progress + Math.random() * 2)),
+            fuelLevel: Math.max(20, truck.fuelLevel - Math.random() * 0.5),
+            speed: Math.max(45, Math.min(75, truck.speed + (Math.random() - 0.5) * 10)),
+            mileage: truck.mileage + Math.random() * 2
+          };
+        }
+        return truck;
+      }));
+
+      // Update supply chain metrics
+      const newMetrics = {
+        time: new Date().toLocaleTimeString(),
+        shipments: logisticsStatus.totalShipments,
+        onTime: logisticsStatus.onTimeDelivery,
+        warehouse: logisticsStatus.warehouseUtilization,
+        fleet: logisticsStatus.fleetUtilization
+      };
+      
+      setSupplyChainMetrics(prev => [...prev.slice(1), newMetrics]);
+
+      // Occasionally add new logistics alerts
+      if (Math.random() > 0.96) {
+        const alertTypes = ['Delivery Delay', 'Route Optimization', 'Warehouse Alert', 'Fleet Status'];
+        const severities = ['info', 'caution', 'warning', 'critical'];
+        const locations = ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Atlanta, GA', 'Minneapolis, MN'];
+        
+        const newAlert = {
+          id: `LOG-${Date.now()}`,
+          severity: severities[Math.floor(Math.random() * severities.length)],
+          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+          message: 'Real-time logistics operations alert',
+          timestamp: new Date(),
+          status: 'active',
+          location: locations[Math.floor(Math.random() * locations.length)],
+          impact: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)]
+        };
+        
+        setLogisticsAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+      }
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [logisticsStatus.totalShipments, logisticsStatus.onTimeDelivery, logisticsStatus.warehouseUtilization, logisticsStatus.fleetUtilization]);
 
-  const getStatusColor = (status) => {
+  const getWarehouseStatusColor = (status) => {
     switch (status) {
-      case 'ACTIVE_SHIPPING':
-      case 'OPERATIONAL':
-      case 'DELIVERED':
-      case 'PRIMARY':
-      case 'LOW':
-      case 'ADEQUATE':
-      case 'ACTIVATED':
-      case 'STANDBY': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'IN_TRANSIT':
-      case 'PREPARING':
-      case 'SECONDARY':
-      case 'MEDIUM':
-      case 'MODERATE': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'DELAYED':
-      case 'BACKUP':
-      case 'HIGH':
-      case 'CRITICAL': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
-      case 'MAINTENANCE':
-      case 'CANCELLED': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
+      case 'operational': return '#10B981';
+      case 'maintenance': return '#8B5CF6';
+      case 'warning': return '#F59E0B';
+      case 'offline': return '#EF4444';
+      default: return '#6B7280';
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'OVERNIGHT': return 'text-red-400';
-      case 'EXPRESS': return 'text-orange-400';
-      case 'STANDARD': return 'text-blue-400';
-      default: return 'text-gray-400';
+  const getFleetStatusColor = (status) => {
+    switch (status) {
+      case 'in-transit': return '#3B82F6';
+      case 'delivered': return '#10B981';
+      case 'loading': return '#8B5CF6';
+      case 'delayed': return '#F59E0B';
+      case 'maintenance': return '#EF4444';
+      default: return '#6B7280';
     }
   };
 
-  const formatNumber = (num, decimals = 0) => {
-    return num.toFixed(decimals);
-  };
-
-  const formatLargeNumber = (num) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(0)}k`;
-    return num.toString();
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(amount);
-  };
-
-  const formatTime = (timestamp) => {
-    if (!timestamp) return 'N/A';
-    const diff = timestamp - Date.now();
-    if (Math.abs(diff) < 60000) return 'now';
-    if (diff > 0) {
-      if (diff < 3600000) return `in ${Math.floor(diff / 60000)}min`;
-      if (diff < 86400000) return `in ${Math.floor(diff / 3600000)}h`;
-      return `in ${Math.floor(diff / 86400000)}d`;
-    } else {
-      const absDiff = Math.abs(diff);
-      if (absDiff < 3600000) return `${Math.floor(absDiff / 60000)}m ago`;
-      if (absDiff < 86400000) return `${Math.floor(absDiff / 3600000)}h ago`;
-      return `${Math.floor(absDiff / 86400000)}d ago`;
+  const getInventoryStatusColor = (status) => {
+    switch (status) {
+      case 'optimal': return '#10B981';
+      case 'low': return '#F59E0B';
+      case 'high': return '#3B82F6';
+      case 'critical': return '#EF4444';
+      default: return '#6B7280';
     }
   };
+
+  const getAlertSeverityColor = (severity) => {
+    switch (severity) {
+      case 'critical': return '#EF4444';
+      case 'warning': return '#F59E0B';
+      case 'caution': return '#3B82F6';
+      case 'info': return '#10B981';
+      default: return '#6B7280';
+    }
+  };
+
+  const shipmentStatusDistribution = [
+    { name: 'Delivered', value: 63, color: '#10B981' },
+    { name: 'In Transit', value: 35, color: '#3B82F6' },
+    { name: 'Delayed', value: 2, color: '#F59E0B' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          🚚 LOGISTICS OPERATIONS CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            {formatNumber(logisticsStatus.onTimeDeliveryRate, 1)}% On-Time
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <Truck className="w-8 h-8 text-blue-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">LOGISTICS OPERATIONS CENTER</h1>
+            <p className="text-gray-400">Real-time supply chain monitoring, warehouse automation, and fleet management</p>
           </div>
-          <div className="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-mono border border-blue-500/30">
-            {logisticsStatus.inTransitShipments} In Transit
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">{logisticsStatus.onTimeDelivery.toFixed(1)}%</div>
+            <div className="text-xs text-gray-400">ON-TIME DELIVERY</div>
           </div>
-          <div className="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-mono border border-purple-500/30">
-            {formatNumber(logisticsStatus.averageDeliveryTime, 1)}d Avg
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">{logisticsStatus.inTransit.toLocaleString()}</div>
+            <div className="text-xs text-gray-400">IN TRANSIT</div>
           </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Supply Chain Visibility & Tracking
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-400">{logisticsStatus.warehouseUtilization.toFixed(1)}%</div>
+            <div className="text-xs text-gray-400">WAREHOUSE</div>
           </div>
         </div>
       </div>
 
-      {/* Logistics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">TOTAL SHIPMENTS</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {formatLargeNumber(logisticsStatus.totalShipments)}
-              </div>
-              <div className="text-xs text-blue-300">
-                {logisticsStatus.inTransitShipments} in transit | {logisticsStatus.deliveredToday} delivered today
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">📦</div>
+      {/* Logistics KPIs */}
+      <div className="grid grid-cols-6 gap-4 mb-6">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Package className="w-5 h-5 text-green-400" />
+            <span className="text-xs text-gray-400">SHIPMENTS</span>
           </div>
+          <div className="text-xl font-bold text-white">{logisticsStatus.totalShipments.toLocaleString()}</div>
+          <div className="text-xs text-gray-400">Total</div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">ON-TIME DELIVERY</div>
-              <div className="text-2xl font-bold text-green-100">
-                {formatNumber(logisticsStatus.onTimeDeliveryRate, 1)}%
-              </div>
-              <div className="text-xs text-green-300">
-                {logisticsStatus.delayedShipments} delayed shipments
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">✅</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <CheckCircle className="w-5 h-5 text-blue-400" />
+            <span className="text-xs text-gray-400">DELIVERED</span>
           </div>
+          <div className="text-xl font-bold text-white">{logisticsStatus.delivered.toLocaleString()}</div>
+          <div className="text-xs text-gray-400">Completed</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">AVG DELIVERY TIME</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {formatNumber(logisticsStatus.averageDeliveryTime, 1)}d
-              </div>
-              <div className="text-xs text-purple-300">
-                Transit Performance
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">⏱️</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Clock className="w-5 h-5 text-yellow-400" />
+            <span className="text-xs text-gray-400">DELAYED</span>
           </div>
+          <div className="text-xl font-bold text-white">{logisticsStatus.delayed}</div>
+          <div className="text-xs text-gray-400">Shipments</div>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">TRANSPORT COSTS</div>
-              <div className="text-2xl font-bold text-orange-100">
-                {formatCurrency(logisticsStatus.transportationCosts)}
-              </div>
-              <div className="text-xs text-orange-300">
-                Today's Total
-              </div>
-            </div>
-            <div className="text-3xl opacity-60">💰</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Truck className="w-5 h-5 text-orange-400" />
+            <span className="text-xs text-gray-400">FLEET</span>
           </div>
+          <div className="text-xl font-bold text-white">{logisticsStatus.fleetUtilization.toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Utilization</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Activity className="w-5 h-5 text-red-400" />
+            <span className="text-xs text-gray-400">DELIVERY TIME</span>
+          </div>
+          <div className="text-xl font-bold text-white">{logisticsStatus.avgDeliveryTime}</div>
+          <div className="text-xs text-gray-400">Days Avg</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <TrendingUp className="w-5 h-5 text-purple-400" />
+            <span className="text-xs text-gray-400">EFFICIENCY</span>
+          </div>
+          <div className="text-xl font-bold text-white">{((logisticsStatus.delivered / logisticsStatus.totalShipments) * 100).toFixed(1)}%</div>
+          <div className="text-xs text-gray-400">Completion</div>
         </div>
       </div>
 
-      {/* Shipment Tracking */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📍 REAL-TIME SHIPMENT TRACKING & STATUS
-        </h3>
-        <div className="space-y-3">
-          {shipmentTracking.map((shipment) => (
-            <div key={shipment.shipment_id} className="bg-gray-700 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="text-sm font-bold text-white">{shipment.shipment_id}</div>
-                  <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(shipment.status)}`}>
-                    {shipment.status.replace(/_/g, ' ')}
-                  </span>
-                  <span className={`px-2 py-1 rounded text-xs font-mono ${getPriorityColor(shipment.delivery_priority)}`}>
-                    {shipment.delivery_priority}
-                  </span>
-                  {shipment.temperature_controlled && (
-                    <span className="text-xs px-2 py-1 rounded bg-blue-500 text-white">
-                      TEMP CONTROLLED
-                    </span>
-                  )}
-                </div>
-                <div className="text-xs text-gray-400">
-                  {shipment.carrier}
-                </div>
-              </div>
-
-              <div className="text-sm mb-2">
-                <span className="text-gray-400">Customer: </span>
-                <span className="text-cyan-400">{shipment.customer}</span>
-                <span className="text-gray-400"> | Order: </span>
-                <span className="text-blue-400">{shipment.order_number}</span>
-              </div>
-
-              <div className="text-xs mb-2">
-                <span className="text-gray-400">Route: </span>
-                <span className="text-green-400">{shipment.origin}</span>
-                <span className="text-gray-400"> → </span>
-                <span className="text-purple-400">{shipment.destination}</span>
-                <span className="text-gray-400"> | Current: </span>
-                <span className="text-orange-400">{shipment.current_location}</span>
-              </div>
-
-              <div className="text-xs mb-2">
-                <span className="text-gray-400">Tracking: </span>
-                <span className="text-yellow-400">{shipment.tracking_number}</span>
-                <span className="text-gray-400"> | Weight: </span>
-                <span className="text-pink-400">{formatNumber(shipment.weight, 1)} kg</span>
-                <span className="text-gray-400"> | Value: </span>
-                <span className="text-green-400">{formatCurrency(shipment.value)}</span>
-              </div>
-
-              {shipment.status === 'IN_TRANSIT' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Shipped: </span>
-                    <span className="text-blue-400">{formatTime(shipment.shipped_date)}</span>
-                    <span className="text-gray-400"> | ETA: </span>
-                    <span className="text-green-400">{formatTime(shipment.estimated_delivery)}</span>
-                    <span className="text-gray-400"> | Transit Time: </span>
-                    <span className="text-purple-400">{formatNumber(shipment.transit_time, 1)} days</span>
-                  </div>
-                  <div className="w-full bg-gray-600 rounded-full h-2 mb-2">
-                    <div 
-                      className="h-2 rounded-full bg-blue-400"
-                      style={{ width: `${Math.min(shipment.route_progress, 100)}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    Route Progress: {formatNumber(shipment.route_progress, 1)}%
-                  </div>
-                </>
-              )}
-
-              {shipment.status === 'DELIVERED' && (
-                <div className="text-xs">
-                  <span className="text-gray-400">Delivered: </span>
-                  <span className="text-green-400">{formatTime(shipment.actual_delivery)}</span>
-                  <span className="text-gray-400"> | Performance: </span>
-                  <span className={shipment.delivery_performance === 'EARLY' ? 'text-green-400' : shipment.delivery_performance === 'ON_TIME' ? 'text-blue-400' : 'text-red-400'}>
-                    {shipment.delivery_performance}
-                  </span>
-                  <span className="text-gray-400"> | Transit: </span>
-                  <span className="text-purple-400">{formatNumber(shipment.transit_time, 1)} days</span>
-                </div>
-              )}
-
-              {shipment.status === 'DELAYED' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Delay Reason: </span>
-                    <span className="text-red-400">{shipment.delay_reason?.replace(/_/g, ' ')}</span>
-                    <span className="text-gray-400"> | New ETA: </span>
-                    <span className="text-yellow-400">{formatTime(shipment.new_estimated_delivery)}</span>
-                  </div>
-                  <div className="w-full bg-gray-600 rounded-full h-2 mb-2">
-                    <div 
-                      className="h-2 rounded-full bg-orange-400"
-                      style={{ width: `${Math.min(shipment.route_progress, 100)}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    Route Progress: {formatNumber(shipment.route_progress, 1)}%
-                  </div>
-                </>
-              )}
-
-              {shipment.status === 'PREPARING' && (
-                <>
-                  <div className="text-xs mb-2">
-                    <span className="text-gray-400">Est Ship Date: </span>
-                    <span className="text-blue-400">{formatTime(shipment.estimated_ship_date)}</span>
-                    <span className="text-gray-400"> | Est Delivery: </span>
-                    <span className="text-green-400">{formatTime(shipment.estimated_delivery)}</span>
-                  </div>
-                  <div className="w-full bg-gray-600 rounded-full h-2 mb-2">
-                    <div 
-                      className="h-2 rounded-full bg-yellow-400"
-                      style={{ width: `${Math.min(shipment.preparation_progress, 100)}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    Preparation: {formatNumber(shipment.preparation_progress, 1)}%
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Warehouse Operations and Inventory */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-3 gap-6 mb-6">
         {/* Warehouse Operations */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🏭 WAREHOUSE OPERATIONS & FULFILLMENT
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Package className="w-5 h-5 mr-2 text-green-400" />
+            WAREHOUSE OPERATIONS
           </h3>
-          
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {warehouseOperations.map((warehouse) => (
-              <div key={warehouse.warehouse_id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <div className="text-sm font-bold text-white">{warehouse.location}</div>
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(warehouse.status)}`}>
-                      {warehouse.status}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                      {warehouse.type?.replace(/_/g, ' ')}
-                    </span>
-                  </div>
-                  {warehouse.manager && (
-                    <div className="text-xs text-gray-400">
-                      Manager: {warehouse.manager}
-                    </div>
-                  )}
-                </div>
-
-                <div className="text-sm mb-2">
-                  <span className="text-gray-400">Address: </span>
-                  <span className="text-cyan-400">{warehouse.address}</span>
-                </div>
-
-                {warehouse.status === 'OPERATIONAL' && (
-                  <>
-                    <div className="text-xs mb-2">
-                      <span className="text-gray-400">Capacity: </span>
-                      <span className="text-blue-400">{formatLargeNumber(warehouse.current_inventory)}</span>
-                      <span className="text-gray-400">/</span>
-                      <span className="text-purple-400">{formatLargeNumber(warehouse.capacity)}</span>
-                      <span className="text-gray-400"> ({formatNumber(warehouse.utilization, 1)}%)</span>
-                      <span className="text-gray-400"> | Staff: </span>
-                      <span className="text-green-400">{warehouse.staff_on_shift}</span>
-                    </div>
-
-                    <div className="text-xs mb-2">
-                      <span className="text-gray-400">Inbound: </span>
-                      <span className="text-green-400">{warehouse.inbound_shipments}</span>
-                      <span className="text-gray-400"> | Outbound: </span>
-                      <span className="text-orange-400">{warehouse.outbound_shipments}</span>
-                      <span className="text-gray-400"> | Picking: </span>
-                      <span className="text-yellow-400">{warehouse.picking_orders}</span>
-                      <span className="text-gray-400"> | Packing: </span>
-                      <span className="text-pink-400">{warehouse.packing_orders}</span>
-                    </div>
-
-                    <div className="text-xs mb-2">
-                      <span className="text-gray-400">Throughput: </span>
-                      <span className="text-blue-400">{formatLargeNumber(warehouse.daily_throughput)}/day</span>
-                      <span className="text-gray-400"> | Accuracy: </span>
-                      <span className="text-green-400">{formatNumber(warehouse.accuracy_rate, 1)}%</span>
-                      <span className="text-gray-400"> | Automation: </span>
-                      <span className="text-purple-400">{warehouse.automation_level}</span>
-                    </div>
-
-                    <div className="text-xs">
-                      <span className="text-gray-400">Technologies: </span>
-                      <span className="text-cyan-400">{warehouse.technologies?.join(', ')}</span>
-                    </div>
-                  </>
-                )}
-
-                {warehouse.status === 'MAINTENANCE' && (
-                  <div className="text-xs">
-                    <span className="text-gray-400">Maintenance: </span>
-                    <span className="text-orange-400">{warehouse.maintenance_type?.replace(/_/g, ' ')}</span>
-                    <span className="text-gray-400"> | Started: </span>
-                    <span className="text-yellow-400">{formatTime(warehouse.maintenance_start)}</span>
-                    <span className="text-gray-400"> | ETA: </span>
-                    <span className="text-blue-400">{formatTime(warehouse.eta_completion)}</span>
-                    <span className="text-gray-400"> | Cost Impact: </span>
-                    <span className="text-red-400">{formatCurrency(warehouse.estimated_downtime_cost)}</span>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Inventory Management */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📊 INVENTORY MANAGEMENT & STOCK LEVELS
-          </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Inventory Overview</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total SKUs:</span>
-                <span className="text-blue-400">{formatLargeNumber(inventoryManagement.total_sku_count)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Inventory Value:</span>
-                <span className="text-green-400">{formatCurrency(inventoryManagement.total_inventory_value)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Forecast Accuracy:</span>
-                <span className="text-purple-400">{formatNumber(inventoryManagement.demand_forecasting.accuracy, 1)}%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Stock Levels by Category</h4>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {inventoryManagement.stock_levels.map((category, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{category.category}</span>
-                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(category.stock_out_risk)}`}>
-                      {category.stock_out_risk} RISK
-                    </span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Available: </span>
-                    <span className="text-green-400">{formatLargeNumber(category.available_units)}</span>
-                    <span className="text-gray-400"> | Reserved: </span>
-                    <span className="text-yellow-400">{formatLargeNumber(category.reserved_units)}</span>
-                    <span className="text-gray-400"> | Reorder Alerts: </span>
-                    <span className="text-red-400">{category.reorder_alerts}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">ABC Analysis</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">A Items (High Value):</span>
-                <span className="text-red-400">{formatLargeNumber(inventoryManagement.abc_analysis.A_items.count)} ({formatNumber(inventoryManagement.abc_analysis.A_items.value_percentage, 1)}% value)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">B Items (Medium Value):</span>
-                <span className="text-yellow-400">{formatLargeNumber(inventoryManagement.abc_analysis.B_items.count)} ({formatNumber(inventoryManagement.abc_analysis.B_items.value_percentage, 1)}% value)</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">C Items (Low Value):</span>
-                <span className="text-green-400">{formatLargeNumber(inventoryManagement.abc_analysis.C_items.count)} ({formatNumber(inventoryManagement.abc_analysis.C_items.value_percentage, 1)}% value)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Logistics Operations Trends */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📈 LOGISTICS OPERATIONS TRENDS (24 HOURS)
-        </h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={operationsHistory}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-            <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10}/>
-            <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12}/>
-            <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12}/>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
-                borderRadius: '8px',
-                color: '#F9FAFB'
-              }}
-            />
-            <Legend />
-            <Area
-              yAxisId="left"
-              type="monotone"
-              dataKey="shipments_processed"
-              stroke="#10B981"
-              fill="#10B981"
-              fillOpacity={0.2}
-              strokeWidth={2}
-              name="Shipments Processed"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="delivery_rate" 
-              stroke="#3B82F6" 
-              strokeWidth={2}
-              name="Delivery Rate %"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="warehouse_throughput" 
-              stroke="#8B5CF6" 
-              strokeWidth={2}
-              name="Warehouse Throughput"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="inventory_movements" 
-              stroke="#F59E0B" 
-              strokeWidth={2}
-              name="Inventory Movements"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="transportation_cost" 
-              stroke="#06B6D4" 
-              strokeWidth={2}
-              name="Transportation Cost ($)"
-            />
-            <Line 
-              yAxisId="left"
-              type="monotone" 
-              dataKey="delays" 
-              stroke="#EF4444" 
-              strokeWidth={2}
-              name="Delays"
-            />
-            <Line 
-              yAxisId="right"
-              type="monotone" 
-              dataKey="accuracy_rate" 
-              stroke="#F97316" 
-              strokeWidth={2}
-              name="Accuracy Rate %"
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Carrier Performance and Supply Chain Risk */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Carrier Performance */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🚛 CARRIER PERFORMANCE & ANALYTICS
-          </h3>
-          
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {carrierPerformance.map((carrier, index) => (
-              <div key={index} className="bg-gray-700 rounded-lg p-3">
+          <div className="space-y-3">
+            {warehouseOperations.map(warehouse => (
+              <div key={warehouse.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getWarehouseStatusColor(warehouse.status) }}>
                 <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{warehouse.name}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm font-bold text-white">{carrier.carrier}</span>
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(carrier.preferred_status)}`}>
-                      {carrier.preferred_status}
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getWarehouseStatusColor(warehouse.status)}20`, 
+                      color: getWarehouseStatusColor(warehouse.status) 
+                    }}>
+                      {warehouse.status.toUpperCase()}
                     </span>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {formatNumber(carrier.customer_rating, 1)}/5 ⭐
+                    <span className="text-xs text-gray-400">{((warehouse.currentStock / warehouse.capacity) * 100).toFixed(1)}%</span>
                   </div>
                 </div>
-
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Shipments: </span>
-                  <span className="text-blue-400">{formatLargeNumber(carrier.total_shipments)}</span>
-                  <span className="text-gray-400"> | On-Time: </span>
-                  <span className="text-green-400">{formatLargeNumber(carrier.on_time_deliveries)}</span>
-                  <span className="text-gray-400"> ({formatNumber(carrier.on_time_rate, 1)}%)</span>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  Location: <span className="text-blue-400">{warehouse.location}</span>
                 </div>
-
-                <div className="text-xs mb-2">
-                  <span className="text-gray-400">Avg Transit: </span>
-                  <span className="text-purple-400">{formatNumber(carrier.average_transit_time, 1)} days</span>
-                  <span className="text-gray-400"> | Cost/Shipment: </span>
-                  <span className="text-orange-400">{formatCurrency(carrier.cost_per_shipment)}</span>
-                  <span className="text-gray-400"> | Damage Rate: </span>
-                  <span className="text-red-400">{formatNumber(carrier.damage_rate, 1)}%</span>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Stock</span>
+                    <span className="text-green-400">{warehouse.currentStock.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Capacity</span>
+                    <span className="text-blue-400">{warehouse.capacity.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Inbound</span>
+                    <span className="text-purple-400">{warehouse.inbound}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Outbound</span>
+                    <span className="text-white">{warehouse.outbound}</span>
+                  </div>
                 </div>
-
-                <div className="w-full bg-gray-600 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${carrier.on_time_rate >= 95 ? 'bg-green-400' : 
-                                                     carrier.on_time_rate >= 90 ? 'bg-yellow-400' : 'bg-orange-400'}`}
-                    style={{ width: `${Math.min(carrier.on_time_rate, 100)}%` }}
-                  ></div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">Robots: {warehouse.roboticSystems}</span>
+                  <span className="text-gray-500">Staff: {warehouse.staff}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Supply Chain Risk */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            ⚠️ SUPPLY CHAIN RISK MANAGEMENT
+        {/* Fleet Tracking */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Truck className="w-5 h-5 mr-2 text-blue-400" />
+            FLEET TRACKING
           </h3>
-          
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Risk Overview</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Risk Level:</span>
-                <span className={`${getStatusColor(supplyChainRisk.risk_level).split(' ')[0]}`}>
-                  {supplyChainRisk.risk_level}
-                </span>
+          <div className="space-y-3">
+            {fleetTracking.map(truck => (
+              <div key={truck.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getFleetStatusColor(truck.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{truck.id}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getFleetStatusColor(truck.status)}20`, 
+                      color: getFleetStatusColor(truck.status) 
+                    }}>
+                      {truck.status.toUpperCase().replace('-', ' ')}
+                    </span>
+                    <span className="text-xs text-gray-400">{truck.progress}%</span>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  Driver: <span className="text-blue-400">{truck.driver.split(' ')[0]}</span>
+                </div>
+                
+                <div className="text-xs text-gray-300 mb-2">{truck.route}</div>
+                
+                <div className="bg-gray-700 rounded-full h-1.5 mb-2">
+                  <div 
+                    className="bg-blue-500 rounded-full h-1.5 transition-all duration-500" 
+                    style={{ width: `${truck.progress}%` }}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Fuel</span>
+                    <span className="text-green-400">{truck.fuelLevel.toFixed(0)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Speed</span>
+                    <span className="text-purple-400">{truck.speed.toFixed(0)} mph</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Cargo</span>
+                    <span className="text-white">{truck.cargo.split(' ')[0]}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">ETA</span>
+                    <span className="text-blue-400">{truck.eta}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-yellow-400">Weight: {truck.weight}kg</span>
+                  <span className="text-gray-500">{truck.location.split(',')[0]}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Active Disruptions:</span>
-                <span className="text-orange-400">{supplyChainRisk.active_disruptions}</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Inventory & Alerts */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
+            INVENTORY & ALERTS
+          </h3>
+          <div className="space-y-3 mb-4">
+            {inventoryLevels.slice(0, 4).map((inventory, index) => (
+              <div key={index} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{inventory.category}</span>
+                  <span 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: getInventoryStatusColor(inventory.status) }}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Current</span>
+                    <span className="text-blue-400">{inventory.current.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Target</span>
+                    <span className="text-green-400">{inventory.target.toLocaleString()}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-purple-400">${inventory.value.toFixed(1)}M</span>
+                  <span className="text-gray-500">Turnover: {inventory.turnover}x</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Weather Alerts:</span>
-                <span className="text-yellow-400">{supplyChainRisk.geographic_risks.weather_alerts}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Port Congestion:</span>
-                <span className="text-red-400">{supplyChainRisk.geographic_risks.port_congestion}</span>
-              </div>
-            </div>
+            ))}
           </div>
 
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="text-sm font-bold text-white mb-3">Supplier Risks</h4>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {supplyChainRisk.supplier_risks.map((supplier, index) => (
-                <div key={index} className="bg-gray-600 rounded p-2">
+          {/* Logistics Alerts */}
+          <div className="border-t border-gray-700 pt-3">
+            <div className="text-sm text-white font-semibold mb-2">Logistics Alerts</div>
+            <div className="space-y-2">
+              {logisticsAlerts.slice(0, 3).map(alert => (
+                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-bold text-white">{supplier.supplier}</span>
-                    <span className={`px-1 py-0.5 rounded text-xs ${getStatusColor(supplier.risk_level)}`}>
-                      {supplier.risk_level}
+                    <span className="text-xs font-medium text-white">{alert.type}</span>
+                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
+                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
+                      color: getAlertSeverityColor(alert.severity) 
+                    }}>
+                      {alert.severity.toUpperCase()}
                     </span>
                   </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Factors: </span>
-                    <span className="text-yellow-400">{supplier.risk_factors.join(', ')}</span>
-                  </div>
-                  <div className="text-xs">
-                    <span className="text-gray-400">Mitigation: </span>
-                    <span className="text-blue-400">{supplier.mitigation_plan.replace(/_/g, ' ')}</span>
+                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-blue-400">{alert.location}</span>
+                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="bg-gray-700 rounded-lg p-4">
-            <h4 className="text-sm font-bold text-white mb-3">Contingency Status</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Alternative Routes:</span>
-                <span className={`${getStatusColor(supplyChainRisk.contingency_plans.alternative_routes).split(' ')[0]}`}>
-                  {supplyChainRisk.contingency_plans.alternative_routes}
-                </span>
+      {/* Supply Chain Analytics */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Real-time Supply Chain Metrics */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME SUPPLY CHAIN METRICS</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={supplyChainMetrics}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Line 
+                type="monotone" 
+                dataKey="onTime" 
+                stroke="#10B981" 
+                strokeWidth={3}
+                name="On-Time Delivery %"
+                dot={false}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="warehouse" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Warehouse Util %"
+                dot={false}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="fleet" 
+                stroke="#F59E0B" 
+                strokeWidth={2}
+                name="Fleet Util %"
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Delivery Zones & Shipment Status */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">DELIVERY ZONES & SHIPMENT STATUS</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={shipmentStatusDistribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {shipmentStatusDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value) => [`${value}%`, 'Shipment Status']}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-2 mt-4">
+              {shipmentStatusDistribution.map((status, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: status.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{status.name}</span>
+                  </div>
+                  <span className="text-white font-semibold">{status.value}%</span>
+                </div>
+              ))}
+              
+              {/* Delivery Zones Summary */}
+              <div className="mt-4 pt-3 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-2">Zone Performance</div>
+                <div className="space-y-1 text-xs">
+                  {deliveryZones.slice(0, 3).map((zone, index) => (
+                    <div key={index} className="flex justify-between">
+                      <span className="text-gray-400">{zone.zone}</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-white">{zone.performance.toFixed(1)}%</span>
+                        <span className="text-green-400">✓</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Backup Suppliers:</span>
-                <span className={`${getStatusColor(supplyChainRisk.contingency_plans.backup_suppliers).split(' ')[0]}`}>
-                  {supplyChainRisk.contingency_plans.backup_suppliers}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Emergency Inventory:</span>
-                <span className={`${getStatusColor(supplyChainRisk.contingency_plans.emergency_inventory).split(' ')[0]}`}>
-                  {supplyChainRisk.contingency_plans.emergency_inventory}
-                </span>
+            </div>
+          </div>
+          
+          {/* Logistics Control Panel */}
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">Logistics Operations Control</span>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                  <Route className="w-3 h-3 inline mr-1" />
+                  Route Optimization
+                </button>
+                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
+                  <Package className="w-3 h-3 inline mr-1" />
+                  Inventory Control
+                </button>
+                <button className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-xs transition-colors">
+                  <Eye className="w-3 h-3 inline mr-1" />
+                  Fleet Monitoring
+                </button>
               </div>
             </div>
           </div>
