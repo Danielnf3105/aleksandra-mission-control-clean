@@ -90,6 +90,7 @@ import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
 import TaskManagementCenter from '../components/TaskManagementCenter';
 import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligenceCenter';
+import SecurityOperationsCenter from '../components/SecurityOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -558,6 +559,13 @@ export default function MissionControl() {
       icon: '🧠', 
       color: 'text-purple-500',
       description: 'Machine learning insights, predictions, and intelligent automation'
+    },
+    { 
+      id: 'security-operations', 
+      name: '🛡️ Security Operations Center', 
+      icon: '🛡️', 
+      color: 'text-red-400',
+      description: 'Real-time threat detection, incident response, and security intelligence'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1376,6 +1384,9 @@ export default function MissionControl() {
         
         {/* AI Predictive Intelligence */}
         {currentView === 'ai-predictive' && <AIPredictiveIntelligenceCenter />}
+        
+        {/* Security Operations Center */}
+        {currentView === 'security-operations' && <SecurityOperationsCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}

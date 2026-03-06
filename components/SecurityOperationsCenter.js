@@ -1,545 +1,517 @@
-// SecurityOperationsCenter.js - Advanced Security Monitoring and Threat Detection for AI Systems
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Shield, AlertTriangle, Eye, Activity, Lock, Unlock, Zap, Clock, CheckCircle, XCircle, AlertCircle, TrendingUp, Target } from 'lucide-react';
 
 const SecurityOperationsCenter = () => {
-  const [securityMetrics, setSecurityMetrics] = useState({
-    threatLevel: 'LOW',
-    activeThreatCount: 2,
-    blockedAttacks: 147,
-    securityScore: 94.7,
-    aiRiskFactors: 3,
-    complianceScore: 98.2,
-    vulnerabilities: {
-      critical: 0,
-      high: 1,
-      medium: 3,
-      low: 8
-    },
-    lastScanTime: Date.now() - 15 * 60 * 1000 // 15 minutes ago
+  const [securityStatus, setSecurityStatus] = useState({
+    threatLevel: 'MODERATE',
+    activeThreats: 7,
+    blockedAttacks: 1247,
+    vulnerabilities: 3,
+    securityScore: 87.4,
+    incidentResponse: 'GREEN'
   });
+
+  const [threats, setThreats] = useState([
+    {
+      id: 'THREAT-001',
+      type: 'Unusual Token Consumption',
+      severity: 'HIGH',
+      urgency: 94,
+      source: 'AI Agent Monitoring',
+      target: 'Research Agent',
+      status: 'INVESTIGATING',
+      timestamp: new Date(),
+      description: 'Research Agent showing 340% above normal token usage patterns',
+      attackSignal: 'ANOMALOUS_BEHAVIOR',
+      mitigation: 'Rate limiting applied',
+      analyst: 'Security AI'
+    },
+    {
+      id: 'THREAT-002', 
+      type: 'Suspicious Login Attempt',
+      severity: 'MEDIUM',
+      urgency: 67,
+      source: 'Access Control',
+      target: 'Mission Control Dashboard',
+      status: 'BLOCKED',
+      timestamp: new Date(Date.now() - 900000),
+      description: 'Multiple failed authentication attempts from unknown IP',
+      attackSignal: 'BRUTE_FORCE',
+      mitigation: 'IP blocked for 24h',
+      analyst: 'Auto-Response'
+    },
+    {
+      id: 'THREAT-003',
+      type: 'Data Exfiltration Pattern',
+      severity: 'CRITICAL',
+      urgency: 98,
+      source: 'Network Monitor', 
+      target: 'Agent Workspace',
+      status: 'CONTAINED',
+      timestamp: new Date(Date.now() - 1800000),
+      description: 'Unusual outbound data transfer detected from workspace directory',
+      attackSignal: 'DATA_LEAK',
+      mitigation: 'Network isolation activated',
+      analyst: 'SOC Tier 2'
+    },
+    {
+      id: 'THREAT-004',
+      type: 'Privilege Escalation',
+      severity: 'LOW',
+      urgency: 23,
+      source: 'System Monitor',
+      target: 'Content Processor',
+      status: 'MONITORING',
+      timestamp: new Date(Date.now() - 3600000),
+      description: 'Agent attempting to access restricted system resources',
+      attackSignal: 'PRIVILEGE_ABUSE',
+      mitigation: 'Access restrictions enforced',
+      analyst: 'Auto-Monitor'
+    }
+  ]);
 
   const [threatIntelligence, setThreatIntelligence] = useState([
     {
-      id: 'THR001',
-      type: 'Suspicious API Access',
-      severity: 'MEDIUM',
-      source: 'External IP: 192.168.1.100',
-      target: 'Mission Control API',
-      status: 'INVESTIGATING',
-      timestamp: Date.now() - 5 * 60 * 1000,
-      description: 'Unusual API request pattern detected from external source'
-    },
-    {
-      id: 'THR002',
-      type: 'AI Model Anomaly',
+      id: 'INTEL-001',
+      threat: 'AI Model Poisoning Campaign',
+      confidence: 89,
       severity: 'HIGH',
-      source: 'Content Processor Agent',
-      target: 'Data Processing Pipeline',
-      status: 'MITIGATED',
-      timestamp: Date.now() - 12 * 60 * 1000,
-      description: 'Unexpected behavior pattern in AI content analysis'
+      source: 'Global Threat Feed',
+      indicators: ['Unusual training data', 'Model performance degradation'],
+      recommendation: 'Implement model validation checks'
     },
     {
-      id: 'THR003',
-      type: 'Unauthorized Access Attempt',
-      severity: 'LOW',
-      source: 'External Bot',
-      target: 'Dashboard Login',
-      status: 'BLOCKED',
-      timestamp: Date.now() - 25 * 60 * 1000,
-      description: 'Failed authentication attempts from automated source'
+      id: 'INTEL-002', 
+      threat: 'Agent Infrastructure Targeting',
+      confidence: 76,
+      severity: 'MEDIUM',
+      source: 'Industry Reports',
+      indicators: ['API abuse patterns', 'Resource exhaustion attacks'],
+      recommendation: 'Enhance rate limiting and monitoring'
+    },
+    {
+      id: 'INTEL-003',
+      threat: 'Credential Harvesting Operations',
+      confidence: 92,
+      severity: 'CRITICAL',
+      source: 'Dark Web Monitoring',
+      indicators: ['Phishing campaigns', 'Social engineering'],
+      recommendation: 'Mandatory 2FA and security training'
     }
   ]);
 
-  const [aiSecurityRisks, setAiSecurityRisks] = useState([
-    {
-      id: 'AIR001',
-      category: 'Data Privacy',
-      risk: 'Sensitive data in prompts',
-      severity: 'MEDIUM',
-      affectedAgents: ['Content Agent', 'Analytics Agent'],
-      mitigation: 'Data sanitization filters active',
-      status: 'MONITORING'
-    },
-    {
-      id: 'AIR002',
-      category: 'Model Security',
-      risk: 'Prompt injection attempts',
-      severity: 'HIGH',
-      affectedAgents: ['All AI Agents'],
-      mitigation: 'Input validation enhanced',
-      status: 'SECURED'
-    },
-    {
-      id: 'AIR003',
-      category: 'Access Control',
-      risk: 'Unmanaged agent permissions',
-      severity: 'LOW',
-      affectedAgents: ['Analytics Agent'],
-      mitigation: 'Permission audit scheduled',
-      status: 'PENDING'
-    }
-  ]);
+  const [securityMetrics, setSecurityMetrics] = useState([]);
+  const [responseMetrics, setResponseMetrics] = useState([]);
 
-  const [networkSecurity, setNetworkSecurity] = useState({
-    firewallStatus: 'ACTIVE',
-    intrustionPrevention: 'ENABLED',
-    ddosProtection: 'ACTIVE',
-    sslCertificates: 'VALID',
-    vpnConnections: 3,
-    blockedIPs: 142,
-    allowedDomains: 28,
-    encryptionStatus: '256-bit AES'
-  });
+  // Generate security metrics
+  useEffect(() => {
+    const generateSecurityMetrics = () => {
+      const metrics = [];
+      for (let i = 23; i >= 0; i--) {
+        const hour = new Date();
+        hour.setHours(hour.getHours() - i);
+        
+        metrics.push({
+          time: hour.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          threats: Math.floor(Math.random() * 15) + 2,
+          blocked: Math.floor(Math.random() * 50) + 10,
+          investigated: Math.floor(Math.random() * 8) + 1,
+          resolved: Math.floor(Math.random() * 12) + 3,
+          securityScore: 85 + Math.random() * 10
+        });
+      }
+      return metrics;
+    };
 
-  const [complianceStatus, setComplianceStatus] = useState({
-    gdprCompliance: 98.5,
-    socCompliance: 96.7,
-    iso27001: 94.3,
-    aiEthicsGuidelines: 99.1,
-    dataRetentionPolicy: 'COMPLIANT',
-    auditTrail: 'COMPLETE',
-    privacyControls: 'ACTIVE'
-  });
+    const generateResponseMetrics = () => {
+      return [
+        { metric: 'Mean Time to Detect', value: '2.3min', target: '<5min', status: 'good' },
+        { metric: 'Mean Time to Respond', value: '8.7min', target: '<15min', status: 'good' },
+        { metric: 'Mean Time to Contain', value: '23.4min', target: '<30min', status: 'good' },
+        { metric: 'Mean Time to Resolve', value: '1.8hrs', target: '<4hrs', status: 'good' },
+        { metric: 'False Positive Rate', value: '3.2%', target: '<5%', status: 'good' },
+        { metric: 'Alert Fatigue Index', value: '12%', target: '<20%', status: 'good' }
+      ];
+    };
 
-  const [securityEvents, setSecurityEvents] = useState([
-    { time: Date.now() - 2 * 60 * 1000, event: 'Firewall blocked suspicious traffic', severity: 'INFO' },
-    { time: Date.now() - 5 * 60 * 1000, event: 'AI agent behavior analysis completed', severity: 'SUCCESS' },
-    { time: Date.now() - 8 * 60 * 1000, event: 'Security scan initiated', severity: 'INFO' },
-    { time: Date.now() - 12 * 60 * 1000, event: 'Threat intelligence updated', severity: 'SUCCESS' },
-    { time: Date.now() - 15 * 60 * 1000, event: 'Vulnerability assessment completed', severity: 'INFO' }
-  ]);
+    setSecurityMetrics(generateSecurityMetrics());
+    setResponseMetrics(generateResponseMetrics());
+  }, []);
 
-  const [realTimeMonitoring, setRealTimeMonitoring] = useState({
-    activeMonitors: 15,
-    alertsPerHour: 3.2,
-    falsePositiveRate: 2.1,
-    responseTime: '45ms',
-    coveragePercentage: 99.7,
-    monitoringStatus: 'OPTIMAL'
-  });
-
+  // Real-time security updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Simulate real-time security updates
-      setSecurityMetrics(prev => ({
+      // Update security status
+      setSecurityStatus(prev => ({
         ...prev,
-        blockedAttacks: prev.blockedAttacks + Math.floor(Math.random() * 3),
-        securityScore: Math.max(85, Math.min(99, prev.securityScore + (Math.random() - 0.5) * 1)),
-        complianceScore: Math.max(95, Math.min(100, prev.complianceScore + (Math.random() - 0.5) * 0.5))
+        securityScore: Math.max(80, Math.min(100, prev.securityScore + (Math.random() - 0.5) * 2)),
+        blockedAttacks: prev.blockedAttacks + Math.floor(Math.random() * 3)
       }));
 
-      // Add new security events occasionally
-      if (Math.random() > 0.8) {
-        const events = [
-          'Security policy updated',
-          'Network traffic analyzed',
-          'AI model integrity verified',
-          'Access control reviewed',
-          'Threat signature updated',
-          'Compliance check completed'
-        ];
-        
-        const severities = ['INFO', 'SUCCESS', 'WARNING'];
-        
-        const newEvent = {
-          time: Date.now(),
-          event: events[Math.floor(Math.random() * events.length)],
-          severity: severities[Math.floor(Math.random() * severities.length)]
+      // Occasionally add new threats
+      if (Math.random() > 0.9) {
+        const newThreat = {
+          id: `THREAT-${Date.now()}`,
+          type: ['API Abuse', 'Resource Exhaustion', 'Unauthorized Access'][Math.floor(Math.random() * 3)],
+          severity: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)],
+          urgency: Math.floor(Math.random() * 100),
+          source: ['AI Monitor', 'Network Scanner', 'Endpoint Detection'][Math.floor(Math.random() * 3)],
+          target: ['Agent Network', 'Mission Control', 'Data Storage'][Math.floor(Math.random() * 3)],
+          status: 'NEW',
+          timestamp: new Date(),
+          description: 'Real-time threat detection alert',
+          attackSignal: 'REAL_TIME_DETECTION',
+          mitigation: 'Automated response initiated',
+          analyst: 'AI Security'
         };
         
-        setSecurityEvents(prev => [newEvent, ...prev.slice(0, 9)]);
+        setThreats(prev => [newThreat, ...prev.slice(0, 9)]);
       }
-
-      // Update real-time monitoring metrics
-      setRealTimeMonitoring(prev => ({
-        ...prev,
-        alertsPerHour: Math.max(0, Math.min(10, prev.alertsPerHour + (Math.random() - 0.5) * 0.5)),
-        responseTime: Math.max(20, Math.min(100, parseInt(prev.responseTime) + (Math.random() - 0.5) * 5)) + 'ms',
-        coveragePercentage: Math.max(95, Math.min(100, prev.coveragePercentage + (Math.random() - 0.5) * 0.2))
-      }));
-    }, 4000);
+    }, 8000);
 
     return () => clearInterval(interval);
   }, []);
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case 'CRITICAL': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      case 'HIGH': return 'text-orange-400 bg-orange-400/20 border-orange-400/30';
-      case 'MEDIUM': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'LOW': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'INFO': return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
+      case 'CRITICAL': return '#DC2626';
+      case 'HIGH': return '#EF4444';
+      case 'MEDIUM': return '#F59E0B';
+      case 'LOW': return '#10B981';
+      default: return '#6B7280';
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'ACTIVE':
-      case 'ENABLED':
-      case 'SECURED':
-      case 'COMPLIANT': return 'text-green-400';
-      case 'INVESTIGATING':
-      case 'MONITORING':
-      case 'PENDING': return 'text-yellow-400';
-      case 'BLOCKED':
-      case 'MITIGATED': return 'text-blue-400';
-      case 'CRITICAL':
-      case 'FAILED': return 'text-red-400';
-      default: return 'text-gray-400';
+      case 'RESOLVED': return '#10B981';
+      case 'INVESTIGATING': return '#F59E0B';
+      case 'BLOCKED': return '#3B82F6';
+      case 'CONTAINED': return '#8B5CF6';
+      case 'MONITORING': return '#6B7280';
+      case 'NEW': return '#EF4444';
+      default: return '#6B7280';
     }
   };
 
-  const getThreatLevelColor = (level) => {
-    switch (level) {
-      case 'CRITICAL': return 'bg-red-500 animate-pulse';
-      case 'HIGH': return 'bg-orange-500';
-      case 'MEDIUM': return 'bg-yellow-500';
-      case 'LOW': return 'bg-green-500';
-      default: return 'bg-gray-500';
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'RESOLVED': return <CheckCircle className="w-4 h-4 text-green-400" />;
+      case 'INVESTIGATING': return <Eye className="w-4 h-4 text-yellow-400" />;
+      case 'BLOCKED': return <Lock className="w-4 h-4 text-blue-400" />;
+      case 'CONTAINED': return <Shield className="w-4 h-4 text-purple-400" />;
+      case 'MONITORING': return <Activity className="w-4 h-4 text-gray-400" />;
+      case 'NEW': return <AlertCircle className="w-4 h-4 text-red-400" />;
+      default: return <Clock className="w-4 h-4 text-gray-400" />;
     }
   };
 
-  const formatTime = (timestamp) => {
-    const diff = Date.now() - timestamp;
-    if (diff < 60000) return 'now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    return `${Math.floor(diff / 3600000)}h ago`;
+  const getThreatLevelColor = () => {
+    switch (securityStatus.threatLevel) {
+      case 'LOW': return '#10B981';
+      case 'MODERATE': return '#F59E0B';
+      case 'HIGH': return '#EF4444';
+      case 'CRITICAL': return '#DC2626';
+      default: return '#6B7280';
+    }
   };
+
+  const threatDistribution = [
+    { name: 'Network', value: 34, color: '#EF4444' },
+    { name: 'Endpoint', value: 28, color: '#F59E0B' },
+    { name: 'Application', value: 22, color: '#3B82F6' },
+    { name: 'Identity', value: 16, color: '#10B981' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          🛡️ SECURITY OPERATIONS CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className={`px-3 py-1 rounded-full text-sm font-mono border flex items-center space-x-2 ${
-            securityMetrics.threatLevel === 'LOW' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-            securityMetrics.threatLevel === 'MEDIUM' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
-            securityMetrics.threatLevel === 'HIGH' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
-            'bg-red-500/20 text-red-400 border-red-500/30'
-          }`}>
-            <div className={`w-2 h-2 rounded-full ${getThreatLevelColor(securityMetrics.threatLevel)}`}></div>
-            <span>THREAT LEVEL: {securityMetrics.threatLevel}</span>
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <Shield className="w-8 h-8 text-red-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">SECURITY OPERATIONS CENTER</h1>
+            <p className="text-gray-400">Real-time threat detection, incident response, and security intelligence</p>
           </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Last scan: {formatTime(securityMetrics.lastScanTime)}
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold" style={{ color: getThreatLevelColor() }}>
+              {securityStatus.threatLevel}
+            </div>
+            <div className="text-xs text-gray-400">THREAT LEVEL</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-red-400">{securityStatus.activeThreats}</div>
+            <div className="text-xs text-gray-400">ACTIVE THREATS</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">{securityStatus.securityScore.toFixed(1)}%</div>
+            <div className="text-xs text-gray-400">SECURITY SCORE</div>
           </div>
         </div>
       </div>
 
-      {/* Security Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">SECURITY SCORE</div>
-              <div className="text-2xl font-bold text-green-100">
-                {securityMetrics.securityScore.toFixed(1)}%
-              </div>
-              <div className="text-xs text-green-300">Excellent rating</div>
-            </div>
-            <div className="text-3xl opacity-60">🛡️</div>
+      {/* Security Status Cards */}
+      <div className="grid grid-cols-6 gap-4 mb-6">
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <AlertTriangle className="w-5 h-5 text-red-400" />
+            <span className={`text-xs px-2 py-1 rounded-full ${
+              securityStatus.incidentResponse === 'GREEN' ? 'bg-green-900 text-green-400' :
+              securityStatus.incidentResponse === 'YELLOW' ? 'bg-yellow-900 text-yellow-400' : 
+              'bg-red-900 text-red-400'
+            }`}>
+              {securityStatus.incidentResponse}
+            </span>
           </div>
+          <div className="text-lg font-bold text-white">{securityStatus.activeThreats}</div>
+          <div className="text-xs text-gray-400">Active Incidents</div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">BLOCKED ATTACKS</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {securityMetrics.blockedAttacks}
-              </div>
-              <div className="text-xs text-blue-300">Last 24 hours</div>
-            </div>
-            <div className="text-3xl opacity-60">🚫</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Shield className="w-5 h-5 text-blue-400" />
+            <TrendingUp className="w-4 h-4 text-green-400" />
           </div>
+          <div className="text-lg font-bold text-white">{securityStatus.blockedAttacks.toLocaleString()}</div>
+          <div className="text-xs text-gray-400">Blocked Today</div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">AI RISKS</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {securityMetrics.aiRiskFactors}
-              </div>
-              <div className="text-xs text-purple-300">Identified & mitigating</div>
-            </div>
-            <div className="text-3xl opacity-60">🤖</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Target className="w-5 h-5 text-purple-400" />
+            <span className="text-xs text-gray-400">CVE</span>
           </div>
+          <div className="text-lg font-bold text-white">{securityStatus.vulnerabilities}</div>
+          <div className="text-xs text-gray-400">Vulnerabilities</div>
         </div>
 
-        <div className="bg-gradient-to-br from-cyan-900 to-cyan-800 rounded-lg p-6 border border-cyan-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-cyan-200">COMPLIANCE</div>
-              <div className="text-2xl font-bold text-cyan-100">
-                {securityMetrics.complianceScore.toFixed(1)}%
-              </div>
-              <div className="text-xs text-cyan-300">GDPR, SOC, ISO27001</div>
-            </div>
-            <div className="text-3xl opacity-60">✅</div>
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Activity className="w-5 h-5 text-green-400" />
+            <span className="text-xs text-gray-400">MTTD</span>
           </div>
+          <div className="text-lg font-bold text-white">2.3min</div>
+          <div className="text-xs text-gray-400">Detect Time</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <Zap className="w-5 h-5 text-yellow-400" />
+            <span className="text-xs text-gray-400">MTTR</span>
+          </div>
+          <div className="text-lg font-bold text-white">8.7min</div>
+          <div className="text-xs text-gray-400">Response Time</div>
+        </div>
+
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <div className="flex items-center justify-between mb-2">
+            <CheckCircle className="w-5 h-5 text-cyan-400" />
+            <span className="text-xs text-gray-400">UP</span>
+          </div>
+          <div className="text-lg font-bold text-white">99.8%</div>
+          <div className="text-xs text-gray-400">Uptime</div>
         </div>
       </div>
 
-      {/* Active Threats and AI Security Risks */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Threat Intelligence */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🎯 ACTIVE THREAT INTELLIGENCE
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Active Threats */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
+            ACTIVE THREAT FEED
           </h3>
-          <div className="space-y-3">
-            {threatIntelligence.map((threat) => (
-              <div key={threat.id} className="bg-gray-700 rounded-lg p-4">
+          <div className="space-y-3 max-h-80 overflow-y-auto">
+            {threats.map(threat => (
+              <div key={threat.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getSeverityColor(threat.severity) }}>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <h4 className="font-bold text-white text-sm">{threat.type}</h4>
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getSeverityColor(threat.severity)}`}>
+                  <div className="flex items-center space-x-2">
+                    {getStatusIcon(threat.status)}
+                    <span className="text-white font-medium text-sm">{threat.type}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getSeverityColor(threat.severity)}20`, 
+                      color: getSeverityColor(threat.severity) 
+                    }}>
                       {threat.severity}
                     </span>
+                    <span className="text-xs text-gray-400">U:{threat.urgency}</span>
                   </div>
-                  <span className={`text-xs font-mono ${getStatusColor(threat.status)}`}>
-                    {threat.status}
-                  </span>
                 </div>
-                <div className="text-xs text-gray-300 mb-2">{threat.description}</div>
+                
+                <p className="text-gray-400 text-xs mb-2">{threat.description}</p>
+                
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Source: <span className="text-cyan-400">{threat.source}</span></span>
-                  <span className="text-gray-400">Target: <span className="text-purple-400">{threat.target}</span></span>
-                  <span className="text-gray-500">{formatTime(threat.timestamp)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* AI Security Risks */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🤖 AI SECURITY RISKS
-          </h3>
-          <div className="space-y-3">
-            {aiSecurityRisks.map((risk) => (
-              <div key={risk.id} className="bg-gray-700 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <h4 className="font-bold text-white text-sm">{risk.category}</h4>
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getSeverityColor(risk.severity)}`}>
-                      {risk.severity}
-                    </span>
-                  </div>
-                  <span className={`text-xs font-mono ${getStatusColor(risk.status)}`}>
-                    {risk.status}
-                  </span>
-                </div>
-                <div className="text-xs text-gray-300 mb-2">{risk.risk}</div>
-                <div className="text-xs text-green-400 mb-2">Mitigation: {risk.mitigation}</div>
-                <div className="text-xs text-gray-400">
-                  Affected: <span className="text-purple-400">{risk.affectedAgents.join(', ')}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Network Security and Real-time Monitoring */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Network Security Status */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🌐 NETWORK SECURITY STATUS
-          </h3>
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-700 rounded p-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">Firewall</span>
-                  <span className={`text-xs font-mono ${getStatusColor(networkSecurity.firewallStatus)}`}>
-                    {networkSecurity.firewallStatus}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">IDS/IPS</span>
-                  <span className={`text-xs font-mono ${getStatusColor(networkSecurity.intrustionPrevention)}`}>
-                    {networkSecurity.intrustionPrevention}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">DDoS Protection</span>
-                  <span className={`text-xs font-mono ${getStatusColor(networkSecurity.ddosProtection)}`}>
-                    {networkSecurity.ddosProtection}
-                  </span>
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-400">SSL/TLS</span>
-                  <span className={`text-xs font-mono ${getStatusColor(networkSecurity.sslCertificates)}`}>
-                    {networkSecurity.sslCertificates}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-4 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Blocked IPs</span>
-                <span className="text-red-400 font-mono">{networkSecurity.blockedIPs}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Allowed Domains</span>
-                <span className="text-green-400 font-mono">{networkSecurity.allowedDomains}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">VPN Connections</span>
-                <span className="text-blue-400 font-mono">{networkSecurity.vpnConnections}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Encryption</span>
-                <span className="text-purple-400 font-mono">{networkSecurity.encryptionStatus}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Real-time Security Monitoring */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📡 REAL-TIME MONITORING
-          </h3>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-xs text-gray-400">Active Monitors</div>
-                <div className="text-lg font-bold text-cyan-400">
-                  {realTimeMonitoring.activeMonitors}
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-xs text-gray-400">Coverage</div>
-                <div className="text-lg font-bold text-green-400">
-                  {realTimeMonitoring.coveragePercentage.toFixed(1)}%
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-xs text-gray-400">Response Time</div>
-                <div className="text-lg font-bold text-blue-400">
-                  {realTimeMonitoring.responseTime}
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-xs text-gray-400">Alerts/Hour</div>
-                <div className="text-lg font-bold text-yellow-400">
-                  {realTimeMonitoring.alertsPerHour.toFixed(1)}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="text-xs text-gray-400 mb-2">Vulnerability Summary</div>
-              <div className="grid grid-cols-4 gap-2">
-                <div className="bg-red-500/20 text-red-400 text-center py-2 rounded text-xs">
-                  Critical: {securityMetrics.vulnerabilities.critical}
-                </div>
-                <div className="bg-orange-500/20 text-orange-400 text-center py-2 rounded text-xs">
-                  High: {securityMetrics.vulnerabilities.high}
-                </div>
-                <div className="bg-yellow-500/20 text-yellow-400 text-center py-2 rounded text-xs">
-                  Medium: {securityMetrics.vulnerabilities.medium}
-                </div>
-                <div className="bg-green-500/20 text-green-400 text-center py-2 rounded text-xs">
-                  Low: {securityMetrics.vulnerabilities.low}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Compliance Dashboard and Security Events */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Compliance Dashboard */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📋 COMPLIANCE DASHBOARD
-          </h3>
-          <div className="space-y-4">
-            {[
-              { name: 'GDPR Compliance', score: complianceStatus.gdprCompliance, color: 'blue' },
-              { name: 'SOC Compliance', score: complianceStatus.socCompliance, color: 'green' },
-              { name: 'ISO 27001', score: complianceStatus.iso27001, color: 'purple' },
-              { name: 'AI Ethics Guidelines', score: complianceStatus.aiEthicsGuidelines, color: 'cyan' }
-            ].map((item, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-300">{item.name}</span>
-                  <span className={`text-sm font-bold text-${item.color}-400`}>
-                    {item.score.toFixed(1)}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className={`bg-${item.color}-400 h-2 rounded-full transition-all duration-500`}
-                    style={{ width: `${item.score}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-            
-            <div className="mt-4 pt-4 border-t border-gray-600">
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <div className="text-gray-400">Data Retention</div>
-                  <div className={`text-${getStatusColor(complianceStatus.dataRetentionPolicy).split('-')[1]}-400 font-mono`}>
-                    {complianceStatus.dataRetentionPolicy}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-gray-400">Audit Trail</div>
-                  <div className={`text-${getStatusColor(complianceStatus.auditTrail).split('-')[1]}-400 font-mono`}>
-                    {complianceStatus.auditTrail}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Security Event Log */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📝 SECURITY EVENT LOG
-          </h3>
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {securityEvents.map((event, index) => (
-              <div key={index} className="flex items-start space-x-3 text-sm">
-                <div className={`w-2 h-2 rounded-full mt-2 ${
-                  event.severity === 'SUCCESS' ? 'bg-green-400' :
-                  event.severity === 'WARNING' ? 'bg-yellow-400' :
-                  event.severity === 'ERROR' ? 'bg-red-400' :
-                  'bg-blue-400'
-                } animate-pulse`}></div>
-                <div className="flex-1">
+                  <span className="text-blue-400">{threat.target}</span>
                   <div className="flex items-center space-x-2">
-                    <span className="text-white">{event.event}</span>
-                    <span className={`text-xs px-2 py-1 rounded ${getSeverityColor(event.severity)}`}>
-                      {event.severity}
+                    <span className="text-gray-500">{threat.analyst}</span>
+                    <span className="text-gray-500">
+                      {new Date(threat.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-500">{formatTime(event.time)}</div>
+                </div>
+                
+                <div className="mt-2 text-xs">
+                  <span className="text-gray-400">Mitigation: </span>
+                  <span className="text-green-400">{threat.mitigation}</span>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Security Metrics Timeline */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Activity className="w-5 h-5 mr-2 text-blue-400" />
+            SECURITY METRICS (24H)
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={securityMetrics.slice(-12)}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10} />
+              <YAxis stroke="#9CA3AF" fontSize={10} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Area 
+                type="monotone" 
+                dataKey="threats" 
+                stackId="1"
+                stroke="#EF4444" 
+                fill="#EF4444"
+                fillOpacity={0.6}
+                name="Threats"
+              />
+              <Area 
+                type="monotone" 
+                dataKey="blocked" 
+                stackId="1"
+                stroke="#10B981" 
+                fill="#10B981"
+                fillOpacity={0.6}
+                name="Blocked"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Threat Intelligence */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Eye className="w-5 h-5 mr-2 text-purple-400" />
+            THREAT INTELLIGENCE
+          </h3>
+          <div className="space-y-3">
+            {threatIntelligence.map(intel => (
+              <div key={intel.id} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{intel.threat}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getSeverityColor(intel.severity)}20`, 
+                      color: getSeverityColor(intel.severity) 
+                    }}>
+                      {intel.severity}
+                    </span>
+                    <span className="text-xs text-gray-400">{intel.confidence}%</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 text-xs">
+                  <div>
+                    <span className="text-gray-400">Source: </span>
+                    <span className="text-white">{intel.source}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Indicators: </span>
+                    <span className="text-blue-400">{intel.indicators.join(', ')}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Action: </span>
+                    <span className="text-green-400">{intel.recommendation}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Response Metrics */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">SOC PERFORMANCE METRICS</h3>
+          <div className="grid grid-cols-2 gap-4">
+            {responseMetrics.map((metric, index) => (
+              <div key={index} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">{metric.metric}</span>
+                  <div className={`w-2 h-2 rounded-full ${
+                    metric.status === 'good' ? 'bg-green-400' : 
+                    metric.status === 'warning' ? 'bg-yellow-400' : 'bg-red-400'
+                  }`} />
+                </div>
+                <div className="text-white font-bold">{metric.value}</div>
+                <div className="text-xs text-gray-500">Target: {metric.target}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Threat Distribution */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">THREAT VECTOR ANALYSIS</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={threatDistribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {threatDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }} 
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-3 mt-4">
+              {threatDistribution.map((item, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{item.name}</span>
+                  </div>
+                  <span className="text-white font-semibold">{item.value}%</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
