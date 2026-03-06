@@ -85,6 +85,7 @@ import SeismicMonitoringOperationsCenter from '../components/SeismicMonitoringOp
 import AgriculturalOperationsCenter from '../components/AgriculturalOperationsCenter';
 import SpaceOperationsCenter from '../components/SpaceOperationsCenter';
 import RetailOperationsCenter from '../components/RetailOperationsCenter';
+import EducationOperationsCenter from '../components/EducationOperationsCenter';
 import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
@@ -1708,6 +1709,9 @@ export default function MissionControl() {
         
         {/* Cybersecurity Operations Center */}
         {currentView === 'cybersecurity-operations-center' && <CybersecurityOperationsCenter />}
+        
+        {/* Education Operations Center */}
+        {currentView === 'education-operations-center' && <EducationOperationsCenter />}
         
         {/* EMS Operations Center */}
         {currentView === 'ems-operations-center' && <EMSOperationsCenter />}
