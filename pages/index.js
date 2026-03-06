@@ -99,6 +99,7 @@ import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCent
 import SpaceMissionControlCenter from '../components/SpaceMissionControlCenter';
 import EmergencyOperationsCenter from '../components/EmergencyOperationsCenter';
 import AirTrafficControlCenter from '../components/AirTrafficControlCenter';
+import ManufacturingOperationsCenter from '../components/ManufacturingOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -637,6 +638,13 @@ export default function MissionControl() {
       icon: '✈️', 
       color: 'text-cyan-500',
       description: '24/7 aviation operations, real-time aircraft monitoring, and strategic airspace management'
+    },
+    { 
+      id: 'manufacturing-operations', 
+      name: '🏭 Manufacturing Operations Center', 
+      icon: '🏭', 
+      color: 'text-green-500',
+      description: 'Real-time production monitoring, industrial automation, and Manufacturing Execution System (MES)'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1485,6 +1493,9 @@ export default function MissionControl() {
         
         {/* Air Traffic Control Center */}
         {currentView === 'air-traffic-control' && <AirTrafficControlCenter />}
+        
+        {/* Manufacturing Operations Center */}
+        {currentView === 'manufacturing-operations' && <ManufacturingOperationsCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
