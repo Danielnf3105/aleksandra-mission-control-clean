@@ -92,6 +92,7 @@ import TaskManagementCenter from '../components/TaskManagementCenter';
 import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligenceCenter';
 import EnterpriseSecurityCenter from '../components/SecurityOperationsCenter';
 import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestrationCenter';
+import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -574,6 +575,13 @@ export default function MissionControl() {
       icon: '🤝', 
       color: 'text-blue-500',
       description: 'Enterprise agent coordination, workflow automation, and crew management'
+    },
+    { 
+      id: 'infrastructure-devops', 
+      name: '🏗️ Infrastructure & DevOps', 
+      icon: '🏗️', 
+      color: 'text-green-500',
+      description: 'Real-time infrastructure observability, SRE metrics, and DevOps pipeline monitoring'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1398,6 +1406,9 @@ export default function MissionControl() {
         
         {/* Multi-Agent Orchestration */}
         {currentView === 'multi-agent-orchestration' && <MultiAgentOrchestrationCenter />}
+        
+        {/* Infrastructure & DevOps */}
+        {currentView === 'infrastructure-devops' && <InfrastructureDevOpsCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}

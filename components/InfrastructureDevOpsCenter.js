@@ -1,940 +1,681 @@
-// InfrastructureDevOpsCenter.js - Infrastructure Monitoring & DevOps Automation Control Center
-import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Server, GitBranch, Layers, Cloud, Database, Monitor, AlertTriangle, CheckCircle, Clock, Zap, Activity, TrendingUp, Target } from 'lucide-react';
 
 const InfrastructureDevOpsCenter = () => {
-  const [infrastructureStatus, setInfrastructureStatus] = useState({
-    vercelDeployment: {
-      status: 'DEPLOYED',
-      environment: 'production',
-      lastDeploy: Date.now() - 8 * 60 * 1000,
-      buildTime: 24.3,
-      bundleSize: 73.8,
-      deploymentId: 'DThECRLgwsu2t9YnVsVuCUkHH6xt',
-      region: 'iad1',
-      functions: 7,
-      domains: ['aleksandra-mission-control.vercel.app'],
-      uptime: 99.97,
-      responseTime: 89
-    },
-    openclawGateway: {
-      status: 'RUNNING',
-      version: 'v2.1.8',
-      uptime: 1567.4, // hours
-      sessions: 12,
-      activeSessions: 3,
-      heartbeatRate: 30, // seconds
-      memory: 245.7, // MB
-      cpu: 12.4, // %
-      connections: 8,
-      lastHeartbeat: Date.now() - 1 * 60 * 1000,
-      port: 8080,
-      configVersion: 'v1.23.1'
-    },
-    database: {
-      status: 'HEALTHY',
-      type: 'SQLite',
-      size: 847.3, // MB
-      queries: 24567,
-      avgQueryTime: 23.4, // ms
-      connections: 5,
-      indexOptimization: 94.2,
-      backupStatus: 'RECENT',
-      lastBackup: Date.now() - 4 * 60 * 60 * 1000,
-      replicationLag: 0
-    },
-    systemResources: {
-      cpu: 24.7,
-      memory: 67.3,
-      disk: 78.9,
-      network: 45.2,
-      load: 1.23,
-      processes: 247,
-      threads: 1234,
-      fileDescriptors: 456,
-      swapUsage: 2.1,
-      networkConnections: 89
-    }
+  const [infraMetrics, setInfraMetrics] = useState({
+    uptime: 99.97,
+    latency: 23.4,
+    throughput: 1247,
+    errorRate: 0.12,
+    sloCompliance: 99.8,
+    apdexScore: 0.94
   });
 
-  const [devOpsMetrics, setDevOpsMetrics] = useState({
-    cicd: {
-      pipelinesRun: 47,
-      successRate: 97.9,
-      avgBuildTime: 24.3,
-      deploymentFrequency: 8.7, // per day
-      leadTime: 127, // minutes
-      mttr: 23, // minutes
-      changeFailureRate: 2.1,
-      activePipelines: 3,
-      queuedBuilds: 1,
-      totalCommits: 156,
-      hotfixes: 2
-    },
-    tokenUsage: {
-      totalTokens: 2847362,
-      todayTokens: 156742,
-      costToday: 23.45,
-      totalCost: 847.32,
-      avgTokensPerRequest: 1247,
-      peakUsage: 89234,
-      models: [
-        { name: 'claude-sonnet-4', tokens: 1256734, cost: 456.78, requests: 1247 },
-        { name: 'claude-opus-4', tokens: 847239, cost: 234.56, requests: 789 },
-        { name: 'gpt-4-turbo', tokens: 456382, cost: 123.45, requests: 567 },
-        { name: 'gemini-pro', tokens: 287007, cost: 32.53, requests: 234 }
-      ],
-      quotaUtilization: 67.4
-    },
-    monitoring: {
-      alertsActive: 2,
-      alertsResolved: 34,
-      metricsCollected: 145672,
-      logsProcessed: 234567,
-      errorRate: 0.23,
-      uptimePercentage: 99.94,
-      incidentsThisMonth: 3,
-      mtbf: 247.8, // hours
-      slaCompliance: 99.7,
-      monitoringTools: 8
-    },
-    security: {
-      vulnerabilities: 0,
-      lastScan: Date.now() - 45 * 60 * 1000,
-      complianceScore: 98.7,
-      accessAttempts: 2847,
-      blockedAttempts: 23,
-      certificateExpiry: Date.now() + 87 * 24 * 60 * 60 * 1000,
-      sslGrade: 'A+',
-      securityPatches: 4,
-      auditEvents: 156,
-      threatLevel: 'LOW'
-    }
-  });
-
-  const [scheduledTasks, setScheduledTasks] = useState([
+  const [services, setServices] = useState([
     {
-      id: 'task_001',
-      name: 'Database Backup',
-      schedule: '0 2 * * *',
-      status: 'COMPLETED',
-      lastRun: Date.now() - 4 * 60 * 60 * 1000,
-      nextRun: Date.now() + 20 * 60 * 60 * 1000,
-      duration: 234,
-      type: 'BACKUP',
-      success: true,
-      retries: 0
+      name: 'Mission Control API',
+      status: 'healthy',
+      uptime: 99.99,
+      latency: 45,
+      throughput: 234,
+      errorRate: 0.01,
+      replicas: 3,
+      version: 'v2.1.4',
+      environment: 'production'
     },
     {
-      id: 'task_002',
-      name: 'Log Rotation',
-      schedule: '0 1 * * 0',
-      status: 'SCHEDULED',
-      lastRun: Date.now() - 2 * 24 * 60 * 60 * 1000,
-      nextRun: Date.now() + 5 * 24 * 60 * 60 * 1000,
-      duration: null,
-      type: 'MAINTENANCE',
-      success: null,
-      retries: 0
+      name: 'Agent Gateway',
+      status: 'healthy', 
+      uptime: 99.95,
+      latency: 12,
+      throughput: 567,
+      errorRate: 0.05,
+      replicas: 5,
+      version: 'v1.8.2',
+      environment: 'production'
     },
     {
-      id: 'task_003',
-      name: 'Security Scan',
-      schedule: '0 */6 * * *',
-      status: 'RUNNING',
-      lastRun: Date.now() - 45 * 60 * 1000,
-      nextRun: Date.now() + 315 * 60 * 1000,
-      duration: null,
-      type: 'SECURITY',
-      success: null,
-      retries: 0
+      name: 'Content Processor',
+      status: 'warning',
+      uptime: 98.7,
+      latency: 156,
+      throughput: 89,
+      errorRate: 1.2,
+      replicas: 2,
+      version: 'v3.0.1',
+      environment: 'production'
     },
     {
-      id: 'task_004',
-      name: 'Agent Heartbeat Monitor',
-      schedule: '*/5 * * * *',
-      status: 'COMPLETED',
-      lastRun: Date.now() - 2 * 60 * 1000,
-      nextRun: Date.now() + 3 * 60 * 1000,
-      duration: 12,
-      type: 'MONITORING',
-      success: true,
-      retries: 0
+      name: 'Analytics Engine',
+      status: 'healthy',
+      uptime: 99.8,
+      latency: 78,
+      throughput: 123,
+      errorRate: 0.3,
+      replicas: 3,
+      version: 'v2.5.0',
+      environment: 'production'
     },
     {
-      id: 'task_005',
-      name: 'Metric Aggregation',
-      schedule: '*/15 * * * *',
-      status: 'SCHEDULED',
-      lastRun: Date.now() - 8 * 60 * 1000,
-      nextRun: Date.now() + 7 * 60 * 1000,
-      duration: null,
-      type: 'ANALYTICS',
-      success: null,
-      retries: 0
+      name: 'Security Monitor',
+      status: 'healthy',
+      uptime: 100,
+      latency: 34,
+      throughput: 445,
+      errorRate: 0.0,
+      replicas: 4,
+      version: 'v1.9.3',
+      environment: 'production'
     }
   ]);
 
-  const [gitIntegration, setGitIntegration] = useState({
-    repository: 'aleksandra-mission-control',
-    branch: 'main',
-    lastCommit: {
-      hash: '9df02be',
-      message: 'Continuous Improvement: Advanced Agent Orchestration & Multi-Agent Collaboration',
-      author: 'Aleksandra',
-      timestamp: Date.now() - 8 * 60 * 1000,
-      files: 2,
-      additions: 817,
-      deletions: 0
-    },
-    stats: {
-      totalCommits: 23,
-      contributors: 1,
-      branches: 3,
-      tags: 0,
-      issues: 0,
-      pullRequests: 0,
-      codeFrequency: 156,
-      linesOfCode: 15847
-    },
-    ciStatus: {
-      status: 'SUCCESS',
-      checks: 8,
-      passed: 8,
-      failed: 0,
-      duration: 42.3,
-      coverage: 89.4
-    }
-  });
-
-  const [performanceTrends, setPerformanceTrends] = useState([]);
-  const [alertHistory, setAlertHistory] = useState([
+  const [cicdPipelines, setCicdPipelines] = useState([
     {
-      id: 'alert_001',
-      timestamp: Date.now() - 2 * 60 * 60 * 1000,
-      severity: 'WARNING',
-      service: 'vercel-deployment',
-      message: 'Build time exceeded 30 seconds',
-      status: 'RESOLVED',
-      resolution: 'Optimized bundle size',
-      duration: 345
+      name: 'mission-control-deploy',
+      status: 'success',
+      duration: 142,
+      branch: 'main',
+      commit: 'd0812de',
+      timestamp: new Date(Date.now() - 600000),
+      stage: 'deployed',
+      environment: 'production'
     },
     {
-      id: 'alert_002',
-      timestamp: Date.now() - 6 * 60 * 60 * 1000,
-      severity: 'INFO',
-      service: 'openclaw-gateway',
-      message: 'Memory usage increased to 250MB',
-      status: 'ACKNOWLEDGED',
-      resolution: null,
-      duration: null
+      name: 'agent-lifecycle-update',
+      status: 'running',
+      duration: 87,
+      branch: 'feature/lifecycle-v2',
+      commit: 'f6937ba',
+      timestamp: new Date(Date.now() - 300000),
+      stage: 'testing',
+      environment: 'staging'
+    },
+    {
+      name: 'security-enhancement',
+      status: 'failed',
+      duration: 203,
+      branch: 'hotfix/security-patch',
+      commit: '2558029',
+      timestamp: new Date(Date.now() - 900000),
+      stage: 'build',
+      environment: 'development'
+    },
+    {
+      name: 'cost-optimization',
+      status: 'pending',
+      duration: 0,
+      branch: 'feature/cost-analysis',
+      commit: 'cd9c6aa',
+      timestamp: new Date(),
+      stage: 'queue',
+      environment: 'development'
     }
   ]);
 
-  const generatePerformanceTrends = () => {
-    const data = [];
-    for (let i = 23; i >= 0; i--) {
-      const time = new Date();
-      time.setHours(time.getHours() - i);
-      data.push({
-        hour: time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
-        cpu: Math.random() * 30 + 15,
-        memory: Math.random() * 40 + 50,
-        disk: Math.random() * 20 + 70,
-        network: Math.random() * 50 + 25,
-        response_time: Math.random() * 50 + 50,
-        throughput: Math.random() * 100 + 200,
-        errors: Math.floor(Math.random() * 5)
-      });
+  const [infraAlerts, setInfraAlerts] = useState([
+    {
+      id: 'ALERT-001',
+      severity: 'warning',
+      service: 'Content Processor',
+      message: 'High memory usage detected (89%)',
+      timestamp: new Date(),
+      status: 'active',
+      slo: 'Latency SLO'
+    },
+    {
+      id: 'ALERT-002',
+      severity: 'info',
+      service: 'Agent Gateway',
+      message: 'Auto-scaling event triggered - added 2 replicas',
+      timestamp: new Date(Date.now() - 300000),
+      status: 'resolved',
+      slo: 'Availability SLO'
+    },
+    {
+      id: 'ALERT-003',
+      severity: 'critical',
+      service: 'Database Cluster',
+      message: 'Connection pool exhaustion detected',
+      timestamp: new Date(Date.now() - 600000),
+      status: 'resolved',
+      slo: 'Error Rate SLO'
     }
-    return data;
-  };
+  ]);
 
+  const [sloMetrics, setSloMetrics] = useState([
+    {
+      name: 'API Availability SLO',
+      target: 99.9,
+      current: 99.97,
+      budget: 43.2, // minutes remaining
+      status: 'healthy',
+      period: '30d'
+    },
+    {
+      name: 'Response Time SLO',
+      target: 200,
+      current: 156,
+      budget: 78.5, // % remaining
+      status: 'warning',
+      period: '7d'
+    },
+    {
+      name: 'Error Rate SLO',
+      target: 0.5,
+      current: 0.12,
+      budget: 92.1, // % remaining
+      status: 'healthy',
+      period: '30d'
+    },
+    {
+      name: 'Throughput SLO',
+      target: 1000,
+      current: 1247,
+      budget: 124.7, // % of target
+      status: 'healthy',
+      period: '24h'
+    }
+  ]);
+
+  const [metricsHistory, setMetricsHistory] = useState([]);
+
+  // Generate historical metrics
   useEffect(() => {
-    setPerformanceTrends(generatePerformanceTrends());
+    const generateMetricsHistory = () => {
+      const history = [];
+      for (let i = 23; i >= 0; i--) {
+        const time = new Date();
+        time.setHours(time.getHours() - i);
+        
+        history.push({
+          time: time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+          latency: 20 + Math.random() * 30 + Math.sin(i / 4) * 10,
+          throughput: 800 + Math.random() * 400 + Math.sin(i / 6) * 200,
+          errorRate: Math.random() * 0.5,
+          cpuUsage: 40 + Math.random() * 30 + Math.sin(i / 3) * 15,
+          memoryUsage: 60 + Math.random() * 20 + Math.sin(i / 5) * 10
+        });
+      }
+      return history;
+    };
+
+    setMetricsHistory(generateMetricsHistory());
   }, []);
 
+  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update system resources
-      setInfrastructureStatus(prev => ({
+      // Update infrastructure metrics
+      setInfraMetrics(prev => ({
         ...prev,
-        systemResources: {
-          ...prev.systemResources,
-          cpu: Math.max(5, Math.min(80, prev.systemResources.cpu + (Math.random() - 0.5) * 8)),
-          memory: Math.max(30, Math.min(90, prev.systemResources.memory + (Math.random() - 0.5) * 5)),
-          network: Math.max(10, Math.min(90, prev.systemResources.network + (Math.random() - 0.5) * 10))
-        },
-        vercelDeployment: {
-          ...prev.vercelDeployment,
-          responseTime: Math.max(50, Math.min(200, prev.vercelDeployment.responseTime + (Math.random() - 0.5) * 10))
-        },
-        openclawGateway: {
-          ...prev.openclawGateway,
-          memory: Math.max(200, Math.min(300, prev.openclawGateway.memory + (Math.random() - 0.5) * 5)),
-          cpu: Math.max(5, Math.min(30, prev.openclawGateway.cpu + (Math.random() - 0.5) * 3)),
-          lastHeartbeat: Date.now()
-        },
-        database: {
-          ...prev.database,
-          queries: prev.database.queries + Math.floor(Math.random() * 10),
-          avgQueryTime: Math.max(10, Math.min(50, prev.database.avgQueryTime + (Math.random() - 0.5) * 2))
-        }
+        latency: Math.max(10, Math.min(100, prev.latency + (Math.random() - 0.5) * 5)),
+        throughput: Math.max(800, Math.min(1500, prev.throughput + (Math.random() - 0.5) * 50)),
+        errorRate: Math.max(0, Math.min(2, prev.errorRate + (Math.random() - 0.5) * 0.1)),
+        uptime: Math.max(99.8, Math.min(100, prev.uptime + (Math.random() - 0.3) * 0.01))
       }));
 
-      // Update DevOps metrics
-      setDevOpsMetrics(prev => ({
-        ...prev,
-        tokenUsage: {
-          ...prev.tokenUsage,
-          todayTokens: prev.tokenUsage.todayTokens + Math.floor(Math.random() * 100),
-          costToday: prev.tokenUsage.costToday + Math.random() * 0.5
-        },
-        cicd: {
-          ...prev.cicd,
-          activePipelines: Math.floor(Math.random() * 5),
-          queuedBuilds: Math.floor(Math.random() * 3)
+      // Update service statuses
+      setServices(prev => prev.map(service => {
+        if (Math.random() > 0.95) {
+          return {
+            ...service,
+            latency: Math.max(5, Math.min(200, service.latency + (Math.random() - 0.5) * 10)),
+            throughput: Math.max(50, Math.min(600, service.throughput + (Math.random() - 0.5) * 20)),
+            errorRate: Math.max(0, Math.min(3, service.errorRate + (Math.random() - 0.8) * 0.2))
+          };
         }
+        return service;
       }));
 
-      // Update scheduled tasks
-      setScheduledTasks(prev => prev.map(task => {
-        if (task.status === 'RUNNING' && Math.random() > 0.7) {
-          return {
-            ...task,
-            status: 'COMPLETED',
-            duration: Math.floor(Math.random() * 300) + 30,
-            success: Math.random() > 0.1
-          };
-        }
-        if (task.status === 'SCHEDULED' && task.nextRun <= Date.now()) {
-          return {
-            ...task,
-            status: 'RUNNING',
-            lastRun: Date.now(),
-            nextRun: Date.now() + (Math.random() * 3600 + 1800) * 1000
-          };
-        }
-        return task;
-      }));
-    }, 5000);
+      // Occasionally update pipeline statuses
+      if (Math.random() > 0.9) {
+        setCicdPipelines(prev => prev.map(pipeline => {
+          if (pipeline.status === 'running') {
+            const shouldComplete = Math.random() > 0.7;
+            return {
+              ...pipeline,
+              status: shouldComplete ? (Math.random() > 0.8 ? 'failed' : 'success') : 'running',
+              duration: pipeline.duration + 15,
+              stage: shouldComplete ? 'deployed' : pipeline.stage
+            };
+          }
+          return pipeline;
+        }));
+      }
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getStatusColor = (status) => {
+  const getServiceStatusColor = (status) => {
     switch (status) {
-      case 'DEPLOYED':
-      case 'RUNNING':
-      case 'HEALTHY':
-      case 'SUCCESS':
-      case 'COMPLETED': return 'text-green-400 bg-green-400/20 border-green-400/30';
-      case 'SCHEDULED':
-      case 'ACKNOWLEDGED': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'BUILDING':
-      case 'DEPLOYING': return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
-      case 'FAILED':
-      case 'ERROR': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
+      case 'healthy': return '#10B981';
+      case 'warning': return '#F59E0B';
+      case 'critical': return '#EF4444';
+      case 'degraded': return '#8B5CF6';
+      default: return '#6B7280';
+    }
+  };
+
+  const getPipelineStatusColor = (status) => {
+    switch (status) {
+      case 'success': return '#10B981';
+      case 'running': return '#3B82F6';
+      case 'failed': return '#EF4444';
+      case 'pending': return '#F59E0B';
+      default: return '#6B7280';
     }
   };
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case 'CRITICAL': return 'text-red-400 bg-red-400/20 border-red-400/30';
-      case 'WARNING': return 'text-yellow-400 bg-yellow-400/20 border-yellow-400/30';
-      case 'INFO': return 'text-blue-400 bg-blue-400/20 border-blue-400/30';
-      default: return 'text-gray-400 bg-gray-400/20 border-gray-400/30';
+      case 'critical': return '#EF4444';
+      case 'warning': return '#F59E0B';
+      case 'info': return '#3B82F6';
+      default: return '#6B7280';
     }
   };
 
-  const getResourceColor = (value) => {
-    if (value > 80) return 'text-red-400';
-    if (value > 60) return 'text-yellow-400';
-    return 'text-green-400';
+  const getSloStatusColor = (status) => {
+    switch (status) {
+      case 'healthy': return '#10B981';
+      case 'warning': return '#F59E0B';
+      case 'violated': return '#EF4444';
+      default: return '#6B7280';
+    }
   };
 
-  const formatBytes = (bytes) => {
-    if (bytes >= 1000) return `${(bytes / 1000).toFixed(1)}GB`;
-    return `${bytes.toFixed(1)}MB`;
-  };
-
-  const formatTime = (timestamp) => {
-    const diff = Date.now() - timestamp;
-    if (diff < 60000) return 'now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-    return `${Math.floor(diff / 3600000)}h ago`;
-  };
-
-  const formatDuration = (seconds) => {
-    if (seconds < 60) return `${seconds}s`;
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
-    return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
-  };
-
-  const formatUptime = (hours) => {
-    const days = Math.floor(hours / 24);
-    const remainingHours = Math.floor(hours % 24);
-    return `${days}d ${remainingHours}h`;
-  };
+  const serviceDistribution = [
+    { name: 'API Gateway', value: 34, color: '#3B82F6' },
+    { name: 'Microservices', value: 28, color: '#10B981' },
+    { name: 'Databases', value: 22, color: '#8B5CF6' },
+    { name: 'Cache Layer', value: 16, color: '#F59E0B' }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-black text-white p-4 font-mono">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          🏗️ INFRASTRUCTURE & DEVOPS CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <div className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-mono border border-green-500/30">
-            ALL SYSTEMS OPERATIONAL
+      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+        <div className="flex items-center space-x-3">
+          <Server className="w-8 h-8 text-green-400" />
+          <div>
+            <h1 className="text-2xl font-bold text-white">INFRASTRUCTURE & DEVOPS CENTER</h1>
+            <p className="text-gray-400">Real-time infrastructure observability, SRE metrics, and DevOps pipeline monitoring</p>
           </div>
-          <div className="text-sm text-gray-400 font-mono">
-            Infrastructure monitoring & automation
+        </div>
+        <div className="flex items-center space-x-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-400">{infraMetrics.uptime.toFixed(2)}%</div>
+            <div className="text-xs text-gray-400">UPTIME</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-400">{infraMetrics.latency.toFixed(1)}ms</div>
+            <div className="text-xs text-gray-400">LATENCY</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-400">{infraMetrics.sloCompliance.toFixed(1)}%</div>
+            <div className="text-xs text-gray-400">SLO COMPLIANCE</div>
           </div>
         </div>
       </div>
 
-      {/* Infrastructure Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">VERCEL UPTIME</div>
-              <div className="text-2xl font-bold text-green-100">
-                {infrastructureStatus.vercelDeployment.uptime}%
-              </div>
-              <div className="text-xs text-green-300">
-                {infrastructureStatus.vercelDeployment.responseTime}ms response
-              </div>
+      {/* SLO Overview */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        {sloMetrics.map((slo, index) => (
+          <div key={index} className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <Target className="w-5 h-5" style={{color: getSloStatusColor(slo.status)}} />
+              <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                backgroundColor: `${getSloStatusColor(slo.status)}20`, 
+                color: getSloStatusColor(slo.status) 
+              }}>
+                {slo.status.toUpperCase()}
+              </span>
             </div>
-            <div className="text-3xl opacity-60">☁️</div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-4 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">GATEWAY STATUS</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {formatUptime(infrastructureStatus.openclawGateway.uptime)}
-              </div>
-              <div className="text-xs text-blue-300">
-                {infrastructureStatus.openclawGateway.sessions} sessions
-              </div>
+            <div className="text-sm font-semibold text-white mb-1">{slo.name}</div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Current</span>
+              <span className="text-white">{slo.current}{slo.name.includes('Time') ? 'ms' : slo.name.includes('Rate') ? '%' : slo.name.includes('Throughput') ? 'rps' : '%'}</span>
             </div>
-            <div className="text-3xl opacity-60">🚪</div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">CI/CD SUCCESS</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {devOpsMetrics.cicd.successRate}%
-              </div>
-              <div className="text-xs text-purple-300">
-                {devOpsMetrics.cicd.pipelinesRun} pipelines
-              </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-400">Target</span>
+              <span className="text-white">{slo.target}{slo.name.includes('Time') ? 'ms' : slo.name.includes('Rate') ? '%' : slo.name.includes('Throughput') ? 'rps' : '%'}</span>
             </div>
-            <div className="text-3xl opacity-60">🔄</div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-4 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">TOKEN COST</div>
-              <div className="text-2xl font-bold text-orange-100">
-                ${devOpsMetrics.tokenUsage.costToday.toFixed(2)}
-              </div>
-              <div className="text-xs text-orange-300">today</div>
+            <div className="mt-2 bg-gray-800 rounded-full h-1.5">
+              <div 
+                className="rounded-full h-1.5 transition-all duration-500"
+                style={{
+                  width: `${Math.min(100, slo.budget)}%`,
+                  backgroundColor: getSloStatusColor(slo.status)
+                }}
+              />
             </div>
-            <div className="text-3xl opacity-60">💰</div>
           </div>
-        </div>
+        ))}
       </div>
 
-      {/* System Resources and Performance Trends */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* System Resources */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            💻 SYSTEM RESOURCES
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Service Health */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Monitor className="w-5 h-5 mr-2 text-green-400" />
+            SERVICE HEALTH
           </h3>
-          <div className="space-y-4">
-            {[
-              { name: 'CPU Usage', value: infrastructureStatus.systemResources.cpu, unit: '%', color: 'blue' },
-              { name: 'Memory', value: infrastructureStatus.systemResources.memory, unit: '%', color: 'green' },
-              { name: 'Disk Usage', value: infrastructureStatus.systemResources.disk, unit: '%', color: 'yellow' },
-              { name: 'Network I/O', value: infrastructureStatus.systemResources.network, unit: '%', color: 'purple' }
-            ].map((resource, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-300">{resource.name}</span>
-                  <span className={`text-sm font-bold ${getResourceColor(resource.value)}`}>
-                    {resource.value.toFixed(1)}{resource.unit}
-                  </span>
+          <div className="space-y-3">
+            {services.map((service, index) => (
+              <div key={index} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getServiceStatusColor(service.status) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{service.name}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getServiceStatusColor(service.status)}20`, 
+                      color: getServiceStatusColor(service.status) 
+                    }}>
+                      {service.status.toUpperCase()}
+                    </span>
+                    <span className="text-xs text-gray-400">v{service.version}</span>
+                  </div>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className={`bg-${resource.color}-400 h-2 rounded-full transition-all duration-500`}
-                    style={{ width: `${resource.value}%` }}
-                  ></div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Uptime</span>
+                    <span className="text-green-400">{service.uptime.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Latency</span>
+                    <span className="text-white">{service.latency.toFixed(0)}ms</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">RPS</span>
+                    <span className="text-blue-400">{service.throughput}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Errors</span>
+                    <span className={service.errorRate > 1 ? 'text-red-400' : 'text-green-400'}>
+                      {service.errorRate.toFixed(2)}%
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="mt-2 flex items-center justify-between text-xs">
+                  <span className="text-gray-400">Replicas: {service.replicas}</span>
+                  <span className="text-purple-400">{service.environment}</span>
                 </div>
               </div>
             ))}
           </div>
+        </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-            <div className="bg-gray-700 rounded p-3">
-              <div className="text-gray-400">Load Average</div>
-              <div className="text-cyan-400 font-bold">{infrastructureStatus.systemResources.load}</div>
-            </div>
-            <div className="bg-gray-700 rounded p-3">
-              <div className="text-gray-400">Processes</div>
-              <div className="text-green-400 font-bold">{infrastructureStatus.systemResources.processes}</div>
-            </div>
-            <div className="bg-gray-700 rounded p-3">
-              <div className="text-gray-400">File Descriptors</div>
-              <div className="text-blue-400 font-bold">{infrastructureStatus.systemResources.fileDescriptors}</div>
-            </div>
-            <div className="bg-gray-700 rounded p-3">
-              <div className="text-gray-400">Connections</div>
-              <div className="text-purple-400 font-bold">{infrastructureStatus.systemResources.networkConnections}</div>
-            </div>
+        {/* CI/CD Pipelines */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <GitBranch className="w-5 h-5 mr-2 text-blue-400" />
+            CI/CD PIPELINES
+          </h3>
+          <div className="space-y-3">
+            {cicdPipelines.map((pipeline, index) => (
+              <div key={index} className="bg-gray-800 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{pipeline.name}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getPipelineStatusColor(pipeline.status)}20`, 
+                      color: getPipelineStatusColor(pipeline.status) 
+                    }}>
+                      {pipeline.status.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-400 mb-2">
+                  <div className="flex justify-between">
+                    <span>Branch: <span className="text-blue-400">{pipeline.branch}</span></span>
+                    <span>Commit: <span className="text-white">{pipeline.commit}</span></span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-400">Stage: <span className="text-purple-400">{pipeline.stage}</span></span>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-3 h-3 text-gray-400" />
+                    <span className="text-white">{pipeline.duration}s</span>
+                  </div>
+                </div>
+                
+                <div className="mt-2 text-xs text-gray-500">
+                  {pipeline.timestamp.toLocaleTimeString()} • {pipeline.environment}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Performance Trends */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            📈 PERFORMANCE TRENDS (24H)
+        {/* Infrastructure Alerts */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
+            INFRASTRUCTURE ALERTS
           </h3>
+          <div className="space-y-3">
+            {infraAlerts.map(alert => (
+              <div key={alert.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getSeverityColor(alert.severity) }}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-white font-medium text-sm">{alert.service}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
+                      backgroundColor: `${getSeverityColor(alert.severity)}20`, 
+                      color: getSeverityColor(alert.severity) 
+                    }}>
+                      {alert.severity.toUpperCase()}
+                    </span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      alert.status === 'active' ? 'bg-red-900 text-red-400' : 'bg-green-900 text-green-400'
+                    }`}>
+                      {alert.status.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                
+                <p className="text-gray-300 text-xs mb-2">{alert.message}</p>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-blue-400">{alert.slo}</span>
+                  <span className="text-gray-500">
+                    {alert.timestamp.toLocaleTimeString()}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Performance Charts */}
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        {/* Infrastructure Metrics Timeline */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">INFRASTRUCTURE METRICS (24H)</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={performanceTrends}>
-              <defs>
-                <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-              <XAxis dataKey="hour" stroke="#9CA3AF" fontSize={12}/>
-              <YAxis stroke="#9CA3AF" fontSize={12}/>
+            <LineChart data={metricsHistory.slice(-12)}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis stroke="#9CA3AF" fontSize={12} />
               <Tooltip 
                 contentStyle={{ 
                   backgroundColor: '#1F2937', 
                   border: '1px solid #374151',
                   borderRadius: '8px',
-                  color: '#F9FAFB'
-                }}
+                  color: '#fff'
+                }} 
+              />
+              <Legend />
+              <Line 
+                type="monotone" 
+                dataKey="latency" 
+                stroke="#3B82F6" 
+                strokeWidth={2}
+                name="Latency (ms)"
+                dot={false}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="throughput" 
+                stroke="#10B981" 
+                strokeWidth={2}
+                name="Throughput (RPS)"
+                dot={false}
+                yAxisId="right"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Resource Utilization */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">RESOURCE UTILIZATION</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart data={metricsHistory.slice(-12)}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+              <YAxis stroke="#9CA3AF" fontSize={12} />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: '#1F2937', 
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#fff'
+                }} 
               />
               <Legend />
               <Area 
                 type="monotone" 
-                dataKey="cpu" 
+                dataKey="cpuUsage" 
                 stackId="1"
-                stroke="#3B82F6" 
-                fill="url(#cpuGradient)" 
-                name="CPU (%)"
+                stroke="#EF4444" 
+                fill="#EF4444"
+                fillOpacity={0.6}
+                name="CPU %"
               />
               <Area 
                 type="monotone" 
-                dataKey="memory" 
-                stackId="2"
-                stroke="#10B981" 
-                fill="url(#memoryGradient)" 
-                name="Memory (%)"
-              />
-              <Line 
-                type="monotone" 
-                dataKey="response_time" 
-                stroke="#F59E0B" 
-                strokeWidth={2}
-                name="Response Time (ms)"
+                dataKey="memoryUsage" 
+                stackId="1"
+                stroke="#8B5CF6" 
+                fill="#8B5CF6"
+                fillOpacity={0.6}
+                name="Memory %"
               />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Infrastructure Services and Token Usage */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Infrastructure Services */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🔧 INFRASTRUCTURE SERVICES
-          </h3>
-          
-          {/* Vercel Deployment */}
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-bold text-white">Vercel Deployment</h4>
-              <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(infrastructureStatus.vercelDeployment.status)}`}>
-                {infrastructureStatus.vercelDeployment.status}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-3 text-xs">
-              <div>
-                <div className="text-gray-400">Build Time</div>
-                <div className="text-blue-400">{infrastructureStatus.vercelDeployment.buildTime}s</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Bundle Size</div>
-                <div className="text-green-400">{infrastructureStatus.vercelDeployment.bundleSize} kB</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Functions</div>
-                <div className="text-purple-400">{infrastructureStatus.vercelDeployment.functions}</div>
-              </div>
-            </div>
-            <div className="mt-2 text-xs">
-              <div className="text-gray-400">Region: {infrastructureStatus.vercelDeployment.region}</div>
-              <div className="text-gray-400">Deploy ID: {infrastructureStatus.vercelDeployment.deploymentId}</div>
-            </div>
-          </div>
-
-          {/* OpenClaw Gateway */}
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-bold text-white">OpenClaw Gateway</h4>
-              <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(infrastructureStatus.openclawGateway.status)}`}>
-                {infrastructureStatus.openclawGateway.status}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-3 text-xs">
-              <div>
-                <div className="text-gray-400">Memory</div>
-                <div className="text-cyan-400">{infrastructureStatus.openclawGateway.memory.toFixed(1)} MB</div>
-              </div>
-              <div>
-                <div className="text-gray-400">CPU</div>
-                <div className="text-green-400">{infrastructureStatus.openclawGateway.cpu.toFixed(1)}%</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Connections</div>
-                <div className="text-purple-400">{infrastructureStatus.openclawGateway.connections}</div>
-              </div>
-            </div>
-            <div className="mt-2 text-xs">
-              <div className="text-gray-400">Version: {infrastructureStatus.openclawGateway.version}</div>
-              <div className="text-gray-400">Last Heartbeat: {formatTime(infrastructureStatus.openclawGateway.lastHeartbeat)}</div>
-            </div>
-          </div>
-
-          {/* Database */}
-          <div className="bg-gray-700 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-bold text-white">Database</h4>
-              <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(infrastructureStatus.database.status)}`}>
-                {infrastructureStatus.database.status}
-              </span>
-            </div>
-            <div className="grid grid-cols-3 gap-3 text-xs">
-              <div>
-                <div className="text-gray-400">Size</div>
-                <div className="text-blue-400">{formatBytes(infrastructureStatus.database.size)}</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Queries</div>
-                <div className="text-green-400">{infrastructureStatus.database.queries.toLocaleString()}</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Avg Query</div>
-                <div className="text-purple-400">{infrastructureStatus.database.avgQueryTime.toFixed(1)}ms</div>
-              </div>
-            </div>
-            <div className="mt-2 text-xs">
-              <div className="text-gray-400">Type: {infrastructureStatus.database.type}</div>
-              <div className="text-gray-400">Last Backup: {formatTime(infrastructureStatus.database.lastBackup)}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Token Usage Analytics */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🎯 TOKEN USAGE ANALYTICS
-          </h3>
-          
-          <div className="mb-6">
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-xs text-gray-400">Today's Tokens</div>
-                <div className="text-lg font-bold text-cyan-400">
-                  {devOpsMetrics.tokenUsage.todayTokens.toLocaleString()}
-                </div>
-              </div>
-              <div className="bg-gray-700 rounded p-3">
-                <div className="text-xs text-gray-400">Today's Cost</div>
-                <div className="text-lg font-bold text-green-400">
-                  ${devOpsMetrics.tokenUsage.costToday.toFixed(2)}
-                </div>
-              </div>
-            </div>
-            
-            <div className="text-xs text-gray-400 mb-2">Quota Utilization</div>
-            <div className="w-full bg-gray-600 rounded-full h-2 mb-2">
-              <div 
-                className={`h-2 rounded-full ${
-                  devOpsMetrics.tokenUsage.quotaUtilization > 80 ? 'bg-red-400' :
-                  devOpsMetrics.tokenUsage.quotaUtilization > 60 ? 'bg-yellow-400' :
-                  'bg-green-400'
-                }`}
-                style={{ width: `${devOpsMetrics.tokenUsage.quotaUtilization}%` }}
-              ></div>
-            </div>
-            <div className="text-xs text-gray-400 text-right">
-              {devOpsMetrics.tokenUsage.quotaUtilization.toFixed(1)}%
-            </div>
-          </div>
-
-          <div>
-            <h4 className="text-sm font-bold text-white mb-3">Model Breakdown</h4>
-            <div className="space-y-2">
-              {devOpsMetrics.tokenUsage.models.map((model, index) => (
-                <div key={index} className="bg-gray-700 rounded p-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm text-white font-medium">{model.name}</span>
-                    <span className="text-xs text-green-400">${model.cost.toFixed(2)}</span>
+      {/* Service Distribution & DevOps Metrics */}
+      <div className="grid grid-cols-2 gap-6">
+        {/* Service Distribution */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">SERVICE DISTRIBUTION</h3>
+          <div className="flex">
+            <ResponsiveContainer width="60%" height={200}>
+              <PieChart>
+                <Pie
+                  data={serviceDistribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={40}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {serviceDistribution.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }} 
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="w-2/5 space-y-3 mt-4">
+              {serviceDistribution.map((service, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <div 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: service.color }}
+                    />
+                    <span className="text-gray-400 text-sm">{service.name}</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="text-gray-400">Tokens: </span>
-                      <span className="text-cyan-400">{model.tokens.toLocaleString()}</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Requests: </span>
-                      <span className="text-purple-400">{model.requests}</span>
-                    </div>
-                  </div>
+                  <span className="text-white font-semibold">{service.value}%</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Scheduled Tasks and Monitoring */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Scheduled Tasks */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            ⏰ SCHEDULED TASKS
-          </h3>
-          <div className="space-y-3">
-            {scheduledTasks.map((task) => (
-              <div key={task.id} className="bg-gray-700 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-bold text-white text-sm">{task.name}</h4>
-                  <div className="flex items-center space-x-2">
-                    <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(task.status)}`}>
-                      {task.status}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded bg-gray-600 text-gray-300">
-                      {task.type}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-300 mb-2 font-mono">
-                  Schedule: {task.schedule}
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <span className="text-gray-400">Last Run: </span>
-                    <span className="text-cyan-400">{formatTime(task.lastRun)}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-400">Next Run: </span>
-                    <span className="text-green-400">
-                      {task.nextRun > Date.now() ? formatTime(Date.now() + (task.nextRun - Date.now())) : 'Soon'}
-                    </span>
-                  </div>
-                </div>
-
-                {task.duration && (
-                  <div className="mt-1 text-xs">
-                    <span className="text-gray-400">Duration: </span>
-                    <span className="text-purple-400">{formatDuration(task.duration)}</span>
-                    {task.success !== null && (
-                      <span className={`ml-2 ${task.success ? 'text-green-400' : 'text-red-400'}`}>
-                        {task.success ? '✓' : '✗'}
-                      </span>
-                    )}
-                  </div>
-                )}
+        {/* DevOps KPIs */}
+        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+          <h3 className="text-lg font-semibold text-white mb-4">DEVOPS KPIs</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-800 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-400 text-sm">Deployment Frequency</span>
+                <TrendingUp className="w-4 h-4 text-green-400" />
               </div>
-            ))}
+              <div className="text-xl font-bold text-white">4.2/day</div>
+              <div className="text-xs text-green-400">+12% vs last week</div>
+            </div>
+            
+            <div className="bg-gray-800 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-400 text-sm">Lead Time</span>
+                <Clock className="w-4 h-4 text-blue-400" />
+              </div>
+              <div className="text-xl font-bold text-white">2.3h</div>
+              <div className="text-xs text-green-400">-23% improvement</div>
+            </div>
+            
+            <div className="bg-gray-800 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-400 text-sm">MTTR</span>
+                <Zap className="w-4 h-4 text-yellow-400" />
+              </div>
+              <div className="text-xl font-bold text-white">12.4min</div>
+              <div className="text-xs text-green-400">Target: <15min</div>
+            </div>
+            
+            <div className="bg-gray-800 rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-400 text-sm">Change Fail Rate</span>
+                <Activity className="w-4 h-4 text-purple-400" />
+              </div>
+              <div className="text-xl font-bold text-white">2.1%</div>
+              <div className="text-xs text-green-400">Target: <5%</div>
+            </div>
           </div>
-        </div>
-
-        {/* Git Integration & CI/CD */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🔄 GIT & CI/CD STATUS
-          </h3>
           
-          {/* Git Status */}
-          <div className="bg-gray-700 rounded-lg p-4 mb-4">
-            <h4 className="font-bold text-white text-sm mb-3">Repository Status</h4>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Repository:</span>
-                <span className="text-cyan-400">{gitIntegration.repository}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Branch:</span>
-                <span className="text-green-400">{gitIntegration.branch}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Last Commit:</span>
-                <span className="text-purple-400">{formatTime(gitIntegration.lastCommit.timestamp)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Lines of Code:</span>
-                <span className="text-blue-400">{gitIntegration.stats.linesOfCode.toLocaleString()}</span>
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-400">Infrastructure Control</span>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
+                  Scale Services
+                </button>
+                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
+                  Deploy
+                </button>
+                <button className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors">
+                  Rollback
+                </button>
               </div>
             </div>
-            
-            <div className="mt-3 p-2 bg-gray-800 rounded text-xs">
-              <div className="text-gray-400 mb-1">Latest Commit:</div>
-              <div className="text-white">{gitIntegration.lastCommit.message}</div>
-              <div className="text-gray-500 mt-1">
-                {gitIntegration.lastCommit.hash} • +{gitIntegration.lastCommit.additions} lines
-              </div>
-            </div>
-          </div>
-
-          {/* CI/CD Status */}
-          <div className="bg-gray-700 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-3">
-              <h4 className="font-bold text-white text-sm">CI/CD Pipeline</h4>
-              <span className={`px-2 py-1 rounded text-xs font-mono border ${getStatusColor(gitIntegration.ciStatus.status)}`}>
-                {gitIntegration.ciStatus.status}
-              </span>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 text-xs mb-3">
-              <div>
-                <div className="text-gray-400">Build Time</div>
-                <div className="text-cyan-400">{gitIntegration.ciStatus.duration}s</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Coverage</div>
-                <div className="text-green-400">{gitIntegration.ciStatus.coverage}%</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Checks Passed</div>
-                <div className="text-blue-400">{gitIntegration.ciStatus.passed}/{gitIntegration.ciStatus.checks}</div>
-              </div>
-              <div>
-                <div className="text-gray-400">Deploy Rate</div>
-                <div className="text-purple-400">{devOpsMetrics.cicd.deploymentFrequency}/day</div>
-              </div>
-            </div>
-
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Success Rate:</span>
-                <span className="text-green-400">{devOpsMetrics.cicd.successRate}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">MTTR:</span>
-                <span className="text-yellow-400">{devOpsMetrics.cicd.mttr}m</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Active Pipelines:</span>
-                <span className="text-blue-400">{devOpsMetrics.cicd.activePipelines}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Security & Monitoring Summary */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          🛡️ SECURITY & MONITORING SUMMARY
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Security Status */}
-          <div>
-            <h4 className="text-sm font-bold text-white mb-3">Security Status</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Vulnerabilities:</span>
-                <span className={devOpsMetrics.security.vulnerabilities === 0 ? 'text-green-400' : 'text-red-400'}>
-                  {devOpsMetrics.security.vulnerabilities}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">SSL Grade:</span>
-                <span className="text-green-400">{devOpsMetrics.security.sslGrade}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Compliance:</span>
-                <span className="text-blue-400">{devOpsMetrics.security.complianceScore}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Threat Level:</span>
-                <span className="text-green-400">{devOpsMetrics.security.threatLevel}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Monitoring Stats */}
-          <div>
-            <h4 className="text-sm font-bold text-white mb-3">Monitoring</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Uptime:</span>
-                <span className="text-green-400">{devOpsMetrics.monitoring.uptimePercentage}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Error Rate:</span>
-                <span className="text-yellow-400">{devOpsMetrics.monitoring.errorRate}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">MTBF:</span>
-                <span className="text-blue-400">{devOpsMetrics.monitoring.mtbf}h</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">SLA Compliance:</span>
-                <span className="text-green-400">{devOpsMetrics.monitoring.slaCompliance}%</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Alerts */}
-          <div>
-            <h4 className="text-sm font-bold text-white mb-3">Recent Alerts</h4>
-            {alertHistory.length === 0 ? (
-              <div className="text-green-400 text-sm">No recent alerts ✅</div>
-            ) : (
-              <div className="space-y-2">
-                {alertHistory.slice(0, 3).map((alert) => (
-                  <div key={alert.id} className="text-xs">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className={`px-2 py-1 rounded border ${getSeverityColor(alert.severity)}`}>
-                        {alert.severity}
-                      </span>
-                      <span className="text-gray-400">{formatTime(alert.timestamp)}</span>
-                    </div>
-                    <div className="text-gray-300">{alert.message}</div>
-                    <div className="text-cyan-400">{alert.service}</div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         </div>
       </div>
