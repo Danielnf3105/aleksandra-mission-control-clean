@@ -85,6 +85,9 @@ import SeismicMonitoringOperationsCenter from '../components/SeismicMonitoringOp
 import AgriculturalOperationsCenter from '../components/AgriculturalOperationsCenter';
 import SpaceOperationsCenter from '../components/SpaceOperationsCenter';
 import RetailOperationsCenter from '../components/RetailOperationsCenter';
+import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
+import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
+import CostTrackingCenter from '../components/CostTrackingCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -518,6 +521,27 @@ export default function MissionControl() {
       icon: '🚀', 
       color: 'text-green-400',
       description: 'Live system telemetry and mission status'
+    },
+    { 
+      id: 'system-monitoring', 
+      name: '💻 System Monitoring', 
+      icon: '💻', 
+      color: 'text-blue-400',
+      description: 'Real-time CPU, Memory, Disk, and Network monitoring with alerts'
+    },
+    { 
+      id: 'agent-lifecycle', 
+      name: '🤖 Agent Lifecycle', 
+      icon: '🤖', 
+      color: 'text-green-400',
+      description: 'Agent fleet management, heartbeats, and orchestration'
+    },
+    { 
+      id: 'cost-tracking', 
+      name: '💰 Cost Tracking', 
+      icon: '💰', 
+      color: 'text-yellow-400',
+      description: 'AI operations cost analysis, token usage, and budget monitoring'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1321,6 +1345,15 @@ export default function MissionControl() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Real-Time Mission Control */}
         {currentView === 'real-time-monitoring' && <RealTimeMonitoring />}
+        
+        {/* Enhanced System Monitoring */}
+        {currentView === 'system-monitoring' && <SystemMonitoringCenter />}
+        
+        {/* Agent Lifecycle Management */}
+        {currentView === 'agent-lifecycle' && <AgentLifecycleCenter />}
+        
+        {/* Cost Tracking & Analytics */}
+        {currentView === 'cost-tracking' && <CostTrackingCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
