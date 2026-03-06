@@ -88,6 +88,7 @@ import RetailOperationsCenter from '../components/RetailOperationsCenter';
 import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
+import TaskManagementCenter from '../components/TaskManagementCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -542,6 +543,13 @@ export default function MissionControl() {
       icon: '💰', 
       color: 'text-yellow-400',
       description: 'AI operations cost analysis, token usage, and budget monitoring'
+    },
+    { 
+      id: 'task-management', 
+      name: '📋 Task Management', 
+      icon: '📋', 
+      color: 'text-purple-400',
+      description: 'Kanban workflow orchestration and project management'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1354,6 +1362,9 @@ export default function MissionControl() {
         
         {/* Cost Tracking & Analytics */}
         {currentView === 'cost-tracking' && <CostTrackingCenter />}
+        
+        {/* Task Management & Kanban */}
+        {currentView === 'task-management' && <TaskManagementCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
