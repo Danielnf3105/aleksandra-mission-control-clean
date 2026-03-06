@@ -94,6 +94,7 @@ import EnterpriseSecurityCenter from '../components/SecurityOperationsCenter';
 import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestrationCenter';
 import RealTimeDataObservabilityCenter from '../components/RealTimeDataObservabilityCenter';
 import ExecutiveBusinessIntelligenceCenter from '../components/ExecutiveBusinessIntelligenceCenter';
+import EnterpriseNetworkOperationsCenter from '../components/EnterpriseNetworkOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -597,6 +598,13 @@ export default function MissionControl() {
       icon: '📈', 
       color: 'text-indigo-500',
       description: 'Real-time analytics, executive reporting, and strategic business insights for C-suite'
+    },
+    { 
+      id: 'enterprise-network-operations', 
+      name: '🌐 Enterprise Network Operations', 
+      icon: '🌐', 
+      color: 'text-emerald-500',
+      description: '24/7 telecommunications monitoring, network security, and infrastructure performance analysis'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1430,6 +1438,9 @@ export default function MissionControl() {
         
         {/* Executive Business Intelligence */}
         {currentView === 'executive-business-intelligence' && <ExecutiveBusinessIntelligenceCenter />}
+        
+        {/* Enterprise Network Operations */}
+        {currentView === 'enterprise-network-operations' && <EnterpriseNetworkOperationsCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
