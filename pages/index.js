@@ -92,7 +92,6 @@ import TaskManagementCenter from '../components/TaskManagementCenter';
 import AIPredictiveIntelligenceCenter from '../components/AIPredictiveIntelligenceCenter';
 import EnterpriseSecurityCenter from '../components/SecurityOperationsCenter';
 import MultiAgentOrchestrationCenter from '../components/MultiAgentOrchestrationCenter';
-import InfrastructureDevOpsCenter from '../components/InfrastructureDevOpsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
