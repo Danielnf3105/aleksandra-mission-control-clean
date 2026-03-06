@@ -85,7 +85,6 @@ import SeismicMonitoringOperationsCenter from '../components/SeismicMonitoringOp
 import AgriculturalOperationsCenter from '../components/AgriculturalOperationsCenter';
 import SpaceOperationsCenter from '../components/SpaceOperationsCenter';
 import RetailOperationsCenter from '../components/RetailOperationsCenter';
-import HealthcareOperationsCenter from '../components/HealthcareOperationsCenter';
 import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
