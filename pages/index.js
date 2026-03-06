@@ -98,6 +98,7 @@ import EnterpriseNetworkOperationsCenter from '../components/EnterpriseNetworkOp
 import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCenter';
 import SpaceMissionControlCenter from '../components/SpaceMissionControlCenter';
 import EmergencyOperationsCenter from '../components/EmergencyOperationsCenter';
+import AirTrafficControlCenter from '../components/AirTrafficControlCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('real-time-monitoring');
@@ -629,6 +630,13 @@ export default function MissionControl() {
       icon: '🚨', 
       color: 'text-red-500',
       description: 'Real-time disaster management, emergency response coordination, and all-hazards incident command'
+    },
+    { 
+      id: 'air-traffic-control', 
+      name: '✈️ Air Traffic Control Center', 
+      icon: '✈️', 
+      color: 'text-cyan-500',
+      description: '24/7 aviation operations, real-time aircraft monitoring, and strategic airspace management'
     },
     { 
       id: 'workspace-monitoring', 
@@ -1474,6 +1482,9 @@ export default function MissionControl() {
         
         {/* Emergency Operations Center */}
         {currentView === 'emergency-operations' && <EmergencyOperationsCenter />}
+        
+        {/* Air Traffic Control Center */}
+        {currentView === 'air-traffic-control' && <AirTrafficControlCenter />}
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
