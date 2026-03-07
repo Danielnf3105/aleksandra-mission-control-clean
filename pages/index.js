@@ -90,6 +90,7 @@ import SportsVenueOperationsCenter from '../components/SportsVenueOperationsCent
 import MediaOperationsCenter from '../components/MediaOperationsCenter';
 import MaritimeOperationsCenter from '../components/MaritimeOperationsCenter';
 import SmartCityOperationsCenter from '../components/SmartCityOperationsCenter';
+import DataCenterOperationsCenter from '../components/DataCenterOperationsCenter';
 import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
@@ -1728,6 +1729,9 @@ export default function MissionControl() {
         
         {/* Smart City Operations Center */}
         {currentView === 'smart-city-operations-center' && <SmartCityOperationsCenter />}
+        
+        {/* Data Center Operations Center */}
+        {currentView === 'data-center-operations-center' && <DataCenterOperationsCenter />}
         
         {/* EMS Operations Center */}
         {currentView === 'ems-operations-center' && <EMSOperationsCenter />}
