@@ -87,6 +87,7 @@ import SpaceOperationsCenter from '../components/SpaceOperationsCenter';
 import RetailOperationsCenter from '../components/RetailOperationsCenter';
 import EducationOperationsCenter from '../components/EducationOperationsCenter';
 import SportsVenueOperationsCenter from '../components/SportsVenueOperationsCenter';
+import MediaOperationsCenter from '../components/MediaOperationsCenter';
 import SystemMonitoringCenter from '../components/SystemMonitoringCenter';
 import AgentLifecycleCenter from '../components/AgentLifecycleCenter';
 import CostTrackingCenter from '../components/CostTrackingCenter';
@@ -1716,6 +1717,9 @@ export default function MissionControl() {
         
         {/* Sports Venue Operations Center */}
         {currentView === 'sports-venue-operations-center' && <SportsVenueOperationsCenter />}
+        
+        {/* Media Operations Center */}
+        {currentView === 'media-operations-center' && <MediaOperationsCenter />}
         
         {/* EMS Operations Center */}
         {currentView === 'ems-operations-center' && <EMSOperationsCenter />}
