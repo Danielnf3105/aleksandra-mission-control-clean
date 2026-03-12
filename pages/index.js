@@ -10,6 +10,7 @@ import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import ErrorRecovery from '../components/ErrorRecovery';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
+import WorkspaceActivityMonitor from '../components/WorkspaceActivityMonitor';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -657,6 +658,13 @@ export default function MissionControl() {
       icon: '🏠', 
       color: 'text-orange-400',
       description: 'Daniel\'s workspace and project tracking'
+    },
+    { 
+      id: 'workspace-activity', 
+      name: '📊 Workspace Activity Monitor', 
+      icon: '📊', 
+      color: 'text-green-400',
+      description: 'Real-time development workflow and productivity tracking'
     },
     { 
       id: 'system-processes', 
@@ -1504,6 +1512,9 @@ export default function MissionControl() {
         
         {/* Workspace Monitoring */}
         {currentView === 'workspace-monitoring' && <WorkspaceMonitoring />}
+        
+        {/* Workspace Activity Monitor */}
+        {currentView === 'workspace-activity' && <WorkspaceActivityMonitor />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
