@@ -25,6 +25,7 @@ import AgentActivityTracker from '../components/AgentActivityTracker';
 import ProjectProgressTracker from '../components/ProjectProgressTracker';
 import SystemOverviewCenter from '../components/SystemOverviewCenter';
 import MissionControlSummary from '../components/MissionControlSummary';
+import InteractiveCommandCenter from '../components/InteractiveCommandCenter';
 import RealTimeDataStreams from '../components/RealTimeDataStreams';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
@@ -575,6 +576,13 @@ export default function MissionControl() {
       icon: '💻', 
       color: 'text-blue-400',
       description: 'Real-time CPU, Memory, Disk, and Network monitoring with alerts'
+    },
+    { 
+      id: 'command-center', 
+      name: '⚡ Interactive Command Center', 
+      icon: '⚡', 
+      color: 'text-green-400',
+      description: 'Execute mission control operations and system commands'
     },
     { 
       id: 'agent-lifecycle', 
@@ -1590,6 +1598,9 @@ export default function MissionControl() {
         
         {/* Enhanced System Monitoring */}
         {currentView === 'system-monitoring' && <SystemMonitoringCenter />}
+        
+        {/* Interactive Command Center */}
+        {currentView === 'command-center' && <InteractiveCommandCenter />}
         
         {/* Agent Lifecycle Management */}
         {currentView === 'agent-lifecycle' && <AgentLifecycleCenter />}
