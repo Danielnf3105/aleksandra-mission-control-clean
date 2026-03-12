@@ -19,6 +19,7 @@ import PerformanceAnalyticsHub from '../components/PerformanceAnalyticsHub';
 import DataFlowVisualizer from '../components/DataFlowVisualizer';
 import ResourceOptimizationEngine from '../components/ResourceOptimizationEngine';
 import IntelligentAlertsCenter from '../components/IntelligentAlertsCenter';
+import ExecutiveDashboard from '../components/ExecutiveDashboard';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -729,6 +730,13 @@ export default function MissionControl() {
       icon: '🧠', 
       color: 'text-purple-400',
       description: 'AI-powered alert management and anomaly detection'
+    },
+    { 
+      id: 'executive-dashboard', 
+      name: '📊 Executive Dashboard', 
+      icon: '📊', 
+      color: 'text-blue-400',
+      description: 'High-level insights and strategic mission overview'
     },
     { 
       id: 'system-processes', 
@@ -1603,6 +1611,9 @@ export default function MissionControl() {
         
         {/* Intelligent Alerts Center */}
         {currentView === 'intelligent-alerts' && <IntelligentAlertsCenter />}
+        
+        {/* Executive Dashboard */}
+        {currentView === 'executive-dashboard' && <ExecutiveDashboard />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
