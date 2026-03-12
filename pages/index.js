@@ -21,6 +21,7 @@ import ResourceOptimizationEngine from '../components/ResourceOptimizationEngine
 import IntelligentAlertsCenter from '../components/IntelligentAlertsCenter';
 import ExecutiveDashboard from '../components/ExecutiveDashboard';
 import ContentPipelineMonitor from '../components/ContentPipelineMonitor';
+import AgentActivityTracker from '../components/AgentActivityTracker';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -745,6 +746,13 @@ export default function MissionControl() {
       icon: '🎬', 
       color: 'text-cyan-400',
       description: 'Real-time content processing and workflow tracking'
+    },
+    { 
+      id: 'agent-activity', 
+      name: '🤖 Agent Activity Tracker', 
+      icon: '🤖', 
+      color: 'text-green-400',
+      description: 'Real-time monitoring of AI agent operations and performance'
     },
     { 
       id: 'system-processes', 
@@ -1625,6 +1633,9 @@ export default function MissionControl() {
         
         {/* Content Pipeline Monitor */}
         {currentView === 'content-pipeline' && <ContentPipelineMonitor />}
+        
+        {/* Agent Activity Tracker */}
+        {currentView === 'agent-activity' && <AgentActivityTracker />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
