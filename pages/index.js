@@ -14,6 +14,7 @@ import WorkspaceActivityMonitor from '../components/WorkspaceActivityMonitor';
 import RealTimeAgentCommunication from '../components/RealTimeAgentCommunication';
 import TaskOrchestrationCenter from '../components/TaskOrchestrationCenter';
 import APIHealthMonitor from '../components/APIHealthMonitor';
+import SecurityComplianceCenter from '../components/SecurityComplianceCenter';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -689,6 +690,13 @@ export default function MissionControl() {
       icon: '📡', 
       color: 'text-blue-400',
       description: 'Real-time API endpoint monitoring and performance tracking'
+    },
+    { 
+      id: 'security-compliance', 
+      name: '🛡️ Security & Compliance', 
+      icon: '🛡️', 
+      color: 'text-green-400',
+      description: 'Advanced security monitoring and compliance tracking'
     },
     { 
       id: 'system-processes', 
@@ -1548,6 +1556,9 @@ export default function MissionControl() {
         
         {/* API Health Monitor */}
         {currentView === 'api-health' && <APIHealthMonitor />}
+        
+        {/* Security & Compliance Center */}
+        {currentView === 'security-compliance' && <SecurityComplianceCenter />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
