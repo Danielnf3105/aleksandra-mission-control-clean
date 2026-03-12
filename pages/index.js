@@ -22,6 +22,7 @@ import IntelligentAlertsCenter from '../components/IntelligentAlertsCenter';
 import ExecutiveDashboard from '../components/ExecutiveDashboard';
 import ContentPipelineMonitor from '../components/ContentPipelineMonitor';
 import AgentActivityTracker from '../components/AgentActivityTracker';
+import ProjectProgressTracker from '../components/ProjectProgressTracker';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -753,6 +754,13 @@ export default function MissionControl() {
       icon: '🤖', 
       color: 'text-green-400',
       description: 'Real-time monitoring of AI agent operations and performance'
+    },
+    { 
+      id: 'project-progress', 
+      name: '🎯 Project Progress Tracker', 
+      icon: '🎯', 
+      color: 'text-purple-400',
+      description: 'Real-time monitoring of project milestones and deliverables'
     },
     { 
       id: 'system-processes', 
@@ -1636,6 +1644,9 @@ export default function MissionControl() {
         
         {/* Agent Activity Tracker */}
         {currentView === 'agent-activity' && <AgentActivityTracker />}
+        
+        {/* Project Progress Tracker */}
+        {currentView === 'project-progress' && <ProjectProgressTracker />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
