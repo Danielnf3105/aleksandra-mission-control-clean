@@ -12,6 +12,7 @@ import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 import WorkspaceActivityMonitor from '../components/WorkspaceActivityMonitor';
 import RealTimeAgentCommunication from '../components/RealTimeAgentCommunication';
+import TaskOrchestrationCenter from '../components/TaskOrchestrationCenter';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -673,6 +674,13 @@ export default function MissionControl() {
       icon: '💬', 
       color: 'text-cyan-400',
       description: 'Real-time agent network messaging and coordination'
+    },
+    { 
+      id: 'task-orchestration', 
+      name: '🎯 Task Orchestration Center', 
+      icon: '🎯', 
+      color: 'text-purple-400',
+      description: 'AI-powered workflow automation and task management'
     },
     { 
       id: 'system-processes', 
@@ -1526,6 +1534,9 @@ export default function MissionControl() {
         
         {/* Agent Communication Network */}
         {currentView === 'agent-communication' && <RealTimeAgentCommunication />}
+        
+        {/* Task Orchestration Center */}
+        {currentView === 'task-orchestration' && <TaskOrchestrationCenter />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
