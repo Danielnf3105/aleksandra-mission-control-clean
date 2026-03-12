@@ -24,6 +24,7 @@ import ContentPipelineMonitor from '../components/ContentPipelineMonitor';
 import AgentActivityTracker from '../components/AgentActivityTracker';
 import ProjectProgressTracker from '../components/ProjectProgressTracker';
 import SystemOverviewCenter from '../components/SystemOverviewCenter';
+import MissionControlSummary from '../components/MissionControlSummary';
 import RealTimeDataStreams from '../components/RealTimeDataStreams';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
@@ -122,7 +123,7 @@ import EmergencyOperationsCenter from '../components/EmergencyOperationsCenter';
 import AirTrafficControlCenter from '../components/AirTrafficControlCenter';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('system-overview');
+  const [currentView, setCurrentView] = useState('mission-summary');
   const [missionStatus, setMissionStatus] = useState({
     version: 'v∞.0 - Multidimensional Reality Matrix with Cosmic Consciousness Integration',
     missionName: 'Instagram Content Processing Pipeline',
@@ -547,6 +548,13 @@ export default function MissionControl() {
   }, []);
 
   const missionViews = [
+    { 
+      id: 'mission-summary', 
+      name: '📊 Mission Control Summary', 
+      icon: '📊', 
+      color: 'text-blue-400',
+      description: 'Executive dashboard with unified metrics and insights'
+    },
     { 
       id: 'system-overview', 
       name: '🎛️ System Overview Center', 
@@ -1571,6 +1579,9 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Mission Control Summary */}
+        {currentView === 'mission-summary' && <MissionControlSummary />}
+        
         {/* System Overview Center */}
         {currentView === 'system-overview' && <SystemOverviewCenter />}
         
