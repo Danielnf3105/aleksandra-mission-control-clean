@@ -23,6 +23,7 @@ import ExecutiveDashboard from '../components/ExecutiveDashboard';
 import ContentPipelineMonitor from '../components/ContentPipelineMonitor';
 import AgentActivityTracker from '../components/AgentActivityTracker';
 import ProjectProgressTracker from '../components/ProjectProgressTracker';
+import RealTimeDataStreams from '../components/RealTimeDataStreams';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -761,6 +762,13 @@ export default function MissionControl() {
       icon: '🎯', 
       color: 'text-purple-400',
       description: 'Real-time monitoring of project milestones and deliverables'
+    },
+    { 
+      id: 'realtime-streams', 
+      name: '📡 Real-Time Data Streams', 
+      icon: '📡', 
+      color: 'text-green-400',
+      description: 'Live data feeds and streaming analytics dashboard'
     },
     { 
       id: 'system-processes', 
@@ -1647,6 +1655,9 @@ export default function MissionControl() {
         
         {/* Project Progress Tracker */}
         {currentView === 'project-progress' && <ProjectProgressTracker />}
+        
+        {/* Real-Time Data Streams */}
+        {currentView === 'realtime-streams' && <RealTimeDataStreams />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
