@@ -13,6 +13,7 @@ import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 import WorkspaceActivityMonitor from '../components/WorkspaceActivityMonitor';
 import RealTimeAgentCommunication from '../components/RealTimeAgentCommunication';
 import TaskOrchestrationCenter from '../components/TaskOrchestrationCenter';
+import APIHealthMonitor from '../components/APIHealthMonitor';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -681,6 +682,13 @@ export default function MissionControl() {
       icon: '🎯', 
       color: 'text-purple-400',
       description: 'AI-powered workflow automation and task management'
+    },
+    { 
+      id: 'api-health', 
+      name: '📡 API Health Monitor', 
+      icon: '📡', 
+      color: 'text-blue-400',
+      description: 'Real-time API endpoint monitoring and performance tracking'
     },
     { 
       id: 'system-processes', 
@@ -1537,6 +1545,9 @@ export default function MissionControl() {
         
         {/* Task Orchestration Center */}
         {currentView === 'task-orchestration' && <TaskOrchestrationCenter />}
+        
+        {/* API Health Monitor */}
+        {currentView === 'api-health' && <APIHealthMonitor />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
