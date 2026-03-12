@@ -15,6 +15,7 @@ import RealTimeAgentCommunication from '../components/RealTimeAgentCommunication
 import TaskOrchestrationCenter from '../components/TaskOrchestrationCenter';
 import APIHealthMonitor from '../components/APIHealthMonitor';
 import SecurityComplianceCenter from '../components/SecurityComplianceCenter';
+import PerformanceAnalyticsHub from '../components/PerformanceAnalyticsHub';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -697,6 +698,13 @@ export default function MissionControl() {
       icon: '🛡️', 
       color: 'text-green-400',
       description: 'Advanced security monitoring and compliance tracking'
+    },
+    { 
+      id: 'performance-analytics', 
+      name: '📊 Performance Analytics Hub', 
+      icon: '📊', 
+      color: 'text-purple-400',
+      description: 'Advanced performance monitoring and optimization insights'
     },
     { 
       id: 'system-processes', 
@@ -1559,6 +1567,9 @@ export default function MissionControl() {
         
         {/* Security & Compliance Center */}
         {currentView === 'security-compliance' && <SecurityComplianceCenter />}
+        
+        {/* Performance Analytics Hub */}
+        {currentView === 'performance-analytics' && <PerformanceAnalyticsHub />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
