@@ -16,6 +16,7 @@ import TaskOrchestrationCenter from '../components/TaskOrchestrationCenter';
 import APIHealthMonitor from '../components/APIHealthMonitor';
 import SecurityComplianceCenter from '../components/SecurityComplianceCenter';
 import PerformanceAnalyticsHub from '../components/PerformanceAnalyticsHub';
+import DataFlowVisualizer from '../components/DataFlowVisualizer';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -705,6 +706,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-purple-400',
       description: 'Advanced performance monitoring and optimization insights'
+    },
+    { 
+      id: 'data-flow', 
+      name: '🔄 Data Flow Visualizer', 
+      icon: '🔄', 
+      color: 'text-cyan-400',
+      description: 'Real-time data pipeline monitoring and flow tracking'
     },
     { 
       id: 'system-processes', 
@@ -1570,6 +1578,9 @@ export default function MissionControl() {
         
         {/* Performance Analytics Hub */}
         {currentView === 'performance-analytics' && <PerformanceAnalyticsHub />}
+        
+        {/* Data Flow Visualizer */}
+        {currentView === 'data-flow' && <DataFlowVisualizer />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
