@@ -18,6 +18,7 @@ import SecurityComplianceCenter from '../components/SecurityComplianceCenter';
 import PerformanceAnalyticsHub from '../components/PerformanceAnalyticsHub';
 import DataFlowVisualizer from '../components/DataFlowVisualizer';
 import ResourceOptimizationEngine from '../components/ResourceOptimizationEngine';
+import IntelligentAlertsCenter from '../components/IntelligentAlertsCenter';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -721,6 +722,13 @@ export default function MissionControl() {
       icon: '🎯', 
       color: 'text-green-400',
       description: 'Intelligent resource allocation and cost optimization'
+    },
+    { 
+      id: 'intelligent-alerts', 
+      name: '🧠 Intelligent Alerts Center', 
+      icon: '🧠', 
+      color: 'text-purple-400',
+      description: 'AI-powered alert management and anomaly detection'
     },
     { 
       id: 'system-processes', 
@@ -1592,6 +1600,9 @@ export default function MissionControl() {
         
         {/* Resource Optimization Engine */}
         {currentView === 'resource-optimization' && <ResourceOptimizationEngine />}
+        
+        {/* Intelligent Alerts Center */}
+        {currentView === 'intelligent-alerts' && <IntelligentAlertsCenter />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
