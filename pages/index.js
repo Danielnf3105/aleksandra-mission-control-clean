@@ -20,6 +20,7 @@ import DataFlowVisualizer from '../components/DataFlowVisualizer';
 import ResourceOptimizationEngine from '../components/ResourceOptimizationEngine';
 import IntelligentAlertsCenter from '../components/IntelligentAlertsCenter';
 import ExecutiveDashboard from '../components/ExecutiveDashboard';
+import ContentPipelineMonitor from '../components/ContentPipelineMonitor';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -737,6 +738,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-blue-400',
       description: 'High-level insights and strategic mission overview'
+    },
+    { 
+      id: 'content-pipeline', 
+      name: '🎬 Content Pipeline Monitor', 
+      icon: '🎬', 
+      color: 'text-cyan-400',
+      description: 'Real-time content processing and workflow tracking'
     },
     { 
       id: 'system-processes', 
@@ -1614,6 +1622,9 @@ export default function MissionControl() {
         
         {/* Executive Dashboard */}
         {currentView === 'executive-dashboard' && <ExecutiveDashboard />}
+        
+        {/* Content Pipeline Monitor */}
+        {currentView === 'content-pipeline' && <ContentPipelineMonitor />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
