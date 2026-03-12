@@ -17,6 +17,7 @@ import APIHealthMonitor from '../components/APIHealthMonitor';
 import SecurityComplianceCenter from '../components/SecurityComplianceCenter';
 import PerformanceAnalyticsHub from '../components/PerformanceAnalyticsHub';
 import DataFlowVisualizer from '../components/DataFlowVisualizer';
+import ResourceOptimizationEngine from '../components/ResourceOptimizationEngine';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -713,6 +714,13 @@ export default function MissionControl() {
       icon: '🔄', 
       color: 'text-cyan-400',
       description: 'Real-time data pipeline monitoring and flow tracking'
+    },
+    { 
+      id: 'resource-optimization', 
+      name: '🎯 Resource Optimization Engine', 
+      icon: '🎯', 
+      color: 'text-green-400',
+      description: 'Intelligent resource allocation and cost optimization'
     },
     { 
       id: 'system-processes', 
@@ -1581,6 +1589,9 @@ export default function MissionControl() {
         
         {/* Data Flow Visualizer */}
         {currentView === 'data-flow' && <DataFlowVisualizer />}
+        
+        {/* Resource Optimization Engine */}
+        {currentView === 'resource-optimization' && <ResourceOptimizationEngine />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
