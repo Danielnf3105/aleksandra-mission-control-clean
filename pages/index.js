@@ -11,6 +11,7 @@ import ErrorRecovery from '../components/ErrorRecovery';
 import AgentCollaborationNetwork from '../components/AgentCollaborationNetwork';
 import WorkspaceMonitoring from '../components/WorkspaceMonitoring';
 import WorkspaceActivityMonitor from '../components/WorkspaceActivityMonitor';
+import RealTimeAgentCommunication from '../components/RealTimeAgentCommunication';
 import SystemProcessMonitoring from '../components/SystemProcessMonitoring';
 import MissionControlTerminal from '../components/MissionControlTerminal';
 import DataVisualizationCenter from '../components/DataVisualizationCenter';
@@ -665,6 +666,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-green-400',
       description: 'Real-time development workflow and productivity tracking'
+    },
+    { 
+      id: 'agent-communication', 
+      name: '💬 Agent Communication', 
+      icon: '💬', 
+      color: 'text-cyan-400',
+      description: 'Real-time agent network messaging and coordination'
     },
     { 
       id: 'system-processes', 
@@ -1515,6 +1523,9 @@ export default function MissionControl() {
         
         {/* Workspace Activity Monitor */}
         {currentView === 'workspace-activity' && <WorkspaceActivityMonitor />}
+        
+        {/* Agent Communication Network */}
+        {currentView === 'agent-communication' && <RealTimeAgentCommunication />}
         
         {/* System Process Monitoring */}
         {currentView === 'system-processes' && <SystemProcessMonitoring />}
