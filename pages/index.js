@@ -122,9 +122,18 @@ import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCent
 import SpaceMissionControlCenter from '../components/SpaceMissionControlCenter';
 import EmergencyOperationsCenter from '../components/EmergencyOperationsCenter';
 import AirTrafficControlCenter from '../components/AirTrafficControlCenter';
+import AleksandraAgentMonitor from '../components/AleksandraAgentMonitor';
+import AssemblyAIEnhancedMonitor from '../components/AssemblyAIEnhancedMonitor';
+import OutreachPerformanceAnalytics from '../components/OutreachPerformanceAnalytics';
+import ContentIntelligenceDashboard from '../components/ContentIntelligenceDashboard';
+import CostIntelligenceDashboard from '../components/CostIntelligenceDashboard';
+import PredictiveAnalyticsDashboard from '../components/PredictiveAnalyticsDashboard';
+import EnhancedMobileDashboard from '../components/EnhancedMobileDashboard';
+import RealTimeDataVisualization from '../components/RealTimeDataVisualization';
+import AIAgentOrchestrationCenter from '../components/AIAgentOrchestrationCenter';
 
 export default function MissionControl() {
-  const [currentView, setCurrentView] = useState('mission-summary');
+  const [currentView, setCurrentView] = useState('ai-orchestration');
   const [missionStatus, setMissionStatus] = useState({
     version: 'v∞.0 - Multidimensional Reality Matrix with Cosmic Consciousness Integration',
     missionName: 'Instagram Content Processing Pipeline',
@@ -549,6 +558,69 @@ export default function MissionControl() {
   }, []);
 
   const missionViews = [
+    { 
+      id: 'ai-orchestration', 
+      name: '🤖 AI Agent Orchestration Center', 
+      icon: '🤖', 
+      color: 'text-cyan-400',
+      description: 'Modern agent fleet management with task orchestration, automation rules & real-time monitoring'
+    },
+    { 
+      id: 'realtime-visualization', 
+      name: '📊 Real-Time Data Visualization', 
+      icon: '📊', 
+      color: 'text-cyan-400',
+      description: 'Interactive live charts with embedded analytics, customizable metrics & HTML5 canvas rendering'
+    },
+    { 
+      id: 'enhanced-mobile', 
+      name: '📱 Enhanced Mobile Dashboard', 
+      icon: '📱', 
+      color: 'text-cyan-500',
+      description: 'Mobile-first mission control with swipe gestures, progressive disclosure & touch optimization'
+    },
+    { 
+      id: 'predictive-analytics', 
+      name: '🧠 Predictive Analytics Dashboard', 
+      icon: '🧠', 
+      color: 'text-purple-500',
+      description: 'AI-powered predictive intelligence with anomaly detection & optimization insights'
+    },
+    { 
+      id: 'cost-intelligence', 
+      name: '💰 Cost Intelligence Dashboard', 
+      icon: '💰', 
+      color: 'text-green-400',
+      description: 'Advanced financial optimization with predictive cost analysis & ROI tracking'
+    },
+    { 
+      id: 'content-intelligence', 
+      name: '📊 Content Intelligence Dashboard', 
+      icon: '📊', 
+      color: 'text-purple-400',
+      description: 'AI-powered content optimization with performance prediction & trend analysis'
+    },
+    { 
+      id: 'outreach-analytics', 
+      name: '🎯 Outreach Performance Analytics', 
+      icon: '🎯', 
+      color: 'text-blue-400',
+      description: 'LinkedIn campaigns with revenue attribution & conversion optimization'
+    },
+    { 
+      id: 'assembly-ai-enhanced', 
+      name: '🎥 Assembly AI Enhanced Monitor', 
+      icon: '🎥', 
+      color: 'text-indigo-400',
+      description: 'Real-time transcription processing with quality scoring & advanced analytics'
+    },
+    { 
+      id: 'aleksandra-agent-monitor', 
+      name: '🤖 Aleksandra AI Agent Monitor', 
+      icon: '🤖', 
+      color: 'text-purple-400',
+      description: 'Real-time Instagram content processing & AI agent performance dashboard'
+    },
     { 
       id: 'mission-summary', 
       name: '📊 Mission Control Summary', 
@@ -1587,6 +1659,33 @@ export default function MissionControl() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* AI Agent Orchestration Center */}
+        {currentView === 'ai-orchestration' && <AIAgentOrchestrationCenter />}
+        
+        {/* Real-Time Data Visualization */}
+        {currentView === 'realtime-visualization' && <RealTimeDataVisualization />}
+        
+        {/* Enhanced Mobile Dashboard */}
+        {currentView === 'enhanced-mobile' && <EnhancedMobileDashboard />}
+        
+        {/* Predictive Analytics Dashboard */}
+        {currentView === 'predictive-analytics' && <PredictiveAnalyticsDashboard />}
+        
+        {/* Cost Intelligence Dashboard */}
+        {currentView === 'cost-intelligence' && <CostIntelligenceDashboard />}
+        
+        {/* Content Intelligence Dashboard */}
+        {currentView === 'content-intelligence' && <ContentIntelligenceDashboard />}
+        
+        {/* Outreach Performance Analytics */}
+        {currentView === 'outreach-analytics' && <OutreachPerformanceAnalytics />}
+        
+        {/* Assembly AI Enhanced Monitor */}
+        {currentView === 'assembly-ai-enhanced' && <AssemblyAIEnhancedMonitor />}
+        
+        {/* Aleksandra AI Agent Monitor */}
+        {currentView === 'aleksandra-agent-monitor' && <AleksandraAgentMonitor />}
+        
         {/* Mission Control Summary */}
         {currentView === 'mission-summary' && <MissionControlSummary />}
         
