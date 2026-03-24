@@ -1,450 +1,947 @@
-// DataVisualizationCenter.js - Advanced Data Visualization with Modern 2026 UI Trends
+// Data Visualization Intelligence Center - Dashboard & Analytics Visualization
 import { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadialBarChart, RadialBar } from 'recharts';
+import { PieChart, TrendingUp, BarChart, Activity, Layers, BarChart3, CheckCircle, AlertTriangle, Target, Settings, Eye, Zap } from 'lucide-react';
 
-const DataVisualizationCenter = () => {
-  const [timeRange, setTimeRange] = useState('24h');
-  const [activeMetric, setActiveMetric] = useState('system-performance');
-  const [realTimeData, setRealTimeData] = useState({
-    systemPerformance: [],
-    agentActivity: [],
-    deploymentMetrics: [],
-    resourceUtilization: []
+export default function DataVisualizationCenter() {
+  const [vizData, setVizData] = useState({
+    currentTime: new Date().toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' }),
+    visualizationOverview: {
+      totalDashboards: 2456,
+      activeDashboards: 2234,
+      totalCharts: 15678,
+      activeCharts: 14321,
+      dataQueries: 89012345,
+      renderTime: 234,
+      cacheHitRate: 92.7,
+      userSessions: 45678,
+      interactionRate: 78.9,
+      loadTime: 1.8,
+      errorRate: 0.3,
+      refreshRate: 15.4,
+      dataVolume: 567890123,
+      visualComplexity: 7.2,
+      performance: 94.6
+    },
+    chartTypes: [
+      {
+        type: 'Line Charts',
+        count: 4567,
+        usage: 29.1,
+        renderTime: 156,
+        interactions: 123456,
+        dataPoints: 2345678,
+        performance: 96.8,
+        cacheRate: 94.3,
+        errorRate: 0.2,
+        complexityScore: 6.8,
+        popularLibraries: ['Chart.js', 'D3.js', 'Recharts'],
+        avgLoadTime: '1.2s',
+        responsiveness: 98.7,
+        accessibility: 89.4,
+        features: {
+          realTime: 78.9,
+          interactive: 92.3,
+          responsive: 96.4,
+          animated: 87.6
+        },
+        dataTypes: ['Time Series', 'Metrics', 'KPIs', 'Trends'],
+        optimization: {
+          compression: 84.7,
+          caching: 94.3,
+          lazy_loading: 76.8,
+          virtualization: 45.2
+        }
+      },
+      {
+        type: 'Bar Charts',
+        count: 3456,
+        usage: 22.0,
+        renderTime: 187,
+        interactions: 98765,
+        dataPoints: 1987654,
+        performance: 93.2,
+        cacheRate: 91.7,
+        errorRate: 0.4,
+        complexityScore: 5.9,
+        popularLibraries: ['Chart.js', 'ApexCharts', 'Highcharts'],
+        avgLoadTime: '1.4s',
+        responsiveness: 97.3,
+        accessibility: 92.1,
+        features: {
+          realTime: 67.8,
+          interactive: 89.4,
+          responsive: 95.2,
+          animated: 83.7
+        },
+        dataTypes: ['Categories', 'Comparisons', 'Rankings', 'Distributions'],
+        optimization: {
+          compression: 81.3,
+          caching: 91.7,
+          lazy_loading: 72.4,
+          virtualization: 38.9
+        }
+      },
+      {
+        type: 'Pie Charts',
+        count: 2345,
+        usage: 14.9,
+        renderTime: 143,
+        interactions: 76543,
+        dataPoints: 876543,
+        performance: 95.4,
+        cacheRate: 96.2,
+        errorRate: 0.1,
+        complexityScore: 4.3,
+        popularLibraries: ['Chart.js', 'D3.js', 'Victory'],
+        avgLoadTime: '0.9s',
+        responsiveness: 98.9,
+        accessibility: 87.6,
+        features: {
+          realTime: 45.6,
+          interactive: 78.9,
+          responsive: 98.3,
+          animated: 89.7
+        },
+        dataTypes: ['Proportions', 'Percentages', 'Parts of Whole', 'Segments'],
+        optimization: {
+          compression: 89.4,
+          caching: 96.2,
+          lazy_loading: 67.8,
+          virtualization: 23.4
+        }
+      },
+      {
+        type: 'Heatmaps',
+        count: 1890,
+        usage: 12.0,
+        renderTime: 298,
+        interactions: 54321,
+        dataPoints: 3456789,
+        performance: 87.6,
+        cacheRate: 88.9,
+        errorRate: 0.7,
+        complexityScore: 8.7,
+        popularLibraries: ['D3.js', 'Plotly', 'Observable'],
+        avgLoadTime: '2.3s',
+        responsiveness: 89.4,
+        accessibility: 76.8,
+        features: {
+          realTime: 89.3,
+          interactive: 94.7,
+          responsive: 87.2,
+          animated: 67.4
+        },
+        dataTypes: ['Correlations', 'Density', 'Intensity', 'Patterns'],
+        optimization: {
+          compression: 76.8,
+          caching: 88.9,
+          lazy_loading: 89.4,
+          virtualization: 78.9
+        }
+      },
+      {
+        type: 'Scatter Plots',
+        count: 1567,
+        usage: 9.9,
+        renderTime: 234,
+        interactions: 43210,
+        dataPoints: 5678901,
+        performance: 91.3,
+        cacheRate: 89.7,
+        errorRate: 0.5,
+        complexityScore: 7.6,
+        popularLibraries: ['D3.js', 'Plotly', 'Observable'],
+        avgLoadTime: '1.8s',
+        responsiveness: 93.7,
+        accessibility: 82.4,
+        features: {
+          realTime: 72.6,
+          interactive: 96.8,
+          responsive: 91.3,
+          animated: 74.2
+        },
+        dataTypes: ['Relationships', 'Correlations', 'Clusters', 'Outliers'],
+        optimization: {
+          compression: 79.3,
+          caching: 89.7,
+          lazy_loading: 83.4,
+          virtualization: 67.8
+        }
+      },
+      {
+        type: 'Gauge Charts',
+        count: 1234,
+        usage: 7.8,
+        renderTime: 167,
+        interactions: 32109,
+        dataPoints: 234567,
+        performance: 97.2,
+        cacheRate: 95.8,
+        errorRate: 0.2,
+        complexityScore: 5.4,
+        popularLibraries: ['ApexCharts', 'Highcharts', 'AmCharts'],
+        avgLoadTime: '1.1s',
+        responsiveness: 96.8,
+        accessibility: 91.7,
+        features: {
+          realTime: 94.3,
+          interactive: 67.8,
+          responsive: 97.6,
+          animated: 91.4
+        },
+        dataTypes: ['KPIs', 'Thresholds', 'Progress', 'Status'],
+        optimization: {
+          compression: 87.9,
+          caching: 95.8,
+          lazy_loading: 54.3,
+          virtualization: 12.7
+        }
+      }
+    ],
+    dashboardPerformance: [
+      {
+        dashboard: 'Executive KPI Dashboard',
+        id: 'DASH-EXE-001',
+        category: 'Executive',
+        charts: 12,
+        users: 234,
+        loadTime: 1.2,
+        renderTime: 189,
+        interactions: 5678,
+        dataQueries: 89012,
+        cacheHit: 96.4,
+        errorRate: 0.1,
+        complexity: 8.9,
+        dataVolume: 234567890,
+        updateFrequency: '5 minutes',
+        responsiveness: 98.7,
+        accessibility: 94.3,
+        performance: {
+          lcp: '1.1s',
+          fid: '34ms',
+          cls: '0.05',
+          tti: '1.8s'
+        },
+        optimizations: {
+          lazy_loading: true,
+          virtualization: true,
+          compression: true,
+          caching: true
+        },
+        issues: ['Minor rendering delay on mobile'],
+        recommendations: ['Implement progressive loading', 'Optimize mobile layout']
+      },
+      {
+        dashboard: 'Marketing Analytics Hub',
+        id: 'DASH-MKT-002',
+        category: 'Marketing',
+        charts: 18,
+        users: 156,
+        loadTime: 2.1,
+        renderTime: 267,
+        interactions: 7890,
+        dataQueries: 123456,
+        cacheHit: 89.7,
+        errorRate: 0.4,
+        complexity: 9.2,
+        dataVolume: 345678901,
+        updateFrequency: '1 minute',
+        responsiveness: 92.4,
+        accessibility: 87.6,
+        performance: {
+          lcp: '1.9s',
+          fid: '67ms',
+          cls: '0.12',
+          tti: '2.6s'
+        },
+        optimizations: {
+          lazy_loading: true,
+          virtualization: false,
+          compression: true,
+          caching: true
+        },
+        issues: ['Heavy data queries', 'Complex animations'],
+        recommendations: ['Implement data pagination', 'Reduce animation complexity']
+      },
+      {
+        dashboard: 'Operations Monitor',
+        id: 'DASH-OPS-003',
+        category: 'Operations',
+        charts: 24,
+        users: 89,
+        loadTime: 1.6,
+        renderTime: 234,
+        interactions: 3456,
+        dataQueries: 67890,
+        cacheHit: 94.2,
+        errorRate: 0.2,
+        complexity: 7.8,
+        dataVolume: 178901234,
+        updateFrequency: '10 seconds',
+        responsiveness: 95.8,
+        accessibility: 91.2,
+        performance: {
+          lcp: '1.4s',
+          fid: '45ms',
+          cls: '0.08',
+          tti: '2.1s'
+        },
+        optimizations: {
+          lazy_loading: true,
+          virtualization: true,
+          compression: true,
+          caching: true
+        },
+        issues: ['High refresh rate impact'],
+        recommendations: ['Smart refresh optimization', 'Delta updates only']
+      },
+      {
+        dashboard: 'Financial Reporting',
+        id: 'DASH-FIN-004',
+        category: 'Finance',
+        charts: 15,
+        users: 67,
+        loadTime: 1.8,
+        renderTime: 201,
+        interactions: 2345,
+        dataQueries: 45678,
+        cacheHit: 97.8,
+        errorRate: 0.1,
+        complexity: 6.4,
+        dataVolume: 123456789,
+        updateFrequency: '1 hour',
+        responsiveness: 97.3,
+        accessibility: 96.8,
+        performance: {
+          lcp: '1.3s',
+          fid: '23ms',
+          cls: '0.03',
+          tti: '1.9s'
+        },
+        optimizations: {
+          lazy_loading: true,
+          virtualization: false,
+          compression: true,
+          caching: true
+        },
+        issues: [],
+        recommendations: ['Excellent performance - maintain current optimization']
+      },
+      {
+        dashboard: 'Real-Time Monitoring',
+        id: 'DASH-RT-005',
+        category: 'Real-Time',
+        charts: 32,
+        users: 123,
+        loadTime: 2.8,
+        renderTime: 389,
+        interactions: 9876,
+        dataQueries: 234567,
+        cacheHit: 78.9,
+        errorRate: 0.6,
+        complexity: 9.7,
+        dataVolume: 456789012,
+        updateFrequency: '1 second',
+        responsiveness: 87.6,
+        accessibility: 82.4,
+        performance: {
+          lcp: '2.4s',
+          fid: '89ms',
+          cls: '0.18',
+          tti: '3.2s'
+        },
+        optimizations: {
+          lazy_loading: true,
+          virtualization: true,
+          compression: true,
+          caching: false
+        },
+        issues: ['Real-time data overhead', 'Memory usage high', 'Layout shifts'],
+        recommendations: ['Implement WebSocket optimization', 'Memory leak prevention', 'Stable layout design']
+      }
+    ],
+    dataConnectors: [
+      {
+        source: 'PostgreSQL',
+        connections: 234,
+        queries: 123456,
+        avgResponseTime: 89,
+        errorRate: 0.4,
+        dataVolume: 234567890,
+        usage: 34.7,
+        optimization: 'Query Caching',
+        status: 'HEALTHY',
+        lastUpdated: '2026-03-18 10:07'
+      },
+      {
+        source: 'REST APIs',
+        connections: 156,
+        queries: 234567,
+        avgResponseTime: 267,
+        errorRate: 1.2,
+        dataVolume: 123456789,
+        usage: 28.9,
+        optimization: 'Response Caching',
+        status: 'WARNING',
+        lastUpdated: '2026-03-18 10:06'
+      },
+      {
+        source: 'MongoDB',
+        connections: 89,
+        queries: 67890,
+        avgResponseTime: 134,
+        errorRate: 0.7,
+        dataVolume: 67890123,
+        usage: 15.6,
+        optimization: 'Index Optimization',
+        status: 'HEALTHY',
+        lastUpdated: '2026-03-18 10:08'
+      },
+      {
+        source: 'Redis Cache',
+        connections: 78,
+        queries: 345678,
+        avgResponseTime: 12,
+        errorRate: 0.1,
+        dataVolume: 12345678,
+        usage: 12.3,
+        optimization: 'TTL Management',
+        status: 'EXCELLENT',
+        lastUpdated: '2026-03-18 10:08'
+      },
+      {
+        source: 'Elasticsearch',
+        connections: 45,
+        queries: 56789,
+        avgResponseTime: 198,
+        errorRate: 0.9,
+        dataVolume: 45678901,
+        usage: 8.5,
+        optimization: 'Search Optimization',
+        status: 'HEALTHY',
+        lastUpdated: '2026-03-18 10:05'
+      }
+    ],
+    visualizationAlerts: [
+      {
+        type: 'CRITICAL',
+        category: 'Performance',
+        message: 'Real-Time Monitoring dashboard experiencing severe performance degradation - 3.2s load time',
+        dashboard: 'Real-Time Monitoring',
+        dashboardId: 'DASH-RT-005',
+        severity: 'HIGH',
+        impact: 'User experience severely impacted, potential data loss',
+        timestamp: '10:08',
+        loadTime: '3.2s',
+        baseline: '1.8s',
+        affectedUsers: 123,
+        detectedBy: 'Performance Monitor',
+        recommendation: 'Implement data streaming optimization, reduce chart complexity',
+        urgency: 'IMMEDIATE',
+        escalation: 'VISUALIZATION_TEAM',
+        rootCause: 'High-frequency updates causing memory leaks'
+      },
+      {
+        type: 'HIGH',
+        category: 'Data Quality',
+        message: 'REST API connector showing elevated error rates - 1.2% failure rate detected',
+        connector: 'REST APIs',
+        severity: 'MEDIUM',
+        impact: 'Incomplete data visualization, user confusion',
+        timestamp: '10:07',
+        errorRate: '1.2%',
+        threshold: '0.5%',
+        affectedQueries: 2876,
+        detectedBy: 'Data Quality Monitor',
+        recommendation: 'Investigate API reliability, implement retry logic',
+        urgency: 'HIGH',
+        escalation: 'DATA_TEAM',
+        source: 'Third-party API instability'
+      },
+      {
+        type: 'WARNING',
+        category: 'Resource Usage',
+        message: 'Memory consumption approaching 80% threshold across visualization engines',
+        resource: 'Memory',
+        severity: 'MEDIUM',
+        impact: 'Potential performance slowdown, chart rendering delays',
+        timestamp: '10:06',
+        currentUsage: '78.4%',
+        threshold: '80%',
+        trendDirection: 'INCREASING',
+        detectedBy: 'Resource Monitor',
+        recommendation: 'Implement garbage collection optimization, chart virtualization',
+        urgency: 'MEDIUM',
+        escalation: 'INFRASTRUCTURE_TEAM',
+        projectedLimit: 'Next 2 hours'
+      },
+      {
+        type: 'INFO',
+        category: 'Optimization',
+        message: 'Financial Reporting dashboard achieving excellent performance - 97.8% cache hit rate',
+        dashboard: 'Financial Reporting',
+        dashboardId: 'DASH-FIN-004',
+        severity: 'POSITIVE',
+        impact: 'Optimal user experience, reduced server load',
+        timestamp: '10:05',
+        cacheHitRate: '97.8%',
+        improvement: '+4.2%',
+        loadTimeReduction: '23%',
+        detectedBy: 'Performance Analytics',
+        recommendation: 'Apply similar optimization patterns to other dashboards',
+        priority: 'LOW',
+        opportunity: 'BEST_PRACTICE_SHARING'
+      }
+    ],
+    performanceMetrics: [
+      {
+        period: 'Last Hour',
+        dashboards: 2234,
+        totalQueries: 89012,
+        avgLoadTime: 1.8,
+        avgRenderTime: 234,
+        cacheHitRate: 92.7,
+        errorRate: 0.3,
+        userInteractions: 45678,
+        dataVolume: 567890123,
+        performance: 94.6,
+        trends: {
+          load_time: '-8.4%',
+          cache_hits: '+3.2%',
+          errors: '-12.7%'
+        }
+      },
+      {
+        period: 'Last 24 Hours',
+        dashboards: 2189,
+        totalQueries: 2034567,
+        avgLoadTime: 2.1,
+        avgRenderTime: 267,
+        cacheHitRate: 89.4,
+        errorRate: 0.5,
+        userInteractions: 987654,
+        dataVolume: 12345678901,
+        performance: 91.2,
+        trends: {
+          load_time: '-15.6%',
+          cache_hits: '+7.8%',
+          errors: '-23.4%'
+        }
+      },
+      {
+        period: 'Last 7 Days',
+        dashboards: 2067,
+        totalQueries: 14567890,
+        avgLoadTime: 2.4,
+        avgRenderTime: 289,
+        cacheHitRate: 86.7,
+        errorRate: 0.8,
+        userInteractions: 6789012,
+        dataVolume: 89012345678,
+        performance: 87.8,
+        trends: {
+          load_time: '-22.3%',
+          cache_hits: '+12.9%',
+          errors: '-34.7%'
+        }
+      }
+    ]
   });
 
-  const [dashboardMetrics, setDashboardMetrics] = useState({
-    totalRequests: 15847,
-    activeUsers: 234,
-    systemUptime: 99.97,
-    responseTime: 23.4,
-    errorRate: 0.03,
-    deploymentSuccess: 98.7,
-    agentEfficiency: 94.3,
-    costOptimization: 91.8
-  });
-
-  const [alertTrends, setAlertTrends] = useState([
-    { name: 'Info', value: 45, color: '#60A5FA' },
-    { name: 'Warning', value: 12, color: '#F59E0B' },
-    { name: 'Critical', value: 2, color: '#EF4444' },
-    { name: 'Success', value: 89, color: '#10B981' }
-  ]);
-
-  // Generate realistic time-series data
-  const generateTimeSeriesData = () => {
-    const now = new Date();
-    const data = [];
-    const points = timeRange === '24h' ? 24 : timeRange === '7d' ? 168 : 30 * 24;
-    const interval = timeRange === '24h' ? 60 * 60 * 1000 : timeRange === '7d' ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-
-    for (let i = points; i >= 0; i--) {
-      const timestamp = new Date(now.getTime() - (i * interval));
-      data.push({
-        time: timeRange === '24h' ? timestamp.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) :
-               timeRange === '7d' ? timestamp.toLocaleDateString([], {month: 'short', day: 'numeric'}) :
-               timestamp.toLocaleDateString([], {month: 'short', day: 'numeric'}),
-        cpu: Math.max(15, Math.min(85, 45 + Math.sin(i * 0.2) * 20 + (Math.random() - 0.5) * 10)),
-        memory: Math.max(50, Math.min(90, 68 + Math.cos(i * 0.15) * 15 + (Math.random() - 0.5) * 8)),
-        network: Math.max(20, Math.min(95, 60 + Math.sin(i * 0.3) * 25 + (Math.random() - 0.5) * 12)),
-        agents: Math.max(70, Math.min(100, 88 + Math.cos(i * 0.1) * 10 + (Math.random() - 0.5) * 6)),
-        deployments: Math.floor(Math.random() * 8) + 2,
-        errors: Math.floor(Math.random() * 3),
-        responseTime: Math.max(10, Math.min(100, 25 + Math.sin(i * 0.25) * 15 + (Math.random() - 0.5) * 8))
-      });
-    }
-    return data;
-  };
-
-  const [chartData, setChartData] = useState(generateTimeSeriesData());
-
   useEffect(() => {
-    // Update data when time range changes
-    setChartData(generateTimeSeriesData());
-  }, [timeRange]);
-
-  useEffect(() => {
-    // Real-time data updates
     const interval = setInterval(() => {
-      setChartData(prev => {
-        const newData = [...prev];
-        const lastPoint = newData[newData.length - 1];
-        
-        // Update the latest data point with small variations
-        newData[newData.length - 1] = {
-          ...lastPoint,
-          cpu: Math.max(15, Math.min(85, lastPoint.cpu + (Math.random() - 0.5) * 5)),
-          memory: Math.max(50, Math.min(90, lastPoint.memory + (Math.random() - 0.5) * 3)),
-          network: Math.max(20, Math.min(95, lastPoint.network + (Math.random() - 0.5) * 8)),
-          agents: Math.max(70, Math.min(100, lastPoint.agents + (Math.random() - 0.5) * 2)),
-          responseTime: Math.max(10, Math.min(100, lastPoint.responseTime + (Math.random() - 0.5) * 3))
-        };
-
-        return newData;
-      });
-
-      // Update dashboard metrics
-      setDashboardMetrics(prev => ({
+      setVizData(prev => ({
         ...prev,
-        totalRequests: prev.totalRequests + Math.floor(Math.random() * 3),
-        responseTime: Math.max(15, Math.min(50, prev.responseTime + (Math.random() - 0.5) * 2)),
-        systemUptime: Math.max(99, Math.min(99.99, prev.systemUptime + (Math.random() - 0.5) * 0.01))
+        currentTime: new Date().toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' }),
+        visualizationOverview: {
+          ...prev.visualizationOverview,
+          renderTime: Math.max(200, Math.min(300, prev.visualizationOverview.renderTime + (Math.random() - 0.5) * 30)),
+          cacheHitRate: Math.max(89.0, Math.min(96.0, prev.visualizationOverview.cacheHitRate + (Math.random() - 0.5) * 2.0)),
+          performance: Math.max(92.0, Math.min(97.0, prev.visualizationOverview.performance + (Math.random() - 0.5) * 1.0))
+        }
       }));
-    }, 3000);
+    }, 75000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const performanceGaugeData = [
-    { name: 'Performance', value: dashboardMetrics.agentEfficiency, fill: '#10B981' },
-    { name: 'Remaining', value: 100 - dashboardMetrics.agentEfficiency, fill: '#374151' }
-  ];
+  const getAlertColor = (type) => {
+    switch (type) {
+      case 'CRITICAL': return 'border-red-500 bg-red-900/30 text-red-400';
+      case 'HIGH': return 'border-orange-500 bg-orange-900/30 text-orange-400';
+      case 'WARNING': return 'border-yellow-500 bg-yellow-900/30 text-yellow-400';
+      case 'INFO': return 'border-blue-500 bg-blue-900/30 text-blue-400';
+      default: return 'border-gray-500 bg-gray-900/30 text-gray-400';
+    }
+  };
 
-  const resourceUtilizationData = [
-    { name: 'CPU', current: 42, max: 100, color: '#3B82F6' },
-    { name: 'Memory', current: 78, max: 100, color: '#8B5CF6' },
-    { name: 'Disk', current: 89, max: 100, color: '#F59E0B' },
-    { name: 'Network', current: 34, max: 100, color: '#10B981' }
-  ];
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'EXCELLENT': return 'text-green-500 bg-green-500/20';
+      case 'HEALTHY': return 'text-green-400 bg-green-400/20';
+      case 'WARNING': return 'text-yellow-400 bg-yellow-400/20';
+      case 'ERROR': return 'text-red-400 bg-red-400/20';
+      default: return 'text-blue-400 bg-blue-400/20';
+    }
+  };
 
-  const deploymentTrendData = chartData.slice(-12).map((item, index) => ({
-    time: item.time,
-    successful: Math.floor(Math.random() * 8) + 15,
-    failed: Math.floor(Math.random() * 2),
-    pending: Math.floor(Math.random() * 3)
-  }));
+  const getUrgencyColor = (urgency) => {
+    switch (urgency) {
+      case 'IMMEDIATE': return 'text-red-500';
+      case 'HIGH': return 'text-red-400';
+      case 'MEDIUM': return 'text-yellow-400';
+      case 'LOW': return 'text-green-400';
+      default: return 'text-blue-400';
+    }
+  };
 
-  const getMetricColor = (value, thresholds = [70, 90]) => {
-    if (value >= thresholds[1]) return 'text-green-400';
-    if (value >= thresholds[0]) return 'text-yellow-400';
+  const getScoreColor = (score, good = 70, excellent = 85) => {
+    if (score >= excellent) return 'text-green-400';
+    if (score >= good) return 'text-blue-400';
+    if (score >= good * 0.8) return 'text-yellow-400';
     return 'text-red-400';
   };
 
   const formatNumber = (num) => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-    return num.toString();
+    if (num >= 1000000000) {
+      return `${(num / 1000000000).toFixed(1)}B`;
+    }
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(1)}M`;
+    }
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(0)}K`;
+    }
+    return num.toLocaleString();
   };
 
+  const formatPercentage = (value) => `${value.toFixed(1)}%`;
+
   return (
-    <div className="space-y-6">
+    <div className="h-full bg-gradient-to-br from-violet-900 via-slate-900 to-purple-900 text-white overflow-auto">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white font-mono">
-          📊 DATA VISUALIZATION CENTER
-        </h2>
-        <div className="flex items-center space-x-4">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="bg-gray-700 text-white px-3 py-2 rounded font-mono text-sm border border-gray-600"
-          >
-            <option value="24h">Last 24 Hours</option>
-            <option value="7d">Last 7 Days</option>
-            <option value="30d">Last 30 Days</option>
-          </select>
-          <div className="text-sm text-gray-400 font-mono">
-            Real-time updates • 3s refresh
+      <div className="p-6 border-b border-violet-800/30">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-xl">
+              <BarChart3 className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Data Visualization Intelligence Center</h1>
+              <p className="text-violet-300">Dashboard & analytics visualization</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-mono text-violet-400">{vizData.currentTime}</div>
+            <div className="text-violet-300">Visualization Command</div>
           </div>
         </div>
       </div>
 
-      {/* Key Performance Indicators */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-blue-200">TOTAL REQUESTS</div>
-              <div className="text-2xl font-bold text-blue-100">
-                {formatNumber(dashboardMetrics.totalRequests)}
-              </div>
-              <div className="text-xs text-blue-300">+234 this hour</div>
+      <div className="p-6 space-y-6">
+        {/* Visualization Overview */}
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <BarChart3 className="w-5 h-5 text-violet-400 mr-2" />
+                Dashboards
+              </h3>
             </div>
-            <div className="text-3xl opacity-60">📈</div>
+            <div className="text-3xl font-bold text-violet-400">{formatNumber(vizData.visualizationOverview.activeDashboards)}</div>
+            <div className="text-violet-300 text-sm">{formatNumber(vizData.visualizationOverview.totalDashboards)} Total</div>
           </div>
-          <div className="mt-3">
-            <div className="w-full bg-blue-800 rounded-full h-2">
-              <div className="bg-blue-400 h-2 rounded-full" style={{ width: '74%' }}></div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <PieChart className="w-5 h-5 text-cyan-400 mr-2" />
+                Charts
+              </h3>
             </div>
+            <div className="text-3xl font-bold text-cyan-400">{formatNumber(vizData.visualizationOverview.activeCharts)}</div>
+            <div className="text-cyan-300 text-sm">{formatNumber(vizData.visualizationOverview.totalCharts)} Total</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Zap className="w-5 h-5 text-yellow-400 mr-2" />
+                Performance
+              </h3>
+            </div>
+            <div className={`text-3xl font-bold ${getScoreColor(vizData.visualizationOverview.performance)}`}>
+              {formatPercentage(vizData.visualizationOverview.performance)}
+            </div>
+            <div className="text-yellow-300 text-sm">Score</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Activity className="w-5 h-5 text-green-400 mr-2" />
+                Render Time
+              </h3>
+            </div>
+            <div className="text-3xl font-bold text-green-400">{vizData.visualizationOverview.renderTime}ms</div>
+            <div className="text-green-300 text-sm">Avg</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Target className="w-5 h-5 text-blue-400 mr-2" />
+                Cache Rate
+              </h3>
+            </div>
+            <div className={`text-3xl font-bold ${getScoreColor(vizData.visualizationOverview.cacheHitRate)}`}>
+              {formatPercentage(vizData.visualizationOverview.cacheHitRate)}
+            </div>
+            <div className="text-blue-300 text-sm">Hit</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Eye className="w-5 h-5 text-orange-400 mr-2" />
+                Users
+              </h3>
+            </div>
+            <div className="text-3xl font-bold text-orange-400">{formatNumber(vizData.visualizationOverview.userSessions)}</div>
+            <div className="text-orange-300 text-sm">Active</div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 border border-green-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-green-200">SYSTEM UPTIME</div>
-              <div className="text-2xl font-bold text-green-100">
-                {dashboardMetrics.systemUptime.toFixed(2)}%
-              </div>
-              <div className="text-xs text-green-300">9h 45m current</div>
-            </div>
-            <div className="text-3xl opacity-60">🟢</div>
-          </div>
-          <div className="mt-3">
-            <div className="w-full bg-green-800 rounded-full h-2">
-              <div className="bg-green-400 h-2 rounded-full" style={{ width: `${dashboardMetrics.systemUptime}%` }}></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-purple-200">RESPONSE TIME</div>
-              <div className="text-2xl font-bold text-purple-100">
-                {dashboardMetrics.responseTime.toFixed(1)}ms
-              </div>
-              <div className="text-xs text-purple-300">avg last hour</div>
-            </div>
-            <div className="text-3xl opacity-60">⚡</div>
-          </div>
-          <div className="mt-3">
-            <div className="w-full bg-purple-800 rounded-full h-2">
-              <div className="bg-purple-400 h-2 rounded-full" style={{ width: `${100 - dashboardMetrics.responseTime}%` }}></div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg p-6 border border-orange-500/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-xs text-orange-200">AGENT EFFICIENCY</div>
-              <div className="text-2xl font-bold text-orange-100">
-                {dashboardMetrics.agentEfficiency.toFixed(1)}%
-              </div>
-              <div className="text-xs text-orange-300">6 agents active</div>
-            </div>
-            <div className="text-3xl opacity-60">🤖</div>
-          </div>
-          <div className="mt-3">
-            <div className="w-full bg-orange-800 rounded-full h-2">
-              <div className="bg-orange-400 h-2 rounded-full" style={{ width: `${dashboardMetrics.agentEfficiency}%` }}></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* System Performance Trends */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            ⚡ SYSTEM PERFORMANCE TRENDS
+        {/* Chart Types Analysis */}
+        <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <BarChart className="w-5 h-5 text-violet-400 mr-2" />
+            Chart Type Performance Analytics
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={chartData}>
-              <defs>
-                <linearGradient id="cpuGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="memoryGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="networkGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12}/>
-              <YAxis stroke="#9CA3AF" fontSize={12}/>
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#F9FAFB'
-                }}
-              />
-              <Legend />
-              <Area type="monotone" dataKey="cpu" stroke="#3B82F6" fill="url(#cpuGradient)" name="CPU %" />
-              <Area type="monotone" dataKey="memory" stroke="#8B5CF6" fill="url(#memoryGradient)" name="Memory %" />
-              <Area type="monotone" dataKey="network" stroke="#10B981" fill="url(#networkGradient)" name="Network %" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Agent Performance Gauge */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🤖 AGENT PERFORMANCE GAUGE
-          </h3>
-          <div className="flex items-center justify-center">
-            <ResponsiveContainer width="100%" height={300}>
-              <RadialBarChart cx="50%" cy="50%" innerRadius="60%" outerRadius="90%" data={performanceGaugeData}>
-                <RadialBar
-                  dataKey="value"
-                  cornerRadius={10}
-                  fill="#10B981"
-                  background={{ fill: '#374151' }}
-                />
-                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="fill-white text-2xl font-bold">
-                  {dashboardMetrics.agentEfficiency.toFixed(1)}%
-                </text>
-              </RadialBarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div className="text-center">
-              <div className="text-xs text-gray-400">EFFICIENCY</div>
-              <div className="text-lg font-bold text-green-400">{dashboardMetrics.agentEfficiency.toFixed(1)}%</div>
-            </div>
-            <div className="text-center">
-              <div className="text-xs text-gray-400">COST OPTIMIZATION</div>
-              <div className="text-lg font-bold text-blue-400">{dashboardMetrics.costOptimization.toFixed(1)}%</div>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-600/50">
+                  <th className="text-left p-3 text-slate-300">Chart Type</th>
+                  <th className="text-center p-3 text-slate-300">Count</th>
+                  <th className="text-center p-3 text-slate-300">Usage</th>
+                  <th className="text-center p-3 text-slate-300">Performance</th>
+                  <th className="text-center p-3 text-slate-300">Render Time</th>
+                  <th className="text-center p-3 text-slate-300">Features</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vizData.chartTypes.map((chart, index) => (
+                  <tr key={index} className="border-b border-slate-700/30 hover:bg-slate-700/20">
+                    <td className="p-3">
+                      <div className="text-white font-medium">{chart.type}</div>
+                      <div className="text-slate-400 text-xs mt-1">
+                        {chart.popularLibraries.slice(0, 2).join(', ')} • {chart.complexityScore}/10 complexity
+                      </div>
+                    </td>
+                    <td className="p-3 text-center">
+                      <div className="text-violet-400 font-medium">{formatNumber(chart.count)}</div>
+                      <div className="text-slate-400 text-xs">{formatNumber(chart.dataPoints)} pts</div>
+                    </td>
+                    <td className="p-3 text-center">
+                      <div className="text-cyan-400 font-medium">{formatPercentage(chart.usage)}</div>
+                      <div className="text-slate-400 text-xs">{formatNumber(chart.interactions)} int</div>
+                    </td>
+                    <td className={`p-3 text-center font-medium ${getScoreColor(chart.performance)}`}>
+                      {formatPercentage(chart.performance)}
+                    </td>
+                    <td className="p-3 text-center">
+                      <div className={`font-medium ${chart.renderTime < 200 ? 'text-green-400' : chart.renderTime < 300 ? 'text-yellow-400' : 'text-red-400'}`}>
+                        {chart.renderTime}ms
+                      </div>
+                      <div className="text-slate-400 text-xs">{chart.avgLoadTime}</div>
+                    </td>
+                    <td className="p-3 text-center">
+                      <div className="grid grid-cols-2 gap-1 text-xs">
+                        <span className={`px-1 py-0.5 rounded ${chart.features.realTime > 80 ? 'text-green-400' : 'text-slate-400'}`}>
+                          RT: {formatPercentage(chart.features.realTime)}
+                        </span>
+                        <span className={`px-1 py-0.5 rounded ${chart.features.interactive > 80 ? 'text-blue-400' : 'text-slate-400'}`}>
+                          Int: {formatPercentage(chart.features.interactive)}
+                        </span>
+                        <span className={`px-1 py-0.5 rounded ${chart.features.responsive > 90 ? 'text-purple-400' : 'text-slate-400'}`}>
+                          Resp: {formatPercentage(chart.features.responsive)}
+                        </span>
+                        <span className={`px-1 py-0.5 rounded ${chart.features.animated > 80 ? 'text-yellow-400' : 'text-slate-400'}`}>
+                          Anim: {formatPercentage(chart.features.animated)}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
 
-      {/* Deployment Metrics and Resource Utilization */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Deployment Success Trends */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            🚀 DEPLOYMENT SUCCESS TRENDS
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={deploymentTrendData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151"/>
-              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12}/>
-              <YAxis stroke="#9CA3AF" fontSize={12}/>
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#F9FAFB'
-                }}
-              />
-              <Legend />
-              <Bar dataKey="successful" fill="#10B981" name="Successful" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="failed" fill="#EF4444" name="Failed" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="pending" fill="#F59E0B" name="Pending" radius={[2, 2, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Resource Utilization */}
-        <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <h3 className="text-lg font-bold text-white mb-4 font-mono">
-            💾 RESOURCE UTILIZATION
-          </h3>
-          <div className="space-y-4">
-            {resourceUtilizationData.map((resource, index) => (
-              <div key={index}>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-300">{resource.name}</span>
-                  <span className="text-sm font-bold" style={{ color: resource.color }}>
-                    {resource.current}%
-                  </span>
+        {/* Dashboard Performance & Data Connectors */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <TrendingUp className="w-5 h-5 text-green-400 mr-2" />
+              Top Dashboard Performance
+            </h3>
+            <div className="space-y-4">
+              {vizData.dashboardPerformance.map((dashboard, index) => (
+                <div key={index} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-medium text-sm">{dashboard.dashboard}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-sm ${getScoreColor(dashboard.performance.lcp.replace('s', '') * 100 / 4)}`}>
+                        {dashboard.performance.lcp} LCP
+                      </span>
+                      <span className="text-slate-400 text-xs">{dashboard.loadTime}s</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                    <div className="text-violet-400">Charts: {dashboard.charts}</div>
+                    <div className="text-cyan-400">Users: {dashboard.users}</div>
+                    <div className="text-green-400">Cache: {formatPercentage(dashboard.cacheHit)}</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                    <div className="text-yellow-400">Render: {dashboard.renderTime}ms</div>
+                    <div className="text-blue-400">Queries: {formatNumber(dashboard.dataQueries)}</div>
+                    <div className="text-purple-400">Updates: {dashboard.updateFrequency}</div>
+                  </div>
+                  <div className="text-slate-400 text-xs mb-2">
+                    <strong>Performance:</strong> LCP {dashboard.performance.lcp}, FID {dashboard.performance.fid}, TTI {dashboard.performance.tti}
+                  </div>
+                  <div className="text-slate-400 text-xs mb-2">
+                    <strong>Optimization:</strong> {Object.entries(dashboard.optimizations).filter(([_, enabled]) => enabled).map(([key, _]) => key.replace('_', ' ')).join(', ')}
+                  </div>
+                  {dashboard.issues.length > 0 && (
+                    <div className="text-red-400 text-xs">
+                      <strong>Issues:</strong> {dashboard.issues.slice(0, 1).join('; ')}
+                    </div>
+                  )}
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-3">
-                  <div 
-                    className="h-3 rounded-full transition-all duration-500" 
-                    style={{ 
-                      width: `${resource.current}%`,
-                      backgroundColor: resource.color,
-                      boxShadow: `0 0 10px ${resource.color}30`
-                    }}
-                  ></div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-          <div className="mt-6">
-            <ResponsiveContainer width="100%" height={150}>
-              <PieChart>
-                <Pie
-                  data={alertTrends}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={60}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {alertTrends.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#F9FAFB'
-                  }}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Layers className="w-5 h-5 text-blue-400 mr-2" />
+              Data Connector Analytics
+            </h3>
+            <div className="space-y-4">
+              {vizData.dataConnectors.map((connector, index) => (
+                <div key={index} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-medium text-sm">{connector.source}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2 py-1 rounded text-xs ${getStatusColor(connector.status)}`}>
+                        {connector.status}
+                      </span>
+                      <span className="text-slate-400 text-xs">{connector.avgResponseTime}ms</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                    <div className="text-blue-400">Conn: {connector.connections}</div>
+                    <div className="text-green-400">Queries: {formatNumber(connector.queries)}</div>
+                    <div className="text-purple-400">Usage: {formatPercentage(connector.usage)}</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                    <div className="text-yellow-400">Data: {formatNumber(connector.dataVolume)}</div>
+                    <div className={`${connector.errorRate < 0.5 ? 'text-green-400' : connector.errorRate < 1.0 ? 'text-yellow-400' : 'text-red-400'}`}>
+                      Errors: {formatPercentage(connector.errorRate)}
+                    </div>
+                    <div className="text-cyan-400">Opt: {connector.optimization}</div>
+                  </div>
+                  <div className="text-slate-400 text-xs">
+                    <strong>Last Updated:</strong> {connector.lastUpdated}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Real-time Activity Feed */}
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-bold text-white mb-4 font-mono">
-          📡 REAL-TIME DATA INSIGHTS
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-3">
-            <h4 className="text-sm font-bold text-cyan-400">PERFORMANCE INSIGHTS</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Avg Response Time</span>
-                <span className="text-cyan-400">{dashboardMetrics.responseTime.toFixed(1)}ms</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Peak CPU Usage</span>
-                <span className="text-yellow-400">67.3%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Memory Efficiency</span>
-                <span className="text-green-400">91.7%</span>
-              </div>
+        {/* Performance Metrics & Visualization Alerts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Activity className="w-5 h-5 text-cyan-400 mr-2" />
+              Performance Metrics Timeline
+            </h3>
+            <div className="space-y-4">
+              {vizData.performanceMetrics.map((metrics, index) => (
+                <div key={index} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-medium text-sm">{metrics.period}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-sm ${getScoreColor(metrics.performance)}`}>
+                        {formatPercentage(metrics.performance)} Score
+                      </span>
+                      <span className="text-slate-400 text-xs">{formatNumber(metrics.dashboards)} dashboards</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                    <div className="text-violet-400">Queries: {formatNumber(metrics.totalQueries)}</div>
+                    <div className="text-green-400">Load: {metrics.avgLoadTime}s</div>
+                    <div className="text-blue-400">Render: {metrics.avgRenderTime}ms</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+                    <div className="text-cyan-400">Cache: {formatPercentage(metrics.cacheHitRate)}</div>
+                    <div className={`${metrics.errorRate < 0.5 ? 'text-green-400' : 'text-red-400'}`}>
+                      Errors: {formatPercentage(metrics.errorRate)}
+                    </div>
+                    <div className="text-purple-400">Data: {formatNumber(metrics.dataVolume)}</div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="text-green-400">Load: {metrics.trends.load_time}</div>
+                    <div className="text-blue-400">Cache: {metrics.trends.cache_hits}</div>
+                    <div className="text-orange-400">Errors: {metrics.trends.errors}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="space-y-3">
-            <h4 className="text-sm font-bold text-green-400">DEPLOYMENT STATS</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Success Rate</span>
-                <span className="text-green-400">{dashboardMetrics.deploymentSuccess.toFixed(1)}%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Avg Deploy Time</span>
-                <span className="text-blue-400">23.4s</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Builds Today</span>
-                <span className="text-purple-400">12</span>
-              </div>
-            </div>
-          </div>
-          <div className="space-y-3">
-            <h4 className="text-sm font-bold text-purple-400">AGENT METRICS</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Active Agents</span>
-                <span className="text-purple-400">6/6</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Task Completion</span>
-                <span className="text-green-400">94.3%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Network Latency</span>
-                <span className="text-cyan-400">12ms</span>
-              </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-violet-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <AlertTriangle className="w-5 h-5 text-yellow-400 mr-2" />
+              Visualization System Alerts
+            </h3>
+            <div className="space-y-4">
+              {vizData.visualizationAlerts.map((alert, index) => (
+                <div key={index} className={`rounded-lg p-4 border-l-4 ${getAlertColor(alert.type)}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium">{alert.type}</span>
+                      <span className="text-slate-300 text-xs">{alert.category}</span>
+                      <span className={`text-xs ${getUrgencyColor(alert.urgency)}`}>
+                        {alert.urgency}
+                      </span>
+                    </div>
+                    <span className="text-slate-400 text-xs">{alert.timestamp}</span>
+                  </div>
+                  <div className="text-white font-medium text-sm mb-2">{alert.message}</div>
+                  <div className="grid grid-cols-1 gap-2 text-xs mb-2">
+                    {alert.dashboard && <div className="text-slate-300">Dashboard: {alert.dashboard}</div>}
+                    {alert.connector && <div className="text-slate-300">Connector: {alert.connector}</div>}
+                    {alert.loadTime && <div className="text-slate-300">Load Time: {alert.loadTime}</div>}
+                    {alert.errorRate && <div className="text-slate-300">Error Rate: {alert.errorRate}</div>}
+                    {alert.currentUsage && <div className="text-slate-300">Usage: {alert.currentUsage}</div>}
+                    {alert.cacheHitRate && <div className="text-slate-300">Cache Hit: {alert.cacheHitRate}</div>}
+                  </div>
+                  <div className="text-slate-300 text-xs mb-2">
+                    <strong>Impact:</strong> {alert.impact}
+                  </div>
+                  <div className="text-slate-300 text-xs">
+                    <strong>Action:</strong> {alert.recommendation}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default DataVisualizationCenter;
+}

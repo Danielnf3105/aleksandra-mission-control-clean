@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
-import { Truck, Package, MapPin, Clock, TrendingUp, AlertTriangle, CheckCircle, Zap, Activity, Eye, Navigation, Route } from 'lucide-react';
+import { Truck, Package, MapPin, Clock, TrendingUp, AlertTriangle, CheckCircle, Zap, Activity, Eye, Navigation } from 'lucide-react';
 
 const LogisticsOperationsCenter = () => {
   const [logisticsStatus, setLogisticsStatus] = useState({
@@ -874,7 +874,7 @@ const LogisticsOperationsCenter = () => {
               <span className="text-sm text-gray-400">Logistics Operations Control</span>
               <div className="flex space-x-2">
                 <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
-                  <Route className="w-3 h-3 inline mr-1" />
+                  <Navigation className="w-3 h-3 inline mr-1" />
                   Route Optimization
                 </button>
                 <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">

@@ -1,996 +1,803 @@
-import React, { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
-import { Shield, AlertTriangle, Eye, Activity, TrendingUp, Users, Zap, Clock, MapPin, Settings, Target, Lock } from 'lucide-react';
+// Cybersecurity Operations Center - Advanced Security Monitoring & Incident Response
+import { useState, useEffect } from 'react';
+import { Shield, AlertTriangle, Eye, Lock, Zap, Activity, Target, Users, Database, Globe, Server, Wifi } from 'lucide-react';
 
-const CybersecurityOperationsCenter = () => {
-  const [securityMetrics, setSecurityMetrics] = useState({
-    totalThreats: 47892,
-    activeIncidents: 23,
-    resolvedIncidents: 1847,
-    criticalAlerts: 8,
-    meanTimeToDetection: 4.7, // minutes
-    meanTimeToResponse: 12.3, // minutes
-    securityScore: 94.7, // /100
-    complianceScore: 97.2 // %
+export default function CybersecurityOperationsCenter() {
+  const [securityData, setSecurityData] = useState({
+    currentTime: new Date().toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' }),
+    threatLevel: {
+      current: 'ELEVATED',
+      score: 73.4,
+      trend: 'INCREASING',
+      lastUpdate: '23:47',
+      activeCampaigns: 12,
+      blockedAttacks: 2847
+    },
+    realTimeThreats: [
+      {
+        id: 'TH-2024-0847',
+        type: 'Brute Force Attack',
+        source: '185.220.101.32',
+        target: 'SSH Service',
+        severity: 'HIGH',
+        status: 'BLOCKED',
+        duration: '00:23:45',
+        attempts: 1247,
+        country: 'Russia',
+        timestamp: '23:46:12'
+      },
+      {
+        id: 'TH-2024-0848',
+        type: 'SQL Injection',
+        source: '45.134.26.89',
+        target: 'Web Application',
+        severity: 'CRITICAL',
+        status: 'INVESTIGATING',
+        duration: '00:08:34',
+        attempts: 156,
+        country: 'China',
+        timestamp: '23:39:18'
+      },
+      {
+        id: 'TH-2024-0849',
+        type: 'DDoS Attempt',
+        source: '172.96.45.78',
+        target: 'API Gateway',
+        severity: 'MEDIUM',
+        status: 'MITIGATED',
+        duration: '00:45:22',
+        attempts: 15680,
+        country: 'United States',
+        timestamp: '23:01:56'
+      },
+      {
+        id: 'TH-2024-0850',
+        type: 'Malware Download',
+        source: '91.215.103.47',
+        target: 'User Endpoint',
+        severity: 'HIGH',
+        status: 'QUARANTINED',
+        duration: '00:12:15',
+        attempts: 3,
+        country: 'Iran',
+        timestamp: '23:35:03'
+      }
+    ],
+    securityMetrics: {
+      incidents: {
+        total: 156,
+        resolved: 142,
+        investigating: 8,
+        escalated: 6,
+        avgResolutionTime: 18.4, // minutes
+        mttr: 34.7 // mean time to response
+      },
+      vulnerabilities: {
+        critical: 2,
+        high: 7,
+        medium: 23,
+        low: 45,
+        total: 77,
+        patchedThisWeek: 34
+      },
+      compliance: {
+        soc2: 98.7,
+        iso27001: 96.4,
+        gdpr: 94.8,
+        hipaa: 91.2,
+        overallScore: 95.3
+      },
+      authentication: {
+        mfaAdoption: 94.7,
+        passwordStrength: 87.3,
+        ssoCompliance: 98.2,
+        failedLogins: 234,
+        suspiciousLogins: 12
+      }
+    },
+    networkSecurity: {
+      firewallStatus: 'ACTIVE',
+      blockedConnections: 15679,
+      allowedConnections: 2847356,
+      suspiciousTraffic: 147,
+      bandwidth: {
+        incoming: 234.7, // Mbps
+        outgoing: 156.2,
+        peak: 445.8,
+        usage: 52.7 // percentage
+      },
+      vpnSessions: {
+        active: 67,
+        total: 156,
+        failedAttempts: 23,
+        countries: ['Portugal', 'Germany', 'United States', 'Canada', 'Brazil']
+      },
+      endpoints: {
+        total: 234,
+        secured: 227,
+        vulnerable: 5,
+        offline: 2,
+        compliance: 97.0
+      }
+    },
+    dataSecurity: {
+      encryption: {
+        atRest: 99.8,
+        inTransit: 100.0,
+        database: 98.9,
+        backups: 97.4
+      },
+      dataLoss: {
+        incidents: 0,
+        lastIncident: '2024-01-15',
+        preventedAttempts: 67,
+        sensitiveDataExposure: 0
+      },
+      backups: {
+        lastBackup: '23:30:00',
+        status: 'SUCCESSFUL',
+        size: '2.4TB',
+        retention: '90 days',
+        integrity: 99.9,
+        offsite: true
+      },
+      access: {
+        privilegedUsers: 12,
+        adminActions: 34,
+        fileAccess: 2847,
+        suspiciousAccess: 3,
+        dataClassification: 94.7
+      }
+    },
+    securityAlerts: [
+      {
+        id: 'SA-847',
+        type: 'CRITICAL',
+        title: 'SQL Injection Attempt Detected',
+        description: 'Multiple SQL injection attempts from Chinese IP targeting user database',
+        source: '45.134.26.89',
+        impact: 'HIGH',
+        status: 'INVESTIGATING',
+        assignedTo: 'SOC Team Alpha',
+        timestamp: '23:39:18',
+        actions: ['Block IP', 'Review Logs', 'Patch Application']
+      },
+      {
+        id: 'SA-848',
+        type: 'WARNING',
+        title: 'Unusual Login Pattern',
+        description: 'Admin user login from new geographic location',
+        source: 'admin@company.com',
+        impact: 'MEDIUM',
+        status: 'MONITORING',
+        assignedTo: 'SOC Team Beta',
+        timestamp: '23:22:45',
+        actions: ['Verify Identity', 'Monitor Activity']
+      },
+      {
+        id: 'SA-849',
+        type: 'INFO',
+        title: 'Failed MFA Attempts',
+        description: 'Multiple failed MFA attempts for user account',
+        source: 'user@company.com',
+        impact: 'LOW',
+        status: 'RESOLVED',
+        assignedTo: 'SOC Team Gamma',
+        timestamp: '22:45:12',
+        actions: ['User Notified', 'Account Secured']
+      },
+      {
+        id: 'SA-850',
+        type: 'WARNING',
+        title: 'Suspicious File Upload',
+        description: 'Potentially malicious file uploaded to document system',
+        source: 'File Server',
+        impact: 'MEDIUM',
+        status: 'QUARANTINED',
+        assignedTo: 'SOC Team Alpha',
+        timestamp: '22:15:33',
+        actions: ['File Quarantined', 'Scan Complete', 'User Education']
+      }
+    ],
+    threatIntelligence: {
+      ioCs: {
+        maliciousIPs: 15847,
+        malwareSamples: 2847,
+        suspiciousDomains: 567,
+        lastUpdate: '23:45:00'
+      },
+      campaigns: [
+        {
+          name: 'APT29 Cozy Bear',
+          status: 'ACTIVE',
+          targets: 'Government, Technology',
+          lastSeen: '2024-03-17',
+          severity: 'CRITICAL',
+          confidence: 95.2
+        },
+        {
+          name: 'Lazarus Group',
+          status: 'MONITORING',
+          targets: 'Financial Services',
+          lastSeen: '2024-03-15',
+          severity: 'HIGH',
+          confidence: 87.6
+        },
+        {
+          name: 'FIN7',
+          status: 'HISTORICAL',
+          targets: 'Retail, Restaurants',
+          lastSeen: '2024-03-10',
+          severity: 'MEDIUM',
+          confidence: 73.4
+        }
+      ],
+      riskScore: 73.4,
+      geoPolitical: {
+        riskLevel: 'ELEVATED',
+        hotspots: ['Eastern Europe', 'Southeast Asia', 'Middle East'],
+        sanctions: 34,
+        advisories: 12
+      }
+    },
+    incidentResponse: {
+      activeIncidents: 3,
+      avgResponseTime: 8.4, // minutes
+      avgResolutionTime: 45.7, // minutes
+      escalationRate: 12.3, // percentage
+      falsePositiveRate: 4.7,
+      runbooks: {
+        total: 67,
+        updated: 54,
+        tested: 45,
+        compliance: 80.6
+      },
+      team: {
+        oncall: 'SOC Team Alpha',
+        members: 12,
+        availability: 24/7,
+        certifications: ['CISSP', 'CEH', 'GCIH', 'SANS']
+      }
+    },
+    securityTools: [
+      {
+        name: 'SIEM - Splunk',
+        status: 'OPERATIONAL',
+        version: '9.1.2',
+        lastUpdate: '2024-03-15',
+        coverage: 98.7,
+        alerts: 234
+      },
+      {
+        name: 'EDR - CrowdStrike',
+        status: 'OPERATIONAL',
+        version: '7.15.0',
+        lastUpdate: '2024-03-16',
+        coverage: 99.2,
+        alerts: 45
+      },
+      {
+        name: 'SOAR - Phantom',
+        status: 'OPERATIONAL',
+        version: '5.3.4',
+        lastUpdate: '2024-03-14',
+        coverage: 85.4,
+        alerts: 67
+      },
+      {
+        name: 'Vulnerability Scanner',
+        status: 'SCANNING',
+        version: '11.2.1',
+        lastUpdate: '2024-03-17',
+        coverage: 94.8,
+        alerts: 156
+      },
+      {
+        name: 'WAF - CloudFlare',
+        status: 'OPERATIONAL',
+        version: 'Latest',
+        lastUpdate: '2024-03-17',
+        coverage: 100.0,
+        alerts: 89
+      }
+    ]
   });
 
-  const [threatDetection, setThreatDetection] = useState([
-    {
-      id: 'THREAT-001',
-      type: 'Advanced Persistent Threat',
-      severity: 'critical',
-      status: 'investigating',
-      sourceIP: '203.45.78.192',
-      targetAsset: 'web-server-prod-01',
-      detectionTime: new Date(Date.now() - 180000),
-      lastActivity: new Date(Date.now() - 60000),
-      riskScore: 9.2,
-      analyst: 'Sarah Chen',
-      ttl: 'TTP-0045'
-    },
-    {
-      id: 'THREAT-002', 
-      type: 'Malware Detection',
-      severity: 'high',
-      status: 'contained',
-      sourceIP: '157.92.34.211',
-      targetAsset: 'workstation-finance-15',
-      detectionTime: new Date(Date.now() - 300000),
-      lastActivity: new Date(Date.now() - 120000),
-      riskScore: 7.8,
-      analyst: 'Mike Rodriguez',
-      ttl: 'TTP-0023'
-    },
-    {
-      id: 'THREAT-003',
-      type: 'Data Exfiltration',
-      severity: 'high',
-      status: 'mitigated',
-      sourceIP: '78.134.56.89',
-      targetAsset: 'database-customer-main',
-      detectionTime: new Date(Date.now() - 420000),
-      lastActivity: new Date(Date.now() - 180000),
-      riskScore: 8.1,
-      analyst: 'Jennifer Kim',
-      ttl: 'TTP-0067'
-    },
-    {
-      id: 'THREAT-004',
-      type: 'Phishing Campaign',
-      severity: 'medium',
-      status: 'monitoring',
-      sourceIP: '91.203.145.67',
-      targetAsset: 'email-gateway',
-      detectionTime: new Date(Date.now() - 240000),
-      lastActivity: new Date(Date.now() - 90000),
-      riskScore: 5.4,
-      analyst: 'David Thompson',
-      ttl: 'TTP-0012'
-    },
-    {
-      id: 'THREAT-005',
-      type: 'Insider Threat',
-      severity: 'high',
-      status: 'investigating',
-      sourceIP: '192.168.1.47',
-      targetAsset: 'file-server-hr',
-      detectionTime: new Date(Date.now() - 360000),
-      lastActivity: new Date(Date.now() - 45000),
-      riskScore: 7.9,
-      analyst: 'Amanda Martinez',
-      ttl: 'TTP-0089'
-    }
-  ]);
-
-  const [siemAnalytics, setSiemAnalytics] = useState([
-    {
-      source: 'Network Firewalls',
-      eventsPerHour: 847392,
-      alerts: 234,
-      falsePositives: 12,
-      coverage: 98.7,
-      status: 'operational'
-    },
-    {
-      source: 'Endpoint Detection',
-      eventsPerHour: 234567,
-      alerts: 89,
-      falsePositives: 8,
-      coverage: 94.3,
-      status: 'operational'
-    },
-    {
-      source: 'Email Security',
-      eventsPerHour: 156789,
-      alerts: 67,
-      falsePositives: 5,
-      coverage: 99.2,
-      status: 'operational'
-    },
-    {
-      source: 'Web Application',
-      eventsPerHour: 89456,
-      alerts: 45,
-      falsePositives: 3,
-      coverage: 91.8,
-      status: 'degraded'
-    },
-    {
-      source: 'Cloud Services',
-      eventsPerHour: 345678,
-      alerts: 123,
-      falsePositives: 15,
-      coverage: 87.4,
-      status: 'operational'
-    }
-  ]);
-
-  const [incidentResponse, setIncidentResponse] = useState([
-    {
-      id: 'INC-2026-0347',
-      title: 'Ransomware Attempt on Finance Network',
-      severity: 'critical',
-      status: 'active',
-      createdAt: new Date(Date.now() - 450000),
-      assignedTo: 'IR Team Alpha',
-      affectedSystems: 14,
-      estimatedImpact: 'high',
-      progress: 67,
-      nextAction: 'Isolate affected hosts'
-    },
-    {
-      id: 'INC-2026-0346',
-      title: 'Suspicious Login Activity - Executive Accounts',
-      severity: 'high',
-      status: 'investigating',
-      createdAt: new Date(Date.now() - 720000),
-      assignedTo: 'IR Team Beta',
-      affectedSystems: 3,
-      estimatedImpact: 'medium',
-      progress: 45,
-      nextAction: 'Password reset and MFA enforcement'
-    },
-    {
-      id: 'INC-2026-0345',
-      title: 'DDoS Attack on Public Web Services',
-      severity: 'medium',
-      status: 'mitigated',
-      createdAt: new Date(Date.now() - 1800000),
-      assignedTo: 'IR Team Gamma',
-      affectedSystems: 8,
-      estimatedImpact: 'low',
-      progress: 95,
-      nextAction: 'Post-incident analysis'
-    },
-    {
-      id: 'INC-2026-0344',
-      title: 'Malicious File Upload Detected',
-      severity: 'high',
-      status: 'contained',
-      createdAt: new Date(Date.now() - 900000),
-      assignedTo: 'IR Team Alpha',
-      affectedSystems: 1,
-      estimatedImpact: 'medium',
-      progress: 85,
-      nextAction: 'Malware analysis completion'
-    }
-  ]);
-
-  const [vulnerabilityManagement, setVulnerabilityManagement] = useState([
-    {
-      category: 'Critical',
-      count: 12,
-      resolved: 8,
-      overdue: 2,
-      avgResolutionTime: 2.3,
-      trend: 'decreasing'
-    },
-    {
-      category: 'High',
-      count: 89,
-      resolved: 67,
-      overdue: 8,
-      avgResolutionTime: 7.4,
-      trend: 'stable'
-    },
-    {
-      category: 'Medium',
-      count: 234,
-      resolved: 189,
-      overdue: 15,
-      avgResolutionTime: 14.7,
-      trend: 'increasing'
-    },
-    {
-      category: 'Low',
-      count: 567,
-      resolved: 423,
-      overdue: 34,
-      avgResolutionTime: 30.2,
-      trend: 'stable'
-    }
-  ]);
-
-  const [securityAnalytics, setSecurityAnalytics] = useState([
-    {
-      time: new Date(Date.now() - 300000).toLocaleTimeString(),
-      threats: 46234,
-      incidents: 21,
-      detectionTime: 4.9,
-      responseTime: 12.8
-    },
-    {
-      time: new Date(Date.now() - 240000).toLocaleTimeString(),
-      threats: 46789,
-      incidents: 22,
-      detectionTime: 4.6,
-      responseTime: 12.5
-    },
-    {
-      time: new Date(Date.now() - 180000).toLocaleTimeString(),
-      threats: 47123,
-      incidents: 23,
-      detectionTime: 4.8,
-      responseTime: 12.1
-    },
-    {
-      time: new Date(Date.now() - 120000).toLocaleTimeString(),
-      threats: 47456,
-      incidents: 22,
-      detectionTime: 4.5,
-      responseTime: 12.4
-    },
-    {
-      time: new Date(Date.now() - 60000).toLocaleTimeString(),
-      threats: 47678,
-      incidents: 23,
-      detectionTime: 4.8,
-      responseTime: 12.2
-    },
-    {
-      time: new Date().toLocaleTimeString(),
-      threats: 47892,
-      incidents: 23,
-      detectionTime: 4.7,
-      responseTime: 12.3
-    }
-  ]);
-
-  const [securityAlerts, setSecurityAlerts] = useState([
-    {
-      id: 'SEC-001',
-      severity: 'critical',
-      type: 'Intrusion Detection',
-      message: 'Multiple failed login attempts detected from suspicious IP - potential brute force attack',
-      timestamp: new Date(),
-      status: 'active',
-      source: 'Network Monitoring',
-      impact: 'immediate'
-    },
-    {
-      id: 'SEC-002', 
-      severity: 'warning',
-      type: 'Policy Violation',
-      message: 'Unauthorized software installation detected on workstation in R&D department',
-      timestamp: new Date(Date.now() - 120000),
-      status: 'investigating',
-      source: 'Endpoint Detection',
-      impact: 'medium'
-    },
-    {
-      id: 'SEC-003',
-      severity: 'info',
-      type: 'System Update',
-      message: 'Security patch deployment completed across 95% of enterprise endpoints',
-      timestamp: new Date(Date.now() - 300000),
-      status: 'resolved',
-      source: 'Patch Management',
-      impact: 'positive'
-    }
-  ]);
-
-  const [complianceMetrics, setComplianceMetrics] = useState([
-    {
-      framework: 'ISO 27001',
-      status: 'compliant',
-      score: 97.8,
-      lastAudit: '2026-02-15',
-      nextAudit: '2026-08-15',
-      findings: 2
-    },
-    {
-      framework: 'SOC 2 Type II',
-      status: 'compliant', 
-      score: 96.4,
-      lastAudit: '2026-01-20',
-      nextAudit: '2026-07-20',
-      findings: 1
-    },
-    {
-      framework: 'PCI DSS',
-      status: 'compliant',
-      score: 98.9,
-      lastAudit: '2026-03-01',
-      nextAudit: '2026-09-01',
-      findings: 0
-    },
-    {
-      framework: 'NIST Framework',
-      status: 'compliant',
-      score: 94.7,
-      lastAudit: '2026-02-28',
-      nextAudit: '2026-08-28',
-      findings: 3
-    },
-    {
-      framework: 'GDPR',
-      status: 'compliant',
-      score: 99.1,
-      lastAudit: '2026-02-10',
-      nextAudit: '2026-08-10',
-      findings: 0
-    }
-  ]);
-
-  const [socTeam, setSocTeam] = useState([
-    {
-      role: 'SOC Manager',
-      count: 2,
-      availability: 100,
-      workload: 78.4,
-      efficiency: 94.2
-    },
-    {
-      role: 'Security Analysts L1',
-      count: 8,
-      availability: 87.5,
-      workload: 89.7,
-      efficiency: 86.3
-    },
-    {
-      role: 'Security Analysts L2',
-      count: 6,
-      availability: 83.3,
-      workload: 92.1,
-      efficiency: 91.8
-    },
-    {
-      role: 'Incident Responders',
-      count: 4,
-      availability: 100,
-      workload: 76.8,
-      efficiency: 93.7
-    },
-    {
-      role: 'Threat Hunters',
-      count: 3,
-      availability: 100,
-      workload: 84.2,
-      efficiency: 88.9
-    }
-  ]);
-
-  const [systemMetrics, setSystemMetrics] = useState({
-    siemUptime: 99.97, // %
-    soarPlatform: 99.94,
-    threatIntelligence: 99.89,
-    endpointProtection: 98.7,
-    avgQueryTime: 0.847, // seconds
-    dataIngestionRate: 2847392, // events/hour
-    falsePositiveRate: 2.3, // %
-    automationLevel: 76.8 // %
-  });
-
-  // Real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update security metrics
-      setSecurityMetrics(prev => ({
+      setSecurityData(prev => ({
         ...prev,
-        totalThreats: prev.totalThreats + Math.floor(Math.random() * 100),
-        activeIncidents: Math.max(15, Math.min(35, prev.activeIncidents + Math.floor((Math.random() - 0.5) * 3))),
-        resolvedIncidents: prev.resolvedIncidents + Math.floor(Math.random() * 5),
-        criticalAlerts: Math.max(0, Math.min(15, prev.criticalAlerts + Math.floor((Math.random() - 0.6) * 2))),
-        meanTimeToDetection: Math.max(2, Math.min(10, prev.meanTimeToDetection + (Math.random() - 0.5) * 0.5)),
-        meanTimeToResponse: Math.max(8, Math.min(20, prev.meanTimeToResponse + (Math.random() - 0.5) * 1)),
-        securityScore: Math.max(85, Math.min(100, prev.securityScore + (Math.random() - 0.5) * 0.5)),
-        complianceScore: Math.max(90, Math.min(100, prev.complianceScore + (Math.random() - 0.5) * 0.2))
+        currentTime: new Date().toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' }),
+        threatLevel: {
+          ...prev.threatLevel,
+          score: Math.max(60, Math.min(90, prev.threatLevel.score + (Math.random() - 0.5) * 5)),
+          blockedAttacks: prev.threatLevel.blockedAttacks + Math.floor(Math.random() * 10)
+        },
+        networkSecurity: {
+          ...prev.networkSecurity,
+          blockedConnections: prev.networkSecurity.blockedConnections + Math.floor(Math.random() * 50),
+          bandwidth: {
+            ...prev.networkSecurity.bandwidth,
+            incoming: Math.max(100, Math.min(400, prev.networkSecurity.bandwidth.incoming + (Math.random() - 0.5) * 20)),
+            outgoing: Math.max(80, Math.min(300, prev.networkSecurity.bandwidth.outgoing + (Math.random() - 0.5) * 15))
+          }
+        }
       }));
-
-      // Update threat detection
-      setThreatDetection(prev => prev.map(threat => {
-        const statusTransitions = {
-          'investigating': ['investigating', 'contained', 'mitigated'],
-          'contained': ['contained', 'mitigated', 'resolved'],
-          'mitigated': ['mitigated', 'resolved'],
-          'monitoring': ['monitoring', 'investigating', 'resolved'],
-          'resolved': ['resolved']
-        };
-        
-        const possibleStatuses = statusTransitions[threat.status] || [threat.status];
-        const newStatus = Math.random() > 0.95 ? 
-          possibleStatuses[Math.floor(Math.random() * possibleStatuses.length)] : threat.status;
-
-        return {
-          ...threat,
-          status: newStatus,
-          lastActivity: Math.random() > 0.8 ? new Date() : threat.lastActivity,
-          riskScore: Math.max(1, Math.min(10, threat.riskScore + (Math.random() - 0.5) * 0.2))
-        };
-      }));
-
-      // Update SIEM analytics
-      setSiemAnalytics(prev => prev.map(source => ({
-        ...source,
-        eventsPerHour: Math.max(source.eventsPerHour * 0.8, Math.min(source.eventsPerHour * 1.2, source.eventsPerHour + Math.floor((Math.random() - 0.5) * 10000))),
-        alerts: Math.max(0, source.alerts + Math.floor((Math.random() - 0.7) * 10)),
-        falsePositives: Math.max(0, source.falsePositives + Math.floor((Math.random() - 0.8) * 3)),
-        coverage: Math.max(80, Math.min(100, source.coverage + (Math.random() - 0.5) * 1))
-      })));
-
-      // Update incident response
-      setIncidentResponse(prev => prev.map(incident => {
-        if (incident.status === 'resolved') return incident;
-        
-        const newProgress = Math.min(100, incident.progress + Math.floor(Math.random() * 5));
-        let newStatus = incident.status;
-        
-        if (newProgress >= 95) newStatus = 'resolved';
-        else if (newProgress >= 80 && incident.status === 'active') newStatus = 'mitigated';
-        else if (newProgress >= 60 && incident.status === 'investigating') newStatus = 'active';
-        
-        return {
-          ...incident,
-          progress: newProgress,
-          status: newStatus
-        };
-      }));
-
-      // Update security analytics
-      const newSecurityData = {
-        time: new Date().toLocaleTimeString(),
-        threats: securityMetrics.totalThreats,
-        incidents: securityMetrics.activeIncidents,
-        detectionTime: securityMetrics.meanTimeToDetection,
-        responseTime: securityMetrics.meanTimeToResponse
-      };
-      
-      setSecurityAnalytics(prev => [...prev.slice(1), newSecurityData]);
-
-      // Update system metrics
-      setSystemMetrics(prev => ({
-        ...prev,
-        siemUptime: Math.max(99.5, Math.min(100, prev.siemUptime + (Math.random() - 0.3) * 0.01)),
-        soarPlatform: Math.max(99.5, Math.min(100, prev.soarPlatform + (Math.random() - 0.3) * 0.01)),
-        avgQueryTime: Math.max(0.3, Math.min(2.0, prev.avgQueryTime + (Math.random() - 0.5) * 0.1)),
-        dataIngestionRate: Math.max(prev.dataIngestionRate * 0.9, Math.min(prev.dataIngestionRate * 1.1, prev.dataIngestionRate + Math.floor((Math.random() - 0.5) * 50000))),
-        falsePositiveRate: Math.max(1, Math.min(5, prev.falsePositiveRate + (Math.random() - 0.5) * 0.2)),
-        automationLevel: Math.max(60, Math.min(90, prev.automationLevel + (Math.random() - 0.5) * 1))
-      }));
-
-      // Occasionally add new security alerts
-      if (Math.random() > 0.93) {
-        const alertTypes = ['Intrusion Detection', 'Malware Alert', 'Policy Violation', 'Data Loss Prevention', 'Anomaly Detection'];
-        const severities = ['info', 'warning', 'critical'];
-        const sources = siemAnalytics.map(s => s.source);
-        
-        const newAlert = {
-          id: `SEC-${Date.now()}`,
-          severity: severities[Math.floor(Math.random() * severities.length)],
-          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
-          message: 'Real-time security operations alert generated',
-          timestamp: new Date(),
-          status: 'active',
-          source: sources[Math.floor(Math.random() * sources.length)],
-          impact: ['low', 'medium', 'high', 'immediate'][Math.floor(Math.random() * 4)]
-        };
-        
-        setSecurityAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
-      }
-    }, 5000);
+    }, 4000);
 
     return () => clearInterval(interval);
-  }, [securityMetrics.totalThreats, securityMetrics.activeIncidents, securityMetrics.meanTimeToDetection, securityMetrics.meanTimeToResponse]);
+  }, []);
 
-  const getThreatSeverityColor = (severity) => {
+  const getThreatColor = (severity) => {
     switch (severity) {
-      case 'critical': return '#EF4444';
-      case 'high': return '#F59E0B';
-      case 'medium': return '#3B82F6';
-      case 'low': return '#10B981';
-      default: return '#6B7280';
+      case 'CRITICAL': return 'text-red-500 bg-red-500/20';
+      case 'HIGH': return 'text-orange-500 bg-orange-500/20';
+      case 'MEDIUM': return 'text-yellow-500 bg-yellow-500/20';
+      case 'LOW': return 'text-green-500 bg-green-500/20';
+      default: return 'text-gray-500 bg-gray-500/20';
     }
   };
 
-  const getThreatStatusColor = (status) => {
+  const getStatusColor = (status) => {
     switch (status) {
-      case 'investigating': return '#F59E0B';
-      case 'contained': return '#8B5CF6';
-      case 'mitigated': return '#3B82F6';
-      case 'monitoring': return '#10B981';
-      case 'resolved': return '#6B7280';
-      default: return '#6B7280';
+      case 'BLOCKED': return 'text-green-400 bg-green-400/20';
+      case 'INVESTIGATING': return 'text-yellow-400 bg-yellow-400/20';
+      case 'MITIGATED': return 'text-blue-400 bg-blue-400/20';
+      case 'QUARANTINED': return 'text-purple-400 bg-purple-400/20';
+      case 'RESOLVED': return 'text-green-400 bg-green-400/20';
+      case 'MONITORING': return 'text-cyan-400 bg-cyan-400/20';
+      case 'OPERATIONAL': return 'text-green-400 bg-green-400/20';
+      case 'SCANNING': return 'text-yellow-400 bg-yellow-400/20';
+      default: return 'text-gray-400 bg-gray-400/20';
     }
   };
 
-  const getIncidentStatusColor = (status) => {
-    switch (status) {
-      case 'active': return '#EF4444';
-      case 'investigating': return '#F59E0B';
-      case 'mitigated': return '#3B82F6';
-      case 'resolved': return '#10B981';
-      default: return '#6B7280';
+  const getAlertTypeColor = (type) => {
+    switch (type) {
+      case 'CRITICAL': return 'border-red-500 bg-red-900/30 text-red-400';
+      case 'WARNING': return 'border-yellow-500 bg-yellow-900/30 text-yellow-400';
+      case 'INFO': return 'border-blue-500 bg-blue-900/30 text-blue-400';
+      default: return 'border-gray-500 bg-gray-900/30 text-gray-400';
     }
   };
 
-  const getAlertSeverityColor = (severity) => {
-    switch (severity) {
-      case 'critical': return '#EF4444';
-      case 'warning': return '#F59E0B';
-      case 'info': return '#10B981';
-      default: return '#6B7280';
-    }
-  };
-
-  const getComplianceStatusColor = (status) => {
-    switch (status) {
-      case 'compliant': return '#10B981';
-      case 'warning': return '#F59E0B';
-      case 'non_compliant': return '#EF4444';
-      default: return '#6B7280';
-    }
-  };
-
-  const threatDistribution = [
-    { name: 'Malware', value: 32.4, color: '#EF4444' },
-    { name: 'Phishing', value: 28.7, color: '#F59E0B' },
-    { name: 'Intrusion', value: 19.3, color: '#8B5CF6' },
-    { name: 'Data Breach', value: 12.8, color: '#3B82F6' },
-    { name: 'Insider Threat', value: 6.8, color: '#10B981' }
-  ];
+  const formatPercentage = (value) => `${value.toFixed(1)}%`;
+  const formatNumber = (value) => value.toLocaleString();
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 font-mono">
+    <div className="h-full bg-gradient-to-br from-red-900 via-slate-900 to-orange-900 text-white overflow-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
-        <div className="flex items-center space-x-3">
-          <Shield className="w-8 h-8 text-blue-400" />
-          <div>
-            <h1 className="text-2xl font-bold text-white">CYBERSECURITY OPERATIONS CENTER</h1>
-            <p className="text-gray-400">24/7 threat detection, SIEM analytics, incident response, vulnerability management & security compliance monitoring</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-red-400">
-              {securityMetrics.activeIncidents}
+      <div className="p-6 border-b border-red-800/30">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-xl">
+              <Shield className="w-8 h-8 text-white" />
             </div>
-            <div className="text-xs text-gray-400">ACTIVE THREATS</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-400">
-              {securityMetrics.securityScore.toFixed(1)}
+            <div>
+              <h1 className="text-2xl font-bold text-white">Cybersecurity Operations Center</h1>
+              <p className="text-red-300">Advanced security monitoring, threat intelligence & incident response</p>
             </div>
-            <div className="text-xs text-gray-400">SECURITY SCORE</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-400">{securityMetrics.meanTimeToDetection.toFixed(1)}min</div>
-            <div className="text-xs text-gray-400">DETECTION TIME</div>
+          <div className="text-right">
+            <div className="text-2xl font-mono text-red-400">{securityData.currentTime}</div>
+            <div className="text-red-300">Security Command</div>
           </div>
         </div>
       </div>
 
-      {/* Security KPIs */}
-      <div className="grid grid-cols-6 gap-4 mb-6">
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <AlertTriangle className="w-5 h-5 text-red-400" />
-            <span className="text-xs text-gray-400">THREATS</span>
-          </div>
-          <div className="text-xl font-bold text-white">{securityMetrics.totalThreats.toLocaleString()}</div>
-          <div className="text-xs text-gray-400">Total Detected</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Target className="w-5 h-5 text-orange-400" />
-            <span className="text-xs text-gray-400">INCIDENTS</span>
-          </div>
-          <div className="text-xl font-bold text-white">{securityMetrics.resolvedIncidents}</div>
-          <div className="text-xs text-gray-400">Resolved</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Eye className="w-5 h-5 text-blue-400" />
-            <span className="text-xs text-gray-400">CRITICAL</span>
-          </div>
-          <div className="text-xl font-bold text-white">{securityMetrics.criticalAlerts}</div>
-          <div className="text-xs text-gray-400">Alerts</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-purple-400" />
-            <span className="text-xs text-gray-400">RESPONSE</span>
-          </div>
-          <div className="text-xl font-bold text-white">{securityMetrics.meanTimeToResponse.toFixed(1)}min</div>
-          <div className="text-xs text-gray-400">Mean Time</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Lock className="w-5 h-5 text-green-400" />
-            <span className="text-xs text-gray-400">COMPLIANCE</span>
-          </div>
-          <div className="text-xl font-bold text-white">{securityMetrics.complianceScore.toFixed(1)}%</div>
-          <div className="text-xs text-gray-400">Score</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Zap className="w-5 h-5 text-cyan-400" />
-            <span className="text-xs text-gray-400">SIEM UPTIME</span>
-          </div>
-          <div className="text-xl font-bold text-white">{systemMetrics.siemUptime.toFixed(2)}%</div>
-          <div className="text-xs text-gray-400">System</div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6 mb-6">
-        {/* Threat Detection */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
-            THREAT DETECTION
-          </h3>
-          <div className="space-y-3">
-            {threatDetection.map(threat => (
-              <div key={threat.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getThreatSeverityColor(threat.severity) }}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{threat.type}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getThreatSeverityColor(threat.severity)}20`, 
-                      color: getThreatSeverityColor(threat.severity) 
-                    }}>
-                      {threat.severity.toUpperCase()}
-                    </span>
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getThreatStatusColor(threat.status)}20`, 
-                      color: getThreatStatusColor(threat.status) 
-                    }}>
-                      {threat.status.toUpperCase()}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-400 mb-2">
-                  ID: <span className="text-blue-400">{threat.id}</span> • 
-                  TTL: <span className="text-purple-400">{threat.ttl}</span>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Source IP</span>
-                    <span className="text-red-400">{threat.sourceIP}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Target</span>
-                    <span className="text-blue-400">{threat.targetAsset.split('-')[0]}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Risk Score</span>
-                    <span className="text-yellow-400">{threat.riskScore.toFixed(1)}/10</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Analyst</span>
-                    <span className="text-white">{threat.analyst.split(' ')[0]}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-green-400">
-                    Detected: {threat.detectionTime.toLocaleTimeString()}
-                  </span>
-                  <span className="text-gray-500">
-                    Last: {threat.lastActivity.toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* SIEM Analytics */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Eye className="w-5 h-5 mr-2 text-blue-400" />
-            SIEM ANALYTICS
-          </h3>
-          <div className="space-y-3">
-            {siemAnalytics.map((source, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{source.source}</span>
-                  <span 
-                    className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: source.status === 'operational' ? '#10B981' : '#F59E0B' }}
-                  />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Events/Hr</span>
-                    <span className="text-green-400">{(source.eventsPerHour / 1000).toFixed(0)}K</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Alerts</span>
-                    <span className="text-blue-400">{source.alerts}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Coverage</span>
-                    <span className="text-purple-400">{source.coverage.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">False+</span>
-                    <span className="text-white">{source.falsePositives}</span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-yellow-400">
-                  Accuracy: {((source.alerts - source.falsePositives) / source.alerts * 100).toFixed(1)}%
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Incident Response & Alerts */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Target className="w-5 h-5 mr-2 text-orange-400" />
-            INCIDENT RESPONSE & ALERTS
-          </h3>
-          <div className="space-y-3 mb-4">
-            {incidentResponse.slice(0, 3).map(incident => (
-              <div key={incident.id} className="bg-gray-800 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{incident.id}</span>
-                  <span 
-                    className="text-xs px-2 py-1 rounded-full"
-                    style={{ 
-                      backgroundColor: `${getIncidentStatusColor(incident.status)}20`, 
-                      color: getIncidentStatusColor(incident.status) 
-                    }}
-                  >
-                    {incident.status.toUpperCase()}
-                  </span>
-                </div>
-                
-                <div className="text-xs text-gray-300 mb-2">{incident.title}</div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Severity</span>
-                    <span style={{ color: getThreatSeverityColor(incident.severity) }}>
-                      {incident.severity.toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Progress</span>
-                    <span className="text-blue-400">{incident.progress}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Systems</span>
-                    <span className="text-purple-400">{incident.affectedSystems}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Team</span>
-                    <span className="text-white">{incident.assignedTo.split(' ')[2]}</span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-yellow-400">
-                  Next: {incident.nextAction}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Security Alerts */}
-          <div className="border-t border-gray-700 pt-3">
-            <div className="text-sm text-white font-semibold mb-2">Real-time Alerts</div>
-            <div className="space-y-2">
-              {securityAlerts.slice(0, 3).map(alert => (
-                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-white">{alert.type}</span>
-                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
-                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
-                      color: getAlertSeverityColor(alert.severity) 
-                    }}>
-                      {alert.severity.toUpperCase()}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-blue-400">{alert.source}</span>
-                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
-                  </div>
-                </div>
-              ))}
+      <div className="p-6 space-y-6">
+        {/* Threat Level Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
+                Threat Level
+              </h3>
             </div>
+            <div className="text-3xl font-bold text-red-400">{securityData.threatLevel.current}</div>
+            <div className="text-red-300 text-sm">Score: {securityData.threatLevel.score.toFixed(1)}/100</div>
+            <div className="text-gray-400 text-xs mt-2">{securityData.threatLevel.activeCampaigns} active campaigns</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Zap className="w-5 h-5 text-orange-400 mr-2" />
+                Blocked Attacks
+              </h3>
+            </div>
+            <div className="text-3xl font-bold text-orange-400">{formatNumber(securityData.threatLevel.blockedAttacks)}</div>
+            <div className="text-orange-300 text-sm">Last 24 hours</div>
+            <div className="text-gray-400 text-xs mt-2">Updated: {securityData.threatLevel.lastUpdate}</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Activity className="w-5 h-5 text-cyan-400 mr-2" />
+                Active Incidents
+              </h3>
+            </div>
+            <div className="text-3xl font-bold text-cyan-400">{securityData.incidentResponse.activeIncidents}</div>
+            <div className="text-cyan-300 text-sm">Avg Response: {securityData.incidentResponse.avgResponseTime.toFixed(1)}min</div>
+            <div className="text-gray-400 text-xs mt-2">Team: {securityData.incidentResponse.team.oncall}</div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center">
+                <Target className="w-5 h-5 text-purple-400 mr-2" />
+                Compliance Score
+              </h3>
+            </div>
+            <div className="text-3xl font-bold text-purple-400">{formatPercentage(securityData.securityMetrics.compliance.overallScore)}</div>
+            <div className="text-purple-300 text-sm">SOC2: {formatPercentage(securityData.securityMetrics.compliance.soc2)}</div>
+            <div className="text-gray-400 text-xs mt-2">ISO27001: {formatPercentage(securityData.securityMetrics.compliance.iso27001)}</div>
           </div>
         </div>
-      </div>
 
-      {/* Security Analytics */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Real-time Security Operations */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME SECURITY OPERATIONS</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={securityAnalytics}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
-              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
-              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#fff'
-                }} 
-              />
-              <Legend />
-              <Line 
-                yAxisId="left"
-                type="monotone" 
-                dataKey="threats" 
-                stroke="#EF4444" 
-                strokeWidth={3}
-                name="Threats Detected"
-                dot={false}
-              />
-              <Line 
-                yAxisId="left"
-                type="monotone" 
-                dataKey="incidents" 
-                stroke="#F59E0B" 
-                strokeWidth={2}
-                name="Active Incidents"
-                dot={false}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="detectionTime" 
-                stroke="#3B82F6" 
-                strokeWidth={2}
-                name="Detection Time (min)"
-                dot={false}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="responseTime" 
-                stroke="#8B5CF6" 
-                strokeWidth={2}
-                name="Response Time (min)"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Threat Distribution & Compliance Status */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">THREAT DISTRIBUTION & COMPLIANCE STATUS</h3>
-          <div className="flex">
-            <ResponsiveContainer width="60%" height={200}>
-              <PieChart>
-                <Pie
-                  data={threatDistribution}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {threatDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#fff'
-                  }}
-                  formatter={(value) => [`${value}%`, 'Threat Type']}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="w-2/5 space-y-2 mt-2">
-              {threatDistribution.map((threat, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: threat.color }}
-                    />
-                    <span className="text-gray-400 text-sm">{threat.name}</span>
-                  </div>
-                  <span className="text-white font-semibold">{threat.value}%</span>
-                </div>
-              ))}
-              
-              {/* Compliance Status */}
-              <div className="mt-4 pt-3 border-t border-gray-700">
-                <div className="text-sm text-white font-semibold mb-2">Compliance Status</div>
-                <div className="space-y-1 text-xs">
-                  {complianceMetrics.slice(0, 4).map((framework, index) => (
-                    <div key={index} className="flex justify-between">
-                      <span className="text-gray-400">{framework.framework}</span>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-green-400">{framework.score.toFixed(1)}%</span>
-                        <span 
-                          className="w-2 h-2 rounded-full" 
-                          style={{ backgroundColor: getComplianceStatusColor(framework.status) }}
-                        />
-                      </div>
+        {/* Real-Time Threats & Security Alerts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Eye className="w-5 h-5 text-red-400 mr-2" />
+              Real-Time Threats
+            </h3>
+            <div className="space-y-3">
+              {securityData.realTimeThreats.map((threat, index) => (
+                <div key={index} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getThreatColor(threat.severity)}`}>
+                        {threat.severity}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(threat.status)}`}>
+                        {threat.status}
+                      </span>
                     </div>
-                  ))}
+                    <span className="text-gray-400 text-xs">{threat.timestamp}</span>
+                  </div>
+                  <div className="text-white font-medium text-sm mb-2">{threat.type}</div>
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <span className="text-gray-400">Source: </span>
+                      <span className="text-red-400">{threat.source}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Target: </span>
+                      <span className="text-orange-400">{threat.target}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Duration: </span>
+                      <span className="text-cyan-400">{threat.duration}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Attempts: </span>
+                      <span className="text-yellow-400">{formatNumber(threat.attempts)}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs">
+                    <span className="text-gray-400">Country: </span>
+                    <span className="text-purple-400">{threat.country}</span>
+                    <span className="text-gray-400 ml-3">ID: </span>
+                    <span className="text-blue-400">{threat.id}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <AlertTriangle className="w-5 h-5 text-yellow-400 mr-2" />
+              Security Alerts
+            </h3>
+            <div className="space-y-3">
+              {securityData.securityAlerts.map((alert, index) => (
+                <div key={index} className={`rounded-lg p-4 border-l-4 ${getAlertTypeColor(alert.type)}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-sm font-medium`}>
+                        {alert.type}
+                      </span>
+                      <span className="text-gray-300 text-xs">{alert.id}</span>
+                    </div>
+                    <span className="text-gray-400 text-xs">{alert.timestamp}</span>
+                  </div>
+                  <div className="text-white font-medium text-sm mb-1">{alert.title}</div>
+                  <div className="text-gray-300 text-xs mb-2">{alert.description}</div>
+                  <div className="flex justify-between items-center text-xs">
+                    <div>
+                      <span className="text-gray-400">Impact: </span>
+                      <span className={`${alert.impact === 'HIGH' ? 'text-red-400' : alert.impact === 'MEDIUM' ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {alert.impact}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Assigned: </span>
+                      <span className="text-cyan-400">{alert.assignedTo}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {alert.actions.map((action, actionIndex) => (
+                      <span key={actionIndex} className="px-2 py-1 bg-slate-600/50 text-gray-300 rounded text-xs">
+                        {action}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Network Security & Data Security */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Globe className="w-5 h-5 text-blue-400 mr-2" />
+              Network Security
+            </h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">{formatNumber(securityData.networkSecurity.allowedConnections)}</div>
+                <div className="text-green-300 text-sm">Allowed Connections</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-400">{formatNumber(securityData.networkSecurity.blockedConnections)}</div>
+                <div className="text-red-300 text-sm">Blocked Connections</div>
+              </div>
+            </div>
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center justify-between bg-slate-700/30 rounded p-3">
+                <span className="text-gray-300">Firewall Status</span>
+                <span className={`font-medium ${getStatusColor(securityData.networkSecurity.firewallStatus).split(' ')[0]}`}>
+                  {securityData.networkSecurity.firewallStatus}
+                </span>
+              </div>
+              <div className="flex items-center justify-between bg-slate-700/30 rounded p-3">
+                <span className="text-gray-300">Suspicious Traffic</span>
+                <span className="text-yellow-400 font-medium">{securityData.networkSecurity.suspiciousTraffic}</span>
+              </div>
+              <div className="flex items-center justify-between bg-slate-700/30 rounded p-3">
+                <span className="text-gray-300">VPN Sessions</span>
+                <span className="text-cyan-400 font-medium">{securityData.networkSecurity.vpnSessions.active}/{securityData.networkSecurity.vpnSessions.total}</span>
+              </div>
+            </div>
+            <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="text-white text-sm font-medium mb-2">Bandwidth Usage</div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Incoming</span>
+                  <span className="text-green-400">{securityData.networkSecurity.bandwidth.incoming.toFixed(1)} Mbps</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Outgoing</span>
+                  <span className="text-blue-400">{securityData.networkSecurity.bandwidth.outgoing.toFixed(1)} Mbps</span>
                 </div>
               </div>
             </div>
           </div>
-          
-          {/* Security Control Panel */}
-          <div className="mt-4 pt-4 border-t border-gray-700">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-white font-semibold">Security Automation Status</span>
-              <span className="text-xs text-blue-400">{systemMetrics.automationLevel.toFixed(1)}% Automated</span>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-gray-800 rounded-lg p-2">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-blue-400">SOAR Platform</span>
-                  <span className="text-xs text-green-400">{systemMetrics.soarPlatform.toFixed(2)}%</span>
-                </div>
-                <div className="text-xs text-gray-300">Automated response workflows active</div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Database className="w-5 h-5 text-green-400 mr-2" />
+              Data Security
+            </h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">{formatPercentage(securityData.dataSecurity.encryption.atRest)}</div>
+                <div className="text-green-300 text-sm">Encryption at Rest</div>
               </div>
-              <div className="bg-gray-800 rounded-lg p-2">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-purple-400">Threat Intelligence</span>
-                  <span className="text-xs text-green-400">{systemMetrics.threatIntelligence.toFixed(2)}%</span>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-cyan-400">{formatPercentage(securityData.dataSecurity.encryption.inTransit)}</div>
+                <div className="text-cyan-300 text-sm">Encryption in Transit</div>
+              </div>
+            </div>
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center justify-between bg-slate-700/30 rounded p-3">
+                <span className="text-gray-300">Data Loss Incidents</span>
+                <span className="text-green-400 font-medium">{securityData.dataSecurity.dataLoss.incidents}</span>
+              </div>
+              <div className="flex items-center justify-between bg-slate-700/30 rounded p-3">
+                <span className="text-gray-300">Last Backup</span>
+                <span className="text-blue-400 font-medium">{securityData.dataSecurity.backups.lastBackup}</span>
+              </div>
+              <div className="flex items-center justify-between bg-slate-700/30 rounded p-3">
+                <span className="text-gray-300">Backup Integrity</span>
+                <span className="text-purple-400 font-medium">{formatPercentage(securityData.dataSecurity.backups.integrity)}</span>
+              </div>
+            </div>
+            <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="text-white text-sm font-medium mb-2">Access Control</div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Privileged Users</span>
+                  <span className="text-orange-400">{securityData.dataSecurity.access.privilegedUsers}</span>
                 </div>
-                <div className="text-xs text-gray-300">Real-time feed integration operational</div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Suspicious Access</span>
+                  <span className="text-red-400">{securityData.dataSecurity.access.suspiciousAccess}</span>
+                </div>
               </div>
             </div>
           </div>
-          
-          {/* Cybersecurity Control Panel */}
-          <div className="mt-4 pt-4 border-t border-gray-700">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Cybersecurity Operations Control</span>
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors">
-                  <Shield className="w-3 h-3 inline mr-1" />
-                  Threat Hunting
-                </button>
-                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
-                  <Eye className="w-3 h-3 inline mr-1" />
-                  SIEM Console
-                </button>
-                <button className="px-3 py-1 bg-orange-600 hover:bg-orange-700 rounded text-xs transition-colors">
-                  <Target className="w-3 h-3 inline mr-1" />
-                  Incident Response
-                </button>
+        </div>
+
+        {/* Threat Intelligence & Security Tools */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Target className="w-5 h-5 text-orange-400 mr-2" />
+              Threat Intelligence
+            </h3>
+            <div className="mb-6">
+              <div className="text-center mb-4">
+                <div className="text-2xl font-bold text-orange-400">{securityData.threatIntelligence.riskScore.toFixed(1)}</div>
+                <div className="text-orange-300 text-sm">Risk Score</div>
+              </div>
+            </div>
+            <div className="space-y-3 mb-4">
+              <h4 className="text-white text-sm font-medium">Active Campaigns</h4>
+              {securityData.threatIntelligence.campaigns.map((campaign, index) => (
+                <div key={index} className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-medium text-sm">{campaign.name}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getThreatColor(campaign.severity)}`}>
+                      {campaign.severity}
+                    </span>
+                  </div>
+                  <div className="text-gray-300 text-xs mb-2">{campaign.targets}</div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">Last Seen: {campaign.lastSeen}</span>
+                    <span className="text-cyan-400">Confidence: {formatPercentage(campaign.confidence)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="bg-slate-700/50 rounded-lg p-3">
+              <div className="text-white text-sm font-medium mb-2">Indicators of Compromise</div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Malicious IPs</span>
+                  <span className="text-red-400">{formatNumber(securityData.threatIntelligence.ioCs.maliciousIPs)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Malware Samples</span>
+                  <span className="text-orange-400">{formatNumber(securityData.threatIntelligence.ioCs.malwareSamples)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+              <Server className="w-5 h-5 text-purple-400 mr-2" />
+              Security Tools
+            </h3>
+            <div className="space-y-3">
+              {securityData.securityTools.map((tool, index) => (
+                <div key={index} className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-medium text-sm">{tool.name}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(tool.status)}`}>
+                      {tool.status}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <span className="text-gray-400">Version: </span>
+                      <span className="text-cyan-400">{tool.version}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Coverage: </span>
+                      <span className="text-green-400">{formatPercentage(tool.coverage)}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Alerts: </span>
+                      <span className="text-yellow-400">{tool.alerts}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs">
+                    <span className="text-gray-400">Last Update: </span>
+                    <span className="text-purple-400">{tool.lastUpdate}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Security Metrics Dashboard */}
+        <div className="bg-slate-800/50 rounded-xl p-6 border border-red-700/30">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+            <Activity className="w-5 h-5 text-cyan-400 mr-2" />
+            Security Metrics Dashboard
+          </h3>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div>
+              <h4 className="text-white text-sm font-medium mb-3">Incident Metrics</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Total Incidents</span>
+                  <span className="text-cyan-400">{securityData.securityMetrics.incidents.total}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Resolved</span>
+                  <span className="text-green-400">{securityData.securityMetrics.incidents.resolved}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Investigating</span>
+                  <span className="text-yellow-400">{securityData.securityMetrics.incidents.investigating}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Escalated</span>
+                  <span className="text-red-400">{securityData.securityMetrics.incidents.escalated}</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-white text-sm font-medium mb-3">Vulnerabilities</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Critical</span>
+                  <span className="text-red-400">{securityData.securityMetrics.vulnerabilities.critical}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">High</span>
+                  <span className="text-orange-400">{securityData.securityMetrics.vulnerabilities.high}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Medium</span>
+                  <span className="text-yellow-400">{securityData.securityMetrics.vulnerabilities.medium}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Low</span>
+                  <span className="text-green-400">{securityData.securityMetrics.vulnerabilities.low}</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-white text-sm font-medium mb-3">Authentication</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">MFA Adoption</span>
+                  <span className="text-green-400">{formatPercentage(securityData.securityMetrics.authentication.mfaAdoption)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Password Strength</span>
+                  <span className="text-cyan-400">{formatPercentage(securityData.securityMetrics.authentication.passwordStrength)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Failed Logins</span>
+                  <span className="text-yellow-400">{securityData.securityMetrics.authentication.failedLogins}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Suspicious Logins</span>
+                  <span className="text-red-400">{securityData.securityMetrics.authentication.suspiciousLogins}</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-white text-sm font-medium mb-3">Response Times</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Avg Resolution</span>
+                  <span className="text-purple-400">{securityData.securityMetrics.incidents.avgResolutionTime.toFixed(1)}min</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">MTTR</span>
+                  <span className="text-orange-400">{securityData.securityMetrics.incidents.mttr.toFixed(1)}min</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">Escalation Rate</span>
+                  <span className="text-cyan-400">{formatPercentage(securityData.incidentResponse.escalationRate)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-400">False Positive Rate</span>
+                  <span className="text-green-400">{formatPercentage(securityData.incidentResponse.falsePositiveRate)}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -998,6 +805,4 @@ const CybersecurityOperationsCenter = () => {
       </div>
     </div>
   );
-};
-
-export default CybersecurityOperationsCenter;
+}

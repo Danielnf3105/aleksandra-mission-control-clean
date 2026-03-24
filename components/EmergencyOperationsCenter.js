@@ -1,778 +1,929 @@
-import React, { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
-import { AlertTriangle, Shield, Radio, MapPin, Clock, Users, Zap, Activity, Eye, Target, Phone, Siren } from 'lucide-react';
+// Emergency Operations Center (EOC) - FEMA NIMS-Based 2026 Design
+// Inspired by FEMA ICS structure, incident command systems, and multi-agency coordination
+import { useState, useEffect } from 'react';
+import { 
+  AlertTriangle, Bell, Shield, Users, Radio, Map, Clock, Target,
+  Activity, TrendingUp, TrendingDown, CheckCircle, XCircle, 
+  Phone, MessageSquare, Navigation, Zap, Eye, Settings,
+  BarChart3, PieChart, LineChart, Gauge, MapPin, Satellite,
+  Truck, Plane, Building, Home,
+  Wifi, Database, Cloud, Monitor, Server, Network, Router,
+  Wind, Thermometer, Droplets, Sun, CloudRain, Snowflake,
+  Camera, Megaphone, FileText, Clipboard, Calendar, Archive
+} from 'lucide-react';
+import { LineChart as RechartsLineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
 
-const EmergencyOperationsCenter = () => {
+export default function EmergencyOperationsCenter() {
   const [eocStatus, setEocStatus] = useState({
-    activationLevel: 'Level 2',
-    activeIncidents: 3,
-    deployedPersonnel: 247,
-    emergencyVehicles: 89,
-    sheltersOpen: 6,
-    evacuatedPersons: 1247,
-    responseTime: 6.4, // minutes
-    coordinationEfficiency: 94.7
+    activationLevel: 'LEVEL_2', // LEVEL_1 (Full), LEVEL_2 (Partial), LEVEL_3 (Monitoring)
+    activeIncidents: 7,
+    criticalIncidents: 2,
+    resourcesDeployed: 156,
+    personnelActivated: 89,
+    agenciesCoordinating: 23,
+    operationalPeriod: '12 hours',
+    nextBriefing: '14:30',
+    weatherCondition: 'SEVERE_WEATHER_WARNING',
+    communicationsStatus: 'OPTIMAL',
+    sheltersOpen: 12,
+    evacuationOrders: 3
+  });
+
+  const [incidentCommandStructure, setIncidentCommandStructure] = useState({
+    incidentCommander: {
+      name: 'IC Williams',
+      position: 'Incident Commander',
+      status: 'ACTIVE',
+      location: 'EOC Command Post',
+      experience: '15 years',
+      certifications: ['ICS-400', 'AHiM', 'PIO'],
+      activeSpan: '08:00 - Current'
+    },
+    commandStaff: [
+      {
+        name: 'PIO Rodriguez',
+        position: 'Public Information Officer',
+        status: 'BRIEFING_MEDIA',
+        location: 'Media Center',
+        experience: '8 years',
+        certifications: ['ICS-300', 'G-290'],
+        currentTask: 'Coordinating public messaging for evacuation zones'
+      },
+      {
+        name: 'SO Thompson',
+        position: 'Safety Officer',
+        status: 'FIELD_ASSESSMENT',
+        location: 'Zone Alpha',
+        experience: '12 years',
+        certifications: ['ICS-300', 'OSHA-30'],
+        currentTask: 'Monitoring responder safety in flood zones'
+      },
+      {
+        name: 'LO Chen',
+        position: 'Liaison Officer',
+        status: 'COORDINATING',
+        location: 'EOC Floor',
+        experience: '10 years',
+        certifications: ['ICS-300', 'G-775'],
+        currentTask: 'Federal agency coordination for resource requests'
+      }
+    ],
+    operationsSections: [
+      {
+        sectionChief: 'OPS Chief Johnson',
+        status: 'DIRECTING_OPERATIONS',
+        location: 'Operations Center',
+        branches: [
+          {
+            name: 'Fire/Rescue Branch',
+            director: 'Fire Chief Martinez',
+            units: 12,
+            personnel: 156,
+            status: 'FULLY_DEPLOYED',
+            primaryTask: 'Search and rescue operations in affected areas'
+          },
+          {
+            name: 'Law Enforcement Branch',
+            director: 'Police Chief Anderson',
+            units: 8,
+            personnel: 89,
+            status: 'TRAFFIC_CONTROL',
+            primaryTask: 'Evacuation route security and traffic management'
+          },
+          {
+            name: 'EMS Branch',
+            director: 'EMS Director Taylor',
+            units: 15,
+            personnel: 67,
+            status: 'STANDBY_READY',
+            primaryTask: 'Medical support and emergency transportation'
+          },
+          {
+            name: 'Public Works Branch',
+            director: 'PW Director Wilson',
+            units: 6,
+            personnel: 45,
+            status: 'INFRASTRUCTURE_REPAIR',
+            primaryTask: 'Road clearance and utility restoration'
+          }
+        ]
+      }
+    ],
+    planningSection: {
+      sectionChief: 'Planning Chief Davis',
+      status: 'DEVELOPING_IAP',
+      location: 'Planning Room',
+      nextIAPDue: '18:00',
+      situationUnit: 'COLLECTING_DATA',
+      resourcesUnit: 'TRACKING_ASSIGNMENTS',
+      demobilizationUnit: 'PLANNING_PHASE_DOWN'
+    },
+    logisticsSection: {
+      sectionChief: 'Logistics Chief Brown',
+      status: 'RESOURCE_COORDINATION',
+      location: 'Resource Center',
+      facilitiesUnit: 'SHELTER_MANAGEMENT',
+      supplyUnit: 'DISTRIBUTING_SUPPLIES',
+      groundSupportUnit: 'EQUIPMENT_STAGING',
+      communicationsUnit: 'NETWORK_OPTIMAL'
+    },
+    financeSection: {
+      sectionChief: 'Finance Chief Garcia',
+      status: 'COST_TRACKING',
+      location: 'Admin Center',
+      estimatedCosts: '$2.4M',
+      reimbursementStatus: 'FEMA_SUBMITTED',
+      personnelTimeUnit: 'TRACKING_HOURS',
+      procurementUnit: 'EMERGENCY_PURCHASES'
+    }
   });
 
   const [activeIncidents, setActiveIncidents] = useState([
     {
-      id: 'INC-001',
-      type: 'Wildfire',
-      name: 'Canyon Ridge Fire',
-      severity: 'high',
-      status: 'active',
-      location: 'Riverside County',
-      startTime: new Date(Date.now() - 7200000),
-      affectedArea: 2847, // acres
-      evacuationZones: ['Zone A', 'Zone B'],
-      assignedUnits: 12,
-      icp: 'ICP-North',
-      commander: 'Incident Commander Johnson'
+      incidentId: 'INC-2026-0847',
+      type: 'SEVERE_WEATHER',
+      status: 'ACTIVE',
+      priority: 'HIGH',
+      title: 'Hurricane Zeta Landfall',
+      description: 'Category 3 hurricane making landfall with 115 mph winds, storm surge 12-15 feet',
+      location: 'Coastal Zone Alpha-Bravo',
+      startTime: '2026-03-14T06:00:00Z',
+      impactArea: '250 square miles',
+      populationAffected: 125000,
+      evacuationStatus: 'MANDATORY_ORDERED',
+      resourcesAssigned: 89,
+      incidentCommander: 'IC Williams',
+      nextUpdate: '11:45 PM',
+      weatherData: {
+        windSpeed: 115,
+        pressure: 945,
+        rainfall: 8.5,
+        stormSurge: 14.2
+      }
     },
     {
-      id: 'INC-002',
-      type: 'Earthquake',
-      name: 'San Andreas M5.2',
-      severity: 'medium',
-      status: 'monitoring',
-      location: 'San Bernardino County',
-      startTime: new Date(Date.now() - 3600000),
-      affectedArea: 0,
-      evacuationZones: [],
-      assignedUnits: 8,
-      icp: 'ICP-Central',
-      commander: 'Incident Commander Martinez'
+      incidentId: 'INC-2026-0848',
+      type: 'STRUCTURE_FIRE',
+      status: 'CONTAINED',
+      priority: 'MEDIUM',
+      title: 'Industrial Complex Fire',
+      description: 'Multi-alarm fire at chemical processing facility, hazmat concerns',
+      location: 'Industrial District, Zone Charlie',
+      startTime: '2026-03-14T09:30:00Z',
+      impactArea: '0.5 square miles',
+      populationAffected: 2500,
+      evacuationStatus: 'SHELTER_IN_PLACE',
+      resourcesAssigned: 34,
+      incidentCommander: 'Fire Chief Martinez',
+      nextUpdate: '12:00 AM',
+      hazmatStatus: 'LEVEL_B_CONTAINMENT'
     },
     {
-      id: 'INC-003',
-      type: 'Flooding',
-      name: 'Santa Ana River Flood',
-      severity: 'medium',
-      status: 'contained',
-      location: 'Orange County',
-      startTime: new Date(Date.now() - 10800000),
-      affectedArea: 156, // square miles
-      evacuationZones: ['Zone C'],
-      assignedUnits: 6,
-      icp: 'ICP-South',
-      commander: 'Incident Commander Davis'
+      incidentId: 'INC-2026-0849',
+      type: 'MASS_CASUALTY',
+      status: 'STABILIZED',
+      priority: 'CRITICAL',
+      title: 'Multi-Vehicle Highway Accident',
+      description: '15-vehicle collision on Interstate 95, multiple casualties',
+      location: 'I-95 Mile Marker 127',
+      startTime: '2026-03-14T14:45:00Z',
+      impactArea: '2 miles highway closure',
+      populationAffected: 35000,
+      evacuationStatus: 'TRAFFIC_DIVERSION',
+      resourcesAssigned: 28,
+      incidentCommander: 'EMS Director Taylor',
+      nextUpdate: '11:50 PM',
+      casualtyCount: {
+        critical: 8,
+        serious: 15,
+        minor: 22,
+        fatalities: 3
+      }
+    },
+    {
+      incidentId: 'INC-2026-0850',
+      type: 'UTILITY_OUTAGE',
+      status: 'RESPONDING',
+      priority: 'MEDIUM',
+      title: 'Power Grid Failure',
+      description: 'Hurricane-related power outages affecting 85,000 customers',
+      location: 'Grid Sectors 7-12',
+      startTime: '2026-03-14T07:15:00Z',
+      impactArea: '150 square miles',
+      populationAffected: 85000,
+      evacuationStatus: 'COOLING_CENTERS_OPEN',
+      resourcesAssigned: 45,
+      incidentCommander: 'PW Director Wilson',
+      nextUpdate: '12:15 AM',
+      restorationETA: '72 hours'
+    },
+    {
+      incidentId: 'INC-2026-0851',
+      type: 'FLOODING',
+      status: 'MONITORING',
+      priority: 'HIGH',
+      title: 'River Flooding',
+      description: 'Rushing River exceeding flood stage, levee monitoring critical',
+      location: 'Riverside Communities',
+      startTime: '2026-03-14T10:00:00Z',
+      impactArea: '25 square miles',
+      populationAffected: 15000,
+      evacuationStatus: 'VOLUNTARY_EVACUATION',
+      resourcesAssigned: 23,
+      incidentCommander: 'OPS Chief Johnson',
+      nextUpdate: 'Continuous',
+      waterLevel: '24.7 feet (flood stage: 22 feet)'
     }
   ]);
 
-  const [emergencyAssets, setEmergencyAssets] = useState([
+  const [resourceStatus, setResourceStatus] = useState({
+    personnel: {
+      firefighters: { available: 234, deployed: 156, reserve: 78 },
+      lawEnforcement: { available: 189, deployed: 89, reserve: 100 },
+      ems: { available: 145, deployed: 67, reserve: 78 },
+      publicWorks: { available: 89, deployed: 45, reserve: 44 },
+      volunteers: { available: 456, deployed: 89, reserve: 367 }
+    },
+    equipment: {
+      fireEngines: { available: 45, deployed: 28, maintenance: 3 },
+      ambulances: { available: 34, deployed: 15, maintenance: 2 },
+      rescueVehicles: { available: 23, deployed: 12, maintenance: 1 },
+      utilityTrucks: { available: 67, deployed: 34, maintenance: 4 },
+      helicopters: { available: 8, deployed: 3, weather_grounded: 2 }
+    },
+    facilities: {
+      shelters: { capacity: 15000, occupied: 8945, available: 6055 },
+      hospitals: { beds: 2340, occupied: 1876, available: 464 },
+      stagingAreas: { total: 12, active: 8, setup_in_progress: 2 },
+      commandPosts: { total: 8, active: 6, reserve: 2 }
+    },
+    supplies: {
+      water: { bottles: 125000, distributed: 34567, remaining: 90433 },
+      mre: { meals: 89000, distributed: 23456, remaining: 65544 },
+      blankets: { units: 15000, distributed: 8945, remaining: 6055 },
+      medicalSupplies: { status: 'ADEQUATE', criticalItems: 3, reorderLevel: false }
+    }
+  });
+
+  const [communicationsSystems, setCommunicationsSystems] = useState({
+    primaryRadio: { status: 'OPERATIONAL', channels: 16, traffic: 'HIGH' },
+    backupRadio: { status: 'STANDBY', channels: 8, traffic: 'LOW' },
+    cellularNetwork: { status: 'DEGRADED', coverage: 67, congestion: 'SEVERE' },
+    satelliteCom: { status: 'OPERATIONAL', terminals: 12, latency: '145ms' },
+    internetConnectivity: { status: 'OPERATIONAL', bandwidth: '500 Mbps', backup: 'ACTIVE' },
+    alertingSystems: {
+      eas: { status: 'ACTIVE', lastAlert: '10:30 PM' },
+      wirelessAlert: { status: 'OPERATIONAL', coverage: 94 },
+      socialMedia: { status: 'ACTIVE', followers_reached: 234567 },
+      mediaRelations: { activeOutlets: 23, pressConferences: 3 }
+    }
+  });
+
+  const [situationalAwareness, setSituationalAwareness] = useState({
+    weatherData: {
+      temperature: 78, // Fahrenheit
+      windSpeed: 85, // mph
+      windDirection: 'ENE',
+      barometricPressure: 29.12,
+      humidity: 89,
+      visibility: 0.5, // miles
+      precipitation: 'HEAVY_RAIN',
+      forecast: 'DETERIORATING'
+    },
+    hazmatSituations: {
+      chemicalSpills: 1,
+      radiationLevels: 'NORMAL',
+      airQuality: 'MODERATE',
+      waterContamination: 'MONITORING'
+    },
+    infrastructureStatus: {
+      bridges: { total: 45, closed: 8, monitored: 12 },
+      roads: { total_miles: 567, closed_miles: 89, detours: 23 },
+      airports: { total: 3, operational: 1, closed: 2 },
+      seaports: { total: 2, operational: 0, storm_closure: 2 },
+      railways: { total_miles: 234, operational_miles: 156, suspended: 78 }
+    },
+    emergencyServices: {
+      fireStations: { total: 34, operational: 32, evacuated: 2 },
+      policeStations: { total: 23, operational: 23, backup_power: 8 },
+      hospitals: { total: 12, operational: 10, generator_power: 6, evacuated: 2 },
+      schools: { total: 89, shelters: 12, evacuated: 34, closed: 43 }
+    }
+  });
+
+  const [operationalTimeline, setOperationalTimeline] = useState([
     {
-      id: 'FIRE-001',
-      type: 'Fire Engine',
-      unit: 'Engine 47',
-      status: 'deployed',
-      location: 'Canyon Ridge Fire',
-      personnel: 4,
-      eta: 'On Scene',
-      lastUpdate: new Date(),
-      capabilities: ['Structure Protection', 'Wildland Suppression']
+      time: '06:00',
+      event: 'Hurricane Zeta landfall imminent - EOC Level 2 activation',
+      type: 'ACTIVATION',
+      priority: 'HIGH'
     },
     {
-      id: 'RESCUE-001',
-      type: 'Search & Rescue',
-      unit: 'SAR Team Alpha',
-      status: 'standby',
-      location: 'Base Station',
-      personnel: 8,
-      eta: '15 min',
-      lastUpdate: new Date(Date.now() - 300000),
-      capabilities: ['Technical Rescue', 'Medical Support']
+      time: '06:15',
+      event: 'Mandatory evacuation ordered for Coastal Zones A-B',
+      type: 'EVACUATION',
+      priority: 'CRITICAL'
     },
     {
-      id: 'MEDICAL-001',
-      type: 'Emergency Medical',
-      unit: 'Ambulance 23',
-      status: 'en-route',
-      location: 'Highway 91 & Main St',
-      personnel: 2,
-      eta: '8 min',
-      lastUpdate: new Date(Date.now() - 120000),
-      capabilities: ['Advanced Life Support', 'Patient Transport']
+      time: '07:15',
+      event: 'Power grid failure reported - 85,000 customers affected',
+      type: 'INFRASTRUCTURE',
+      priority: 'HIGH'
     },
     {
-      id: 'POLICE-001',
-      type: 'Law Enforcement',
-      unit: 'Patrol Unit 456',
-      status: 'deployed',
-      location: 'Evacuation Zone A',
-      personnel: 2,
-      eta: 'On Scene',
-      lastUpdate: new Date(),
-      capabilities: ['Crowd Control', 'Traffic Management']
+      time: '08:30',
+      event: 'Hurricane eye wall contact - winds 115 mph sustained',
+      type: 'WEATHER',
+      priority: 'CRITICAL'
     },
     {
-      id: 'HAZMAT-001',
-      type: 'HAZMAT',
-      unit: 'HAZMAT 12',
-      status: 'available',
-      location: 'Station 12',
-      personnel: 3,
-      eta: '12 min',
-      lastUpdate: new Date(Date.now() - 600000),
-      capabilities: ['Chemical Response', 'Decontamination']
+      time: '09:30',
+      event: 'Industrial complex fire reported - hazmat response activated',
+      type: 'INCIDENT',
+      priority: 'HIGH'
+    },
+    {
+      time: '10:00',
+      event: 'Rushing River exceeding flood stage - levee monitoring initiated',
+      type: 'FLOODING',
+      priority: 'HIGH'
+    },
+    {
+      time: '11:45',
+      event: 'Storm surge peak - 14.2 feet recorded at gauge station',
+      type: 'WEATHER',
+      priority: 'CRITICAL'
+    },
+    {
+      time: '14:45',
+      event: 'Multi-vehicle accident I-95 - mass casualty incident declared',
+      type: 'INCIDENT',
+      priority: 'CRITICAL'
     }
   ]);
 
-  const [communicationChannels, setCommunicationChannels] = useState([
-    {
-      id: 'COMM-001',
-      name: 'Fire Command',
-      frequency: '154.430 MHz',
-      status: 'active',
-      traffic: 'high',
-      units: 18,
-      lastTransmission: 'Engine 47 requesting water drop',
-      priority: 'high'
-    },
-    {
-      id: 'COMM-002',
-      name: 'Police Tactical',
-      frequency: '460.250 MHz',
-      status: 'active',
-      traffic: 'medium',
-      units: 12,
-      lastTransmission: 'Unit 456 evacuation complete Zone A-7',
-      priority: 'medium'
-    },
-    {
-      id: 'COMM-003',
-      name: 'EMS Dispatch',
-      frequency: '155.340 MHz',
-      status: 'active',
-      traffic: 'low',
-      units: 6,
-      lastTransmission: 'Ambulance 23 transport to County General',
-      priority: 'medium'
-    },
-    {
-      id: 'COMM-004',
-      name: 'Emergency Management',
-      frequency: '453.212 MHz',
-      status: 'active',
-      traffic: 'medium',
-      units: 8,
-      lastTransmission: 'EOC to ICP-North shelter status update',
-      priority: 'high'
-    }
-  ]);
-
-  const [shelterStatus, setShelterStatus] = useState([
-    {
-      id: 'SHELTER-001',
-      name: 'Riverside Community Center',
-      status: 'open',
-      capacity: 500,
-      occupied: 247,
-      available: 253,
-      services: ['Food', 'Medical', 'Pet Care'],
-      manager: 'Sarah Thompson',
-      lastUpdate: new Date()
-    },
-    {
-      id: 'SHELTER-002',
-      name: 'Lincoln High School',
-      status: 'open',
-      capacity: 800,
-      occupied: 456,
-      available: 344,
-      services: ['Food', 'Medical', 'Childcare'],
-      manager: 'Michael Rodriguez',
-      lastUpdate: new Date(Date.now() - 180000)
-    },
-    {
-      id: 'SHELTER-003',
-      name: 'St. Mary\'s Church',
-      status: 'open',
-      capacity: 300,
-      occupied: 189,
-      available: 111,
-      services: ['Food', 'Medical'],
-      manager: 'Pastor Williams',
-      lastUpdate: new Date(Date.now() - 300000)
-    },
-    {
-      id: 'SHELTER-004',
-      name: 'Veterans Memorial Hall',
-      status: 'standby',
-      capacity: 400,
-      occupied: 0,
-      available: 400,
-      services: ['Food', 'Medical'],
-      manager: 'Janet Foster',
-      lastUpdate: new Date(Date.now() - 600000)
-    }
-  ]);
-
-  const [responseMetrics, setResponseMetrics] = useState([
-    {
-      time: new Date(Date.now() - 300000).toLocaleTimeString(),
-      activeIncidents: 2,
-      deployedUnits: 234,
-      evacuatedPersons: 1156,
-      shelterOccupancy: 847
-    },
-    {
-      time: new Date(Date.now() - 240000).toLocaleTimeString(),
-      activeIncidents: 3,
-      deployedUnits: 241,
-      evacuatedPersons: 1198,
-      shelterOccupancy: 892
-    },
-    {
-      time: new Date(Date.now() - 180000).toLocaleTimeString(),
-      activeIncidents: 3,
-      deployedUnits: 245,
-      evacuatedPersons: 1223,
-      shelterOccupancy: 903
-    },
-    {
-      time: new Date(Date.now() - 120000).toLocaleTimeString(),
-      activeIncidents: 3,
-      deployedUnits: 247,
-      evacuatedPersons: 1235,
-      shelterOccupancy: 892
-    },
-    {
-      time: new Date(Date.now() - 60000).toLocaleTimeString(),
-      activeIncidents: 3,
-      deployedUnits: 246,
-      evacuatedPersons: 1242,
-      shelterOccupancy: 889
-    },
-    {
-      time: new Date().toLocaleTimeString(),
-      activeIncidents: 3,
-      deployedUnits: 247,
-      evacuatedPersons: 1247,
-      shelterOccupancy: 892
-    }
-  ]);
-
-  const [eocAlerts, setEocAlerts] = useState([
-    {
-      id: 'ALERT-001',
-      severity: 'critical',
-      type: 'Evacuation Order',
-      message: 'Mandatory evacuation Zone B due to advancing wildfire',
-      timestamp: new Date(),
-      status: 'active',
-      agency: 'Fire Department',
-      broadcast: true
-    },
-    {
-      id: 'ALERT-002',
-      severity: 'warning',
-      type: 'Communication',
-      message: 'Fire Command frequency experiencing intermittent issues',
-      timestamp: new Date(Date.now() - 180000),
-      status: 'monitoring',
-      agency: 'Communications',
-      broadcast: false
-    },
-    {
-      id: 'ALERT-003',
-      severity: 'info',
-      type: 'Resource Update',
-      message: 'Additional HAZMAT team en route from neighboring county',
-      timestamp: new Date(Date.now() - 360000),
-      status: 'resolved',
-      agency: 'Mutual Aid',
-      broadcast: false
-    }
-  ]);
-
-  const [watchOfficers, setWatchOfficers] = useState([
-    {
-      position: 'EOC Manager',
-      name: 'Director Patricia Kim',
-      status: 'on-duty',
-      shift: 'Day Watch',
-      contact: 'Direct Line 1',
-      experience: '20 years'
-    },
-    {
-      position: 'Operations Chief',
-      name: 'Chief Robert Taylor',
-      status: 'on-duty',
-      shift: 'Day Watch',
-      contact: 'Ops Channel',
-      experience: '15 years'
-    },
-    {
-      position: 'Planning Chief',
-      name: 'Analyst Jennifer Lee',
-      status: 'on-duty',
-      shift: 'Day Watch',
-      contact: 'Planning Desk',
-      experience: '12 years'
-    },
-    {
-      position: 'Intelligence Officer',
-      name: 'Detective Mark Wilson',
-      status: 'on-call',
-      shift: 'Day Watch',
-      contact: 'Intel Line',
-      experience: '18 years'
-    }
-  ]);
-
-  // Real-time updates
+  // Real-time EOC updates
   useEffect(() => {
     const interval = setInterval(() => {
       // Update EOC status
       setEocStatus(prev => ({
         ...prev,
-        deployedPersonnel: Math.max(200, Math.min(300, prev.deployedPersonnel + Math.floor((Math.random() - 0.5) * 10))),
-        emergencyVehicles: Math.max(70, Math.min(120, prev.emergencyVehicles + Math.floor((Math.random() - 0.5) * 3))),
-        evacuatedPersons: Math.max(1000, Math.min(1500, prev.evacuatedPersons + Math.floor((Math.random() - 0.3) * 20))),
-        responseTime: Math.max(4, Math.min(12, prev.responseTime + (Math.random() - 0.5) * 0.5)),
-        coordinationEfficiency: Math.max(85, Math.min(99, prev.coordinationEfficiency + (Math.random() - 0.5) * 1))
+        activeIncidents: Math.max(3, Math.min(12, prev.activeIncidents + Math.floor((Math.random() - 0.6) * 2))),
+        resourcesDeployed: Math.max(100, Math.min(250, prev.resourcesDeployed + Math.floor((Math.random() - 0.5) * 10))),
+        personnelActivated: Math.max(60, Math.min(150, prev.personnelActivated + Math.floor((Math.random() - 0.5) * 5))),
+        agenciesCoordinating: Math.max(15, Math.min(35, prev.agenciesCoordinating + Math.floor((Math.random() - 0.5) * 2)))
       }));
 
-      // Update active incidents
-      setActiveIncidents(prev => prev.map(incident => {
-        if (incident.type === 'Wildfire' && incident.status === 'active') {
-          return {
-            ...incident,
-            affectedArea: Math.max(2000, Math.min(5000, incident.affectedArea + Math.floor(Math.random() * 50))),
-            assignedUnits: Math.max(8, Math.min(20, incident.assignedUnits + Math.floor((Math.random() - 0.5) * 2)))
-          };
+      // Update weather data
+      setSituationalAwareness(prev => ({
+        ...prev,
+        weatherData: {
+          ...prev.weatherData,
+          windSpeed: Math.max(40, Math.min(120, prev.weatherData.windSpeed + Math.floor((Math.random() - 0.3) * 8))),
+          barometricPressure: Math.max(28.5, Math.min(30.5, prev.weatherData.barometricPressure + (Math.random() - 0.5) * 0.2)),
+          visibility: Math.max(0.1, Math.min(10, prev.weatherData.visibility + (Math.random() - 0.3) * 0.5))
         }
-        return incident;
       }));
 
-      // Update emergency assets
-      setEmergencyAssets(prev => prev.map(asset => {
-        if (Math.random() > 0.8) {
-          const statuses = ['deployed', 'en-route', 'standby', 'available'];
-          const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
-          return {
-            ...asset,
-            status: newStatus,
-            eta: newStatus === 'deployed' ? 'On Scene' : `${Math.floor(Math.random() * 20) + 5} min`,
-            lastUpdate: new Date()
-          };
+      // Update resource deployments
+      setResourceStatus(prev => ({
+        ...prev,
+        personnel: {
+          ...prev.personnel,
+          firefighters: {
+            ...prev.personnel.firefighters,
+            deployed: Math.max(100, Math.min(200, prev.personnel.firefighters.deployed + Math.floor((Math.random() - 0.4) * 8)))
+          }
+        },
+        facilities: {
+          ...prev.facilities,
+          shelters: {
+            ...prev.facilities.shelters,
+            occupied: Math.max(6000, Math.min(12000, prev.facilities.shelters.occupied + Math.floor((Math.random() - 0.2) * 200)))
+          }
         }
-        return asset;
       }));
 
-      // Update communication channels
-      setCommunicationChannels(prev => prev.map(channel => {
-        const trafficLevels = ['low', 'medium', 'high'];
-        return {
-          ...channel,
-          traffic: Math.random() > 0.7 ? trafficLevels[Math.floor(Math.random() * trafficLevels.length)] : channel.traffic,
-          units: Math.max(3, Math.min(25, channel.units + Math.floor((Math.random() - 0.5) * 3)))
-        };
-      }));
-
-      // Update response metrics
-      const newMetrics = {
-        time: new Date().toLocaleTimeString(),
-        activeIncidents: eocStatus.activeIncidents,
-        deployedUnits: eocStatus.deployedPersonnel,
-        evacuatedPersons: eocStatus.evacuatedPersons,
-        shelterOccupancy: shelterStatus.reduce((sum, shelter) => sum + shelter.occupied, 0)
-      };
-      
-      setResponseMetrics(prev => [...prev.slice(1), newMetrics]);
-
-      // Occasionally add new EOC alerts
-      if (Math.random() > 0.96) {
-        const alertTypes = ['Evacuation Order', 'Weather Alert', 'Resource Update', 'Communication'];
-        const severities = ['info', 'warning', 'critical'];
-        const agencies = ['Fire Department', 'Police Department', 'Emergency Management', 'Public Health'];
+      // Occasionally add timeline events
+      if (Math.random() > 0.92) {
+        const eventTypes = ['UPDATE', 'RESOURCE', 'WEATHER', 'INCIDENT'];
+        const priorities = ['INFO', 'MEDIUM', 'HIGH', 'CRITICAL'];
+        const events = [
+          'Resource request fulfilled - additional units deployed',
+          'Weather conditions updating - monitoring continues',
+          'Shelter capacity status updated',
+          'Communications check completed - all systems operational',
+          'Situational update from field commanders received'
+        ];
         
-        const newAlert = {
-          id: `ALERT-${Date.now()}`,
-          severity: severities[Math.floor(Math.random() * severities.length)],
-          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
-          message: 'Real-time emergency operations alert',
-          timestamp: new Date(),
-          status: 'active',
-          agency: agencies[Math.floor(Math.random() * agencies.length)],
-          broadcast: Math.random() > 0.6
+        const newEvent = {
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+          event: events[Math.floor(Math.random() * events.length)],
+          type: eventTypes[Math.floor(Math.random() * eventTypes.length)],
+          priority: priorities[Math.floor(Math.random() * priorities.length)]
         };
         
-        setEocAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+        setOperationalTimeline(prev => [newEvent, ...prev.slice(0, 19)]);
       }
-    }, 5000);
+    }, 8000);
 
     return () => clearInterval(interval);
-  }, [eocStatus.activeIncidents, eocStatus.deployedPersonnel, eocStatus.evacuatedPersons]);
+  }, []);
 
-  const getIncidentSeverityColor = (severity) => {
-    switch (severity) {
-      case 'high': return '#EF4444';
-      case 'medium': return '#F59E0B';
-      case 'low': return '#3B82F6';
-      default: return '#6B7280';
+  const getStatusColor = (status) => {
+    switch(status?.toUpperCase()) {
+      case 'OPERATIONAL': case 'ACTIVE': case 'OPTIMAL': case 'CONTAINED': return 'text-green-400';
+      case 'DEGRADED': case 'MONITORING': case 'STANDBY': case 'RESPONDING': return 'text-yellow-400';
+      case 'CRITICAL': case 'SEVERE': case 'FAILED': case 'DOWN': return 'text-red-400';
+      case 'STABILIZED': case 'COORDINATING': case 'BRIEFING_MEDIA': return 'text-blue-400';
+      default: return 'text-gray-400';
     }
   };
 
-  const getAssetStatusColor = (status) => {
-    switch (status) {
-      case 'deployed': return '#EF4444';
-      case 'en-route': return '#F59E0B';
-      case 'standby': return '#3B82F6';
-      case 'available': return '#10B981';
-      default: return '#6B7280';
+  const getPriorityColor = (priority) => {
+    switch(priority?.toUpperCase()) {
+      case 'CRITICAL': return 'bg-red-900/30 border-red-500/50 text-red-300';
+      case 'HIGH': return 'bg-orange-900/30 border-orange-500/50 text-orange-300';
+      case 'MEDIUM': return 'bg-yellow-900/30 border-yellow-500/50 text-yellow-300';
+      case 'LOW': case 'INFO': return 'bg-blue-900/30 border-blue-500/50 text-blue-300';
+      default: return 'bg-gray-900/30 border-gray-500/50 text-gray-300';
     }
   };
 
-  const getAlertSeverityColor = (severity) => {
-    switch (severity) {
-      case 'critical': return '#EF4444';
-      case 'warning': return '#F59E0B';
-      case 'info': return '#3B82F6';
-      default: return '#6B7280';
+  const getIncidentTypeIcon = (type) => {
+    switch(type) {
+      case 'SEVERE_WEATHER': return <CloudRain className="w-5 h-5" />;
+      case 'STRUCTURE_FIRE': return <Truck className="w-5 h-5" />;
+      case 'MASS_CASUALTY': return <Truck className="w-5 h-5" />;
+      case 'UTILITY_OUTAGE': return <Zap className="w-5 h-5" />;
+      case 'FLOODING': return <Droplets className="w-5 h-5" />;
+      case 'HAZMAT': return <AlertTriangle className="w-5 h-5" />;
+      default: return <AlertTriangle className="w-5 h-5" />;
     }
   };
 
-  const getShelterStatusColor = (status) => {
-    switch (status) {
-      case 'open': return '#10B981';
-      case 'standby': return '#F59E0B';
-      case 'closed': return '#EF4444';
-      default: return '#6B7280';
+  const getActivationLevelColor = (level) => {
+    switch(level) {
+      case 'LEVEL_1': return 'text-red-400 bg-red-900/20';
+      case 'LEVEL_2': return 'text-yellow-400 bg-yellow-900/20';
+      case 'LEVEL_3': return 'text-blue-400 bg-blue-900/20';
+      default: return 'text-gray-400 bg-gray-900/20';
     }
   };
 
-  const getTrafficColor = (traffic) => {
-    switch (traffic) {
-      case 'high': return '#EF4444';
-      case 'medium': return '#F59E0B';
-      case 'low': return '#10B981';
-      default: return '#6B7280';
-    }
-  };
+  const resourceUtilization = [
+    { name: 'Fire/Rescue', deployed: 156, available: 234, utilization: 67 },
+    { name: 'Law Enforcement', deployed: 89, available: 189, utilization: 47 },
+    { name: 'EMS', deployed: 67, available: 145, utilization: 46 },
+    { name: 'Public Works', deployed: 45, available: 89, utilization: 51 },
+    { name: 'Volunteers', deployed: 89, available: 456, utilization: 20 }
+  ];
 
-  const incidentTypeDistribution = [
-    { name: 'Wildfire', value: 40, color: '#EF4444' },
-    { name: 'Earthquake', value: 25, color: '#F59E0B' },
-    { name: 'Flooding', value: 20, color: '#3B82F6' },
-    { name: 'Severe Weather', value: 10, color: '#8B5CF6' },
-    { name: 'HAZMAT', value: 5, color: '#10B981' }
+  const incidentPriorityDistribution = [
+    { name: 'Critical', value: 2, color: '#EF4444' },
+    { name: 'High', value: 3, color: '#F97316' },
+    { name: 'Medium', value: 2, color: '#EAB308' }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 font-mono">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
-        <div className="flex items-center space-x-3">
-          <Siren className="w-8 h-8 text-red-400" />
-          <div>
-            <h1 className="text-2xl font-bold text-white">EMERGENCY OPERATIONS CENTER</h1>
-            <p className="text-gray-400">Real-time disaster management, emergency response coordination, and all-hazards incident command</p>
+    <div className="h-screen bg-black text-white p-6 overflow-hidden">
+      {/* EOC Header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-bold text-red-400 flex items-center">
+            <Shield className="w-8 h-8 mr-3" />
+            Emergency Operations Center
+          </h1>
+          <div className="text-sm text-gray-400 flex items-center space-x-4">
+            <div className={`px-3 py-1 rounded-lg font-semibold ${getActivationLevelColor(eocStatus.activationLevel)}`}>
+              {eocStatus.activationLevel.replace('_', ' ')}
+            </div>
+            <div className="flex items-center">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              <span>{eocStatus.activeIncidents} Active Incidents</span>
+            </div>
+            <div className="flex items-center">
+              <Users className="w-4 h-4 mr-2" />
+              <span>{eocStatus.personnelActivated} Personnel</span>
+            </div>
+            <div>Next Briefing: {eocStatus.nextBriefing}</div>
           </div>
         </div>
-        <div className="flex items-center space-x-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-red-400">{eocStatus.activeIncidents}</div>
-            <div className="text-xs text-gray-400">ACTIVE INCIDENTS</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-400">{eocStatus.deployedPersonnel}</div>
-            <div className="text-xs text-gray-400">DEPLOYED PERSONNEL</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-400">{eocStatus.activationLevel}</div>
-            <div className="text-xs text-gray-400">ACTIVATION LEVEL</div>
-          </div>
-        </div>
+        <p className="text-gray-300">FEMA NIMS-based incident command system with multi-agency coordination, resource management & situational awareness</p>
       </div>
 
-      {/* EOC Status KPIs */}
-      <div className="grid grid-cols-6 gap-4 mb-6">
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Users className="w-5 h-5 text-green-400" />
-            <span className="text-xs text-gray-400">EVACUATED</span>
-          </div>
-          <div className="text-xl font-bold text-white">{eocStatus.evacuatedPersons.toLocaleString()}</div>
-          <div className="text-xs text-gray-400">Persons</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <MapPin className="w-5 h-5 text-blue-400" />
-            <span className="text-xs text-gray-400">VEHICLES</span>
-          </div>
-          <div className="text-xl font-bold text-white">{eocStatus.emergencyVehicles}</div>
-          <div className="text-xs text-gray-400">Emergency</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Shield className="w-5 h-5 text-yellow-400" />
-            <span className="text-xs text-gray-400">SHELTERS</span>
-          </div>
-          <div className="text-xl font-bold text-white">{eocStatus.sheltersOpen}</div>
-          <div className="text-xs text-gray-400">Open</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-purple-400" />
-            <span className="text-xs text-gray-400">RESPONSE TIME</span>
-          </div>
-          <div className="text-xl font-bold text-white">{eocStatus.responseTime.toFixed(1)}</div>
-          <div className="text-xs text-gray-400">Minutes</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Activity className="w-5 h-5 text-orange-400" />
-            <span className="text-xs text-gray-400">EFFICIENCY</span>
-          </div>
-          <div className="text-xl font-bold text-white">{eocStatus.coordinationEfficiency.toFixed(1)}%</div>
-          <div className="text-xs text-gray-400">Coordination</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Radio className="w-5 h-5 text-red-400" />
-            <span className="text-xs text-gray-400">COMM STATUS</span>
-          </div>
-          <div className="text-xl font-bold text-white">OPERATIONAL</div>
-          <div className="text-xs text-gray-400">All Channels</div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6 mb-6">
-        {/* Active Incidents */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
-            ACTIVE INCIDENTS
-          </h3>
-          <div className="space-y-3">
-            {activeIncidents.map(incident => (
-              <div key={incident.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getIncidentSeverityColor(incident.severity) }}>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
+        
+        {/* Main EOC Dashboard */}
+        <div className="lg:col-span-3 space-y-6">
+          
+          {/* Incident Command Overview */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-green-400 mb-4 flex items-center">
+              <Target className="w-5 h-5 mr-2" />
+              Incident Command Structure (ICS)
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+              <div className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{incident.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getIncidentSeverityColor(incident.severity)}20`, 
-                      color: getIncidentSeverityColor(incident.severity) 
-                    }}>
-                      {incident.severity.toUpperCase()}
-                    </span>
-                    <span className="text-xs text-gray-400">{incident.type}</span>
-                  </div>
+                  <span className="text-gray-400 text-sm">Activation Level</span>
+                  <Shield className="w-4 h-4 text-red-400" />
                 </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Location</span>
-                    <span className="text-blue-400">{incident.location}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Units</span>
-                    <span className="text-green-400">{incident.assignedUnits}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Duration</span>
-                    <span className="text-white">{Math.floor((Date.now() - incident.startTime) / 60000)}m</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Area</span>
-                    <span className="text-purple-400">
-                      {incident.affectedArea > 0 ? 
-                        (incident.type === 'Wildfire' ? `${incident.affectedArea} ac` : `${incident.affectedArea} sq mi`) : 'N/A'}
-                    </span>
-                  </div>
+                <div className="text-lg font-bold text-red-400">
+                  {eocStatus.activationLevel.replace('_', ' ')}
                 </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-yellow-400">{incident.icp}</span>
-                  <span className="text-gray-500">{incident.commander}</span>
+                <div className="text-sm text-gray-400">Partial EOC</div>
+              </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Active Incidents</span>
+                  <AlertTriangle className="w-4 h-4 text-orange-400" />
+                </div>
+                <div className="text-lg font-bold text-orange-400">
+                  {eocStatus.activeIncidents}
+                </div>
+                <div className="text-sm text-gray-400">
+                  <span className="text-red-400">{eocStatus.criticalIncidents}</span> critical
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Emergency Assets */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Shield className="w-5 h-5 mr-2 text-blue-400" />
-            EMERGENCY ASSETS
-          </h3>
-          <div className="space-y-3">
-            {emergencyAssets.map(asset => (
-              <div key={asset.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getAssetStatusColor(asset.status) }}>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{asset.unit}</span>
-                  <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                    backgroundColor: `${getAssetStatusColor(asset.status)}20`, 
-                    color: getAssetStatusColor(asset.status) 
-                  }}>
-                    {asset.status.toUpperCase()}
+                  <span className="text-gray-400 text-sm">Resources</span>
+                  <Truck className="w-4 h-4 text-blue-400" />
+                </div>
+                <div className="text-lg font-bold text-blue-400">
+                  {eocStatus.resourcesDeployed}
+                </div>
+                <div className="text-sm text-gray-400">deployed</div>
+              </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Personnel</span>
+                  <Users className="w-4 h-4 text-purple-400" />
+                </div>
+                <div className="text-lg font-bold text-purple-400">
+                  {eocStatus.personnelActivated}
+                </div>
+                <div className="text-sm text-gray-400">activated</div>
+              </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Agencies</span>
+                  <Building className="w-4 h-4 text-green-400" />
+                </div>
+                <div className="text-lg font-bold text-green-400">
+                  {eocStatus.agenciesCoordinating}
+                </div>
+                <div className="text-sm text-gray-400">coordinating</div>
+              </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Shelters</span>
+                  <Home className="w-4 h-4 text-cyan-400" />
+                </div>
+                <div className="text-lg font-bold text-cyan-400">
+                  {eocStatus.sheltersOpen}
+                </div>
+                <div className="text-sm text-gray-400">operational</div>
+              </div>
+            </div>
+
+            {/* Incident Commander & Command Staff */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white mb-3">Command Staff</h3>
+              
+              {/* Incident Commander */}
+              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    <Target className="w-5 h-5 mr-2 text-red-400" />
+                    <span className="font-bold text-white">{incidentCommandStructure.incidentCommander.name}</span>
+                  </div>
+                  <span className={`text-sm font-semibold ${getStatusColor(incidentCommandStructure.incidentCommander.status)}`}>
+                    {incidentCommandStructure.incidentCommander.status}
                   </span>
                 </div>
-                
-                <div className="text-xs text-gray-400 mb-2">{asset.type}</div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Personnel</span>
-                    <span className="text-white">{asset.personnel}</span>
+                <div className="text-sm text-red-300 mb-1">{incidentCommandStructure.incidentCommander.position}</div>
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-400">Location: </span>
+                    <span className="text-white">{incidentCommandStructure.incidentCommander.location}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">ETA</span>
-                    <span className="text-blue-400">{asset.eta}</span>
+                  <div>
+                    <span className="text-gray-400">Experience: </span>
+                    <span className="text-blue-400">{incidentCommandStructure.incidentCommander.experience}</span>
                   </div>
-                </div>
-                
-                <div className="text-xs text-gray-300 mb-2">
-                  Location: <span className="text-yellow-400">{asset.location}</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1">
-                  {asset.capabilities.map((cap, index) => (
-                    <span key={index} className="text-xs px-1 py-0.5 bg-gray-700 rounded text-gray-300">
-                      {cap}
-                    </span>
-                  ))}
+                  <div>
+                    <span className="text-gray-400">Active: </span>
+                    <span className="text-green-400">{incidentCommandStructure.incidentCommander.activeSpan}</span>
+                  </div>
                 </div>
               </div>
-            ))}
+
+              {/* Command Staff */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {incidentCommandStructure.commandStaff.map((staff, index) => (
+                  <div key={index} className="bg-gray-800 border border-gray-600 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-white text-sm">{staff.name}</span>
+                      <span className={`text-xs font-semibold ${getStatusColor(staff.status)}`}>
+                        {staff.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <div className="text-sm text-blue-300 mb-2">{staff.position}</div>
+                    <div className="text-xs text-gray-400 mb-1">
+                      Location: <span className="text-white">{staff.location}</span>
+                    </div>
+                    <div className="text-xs text-gray-300">{staff.currentTask}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Active Incidents & Resource Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Active Incidents */}
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-orange-400 mb-4 flex items-center">
+                <AlertTriangle className="w-5 h-5 mr-2" />
+                Active Incidents
+              </h2>
+              
+              <div className="space-y-4 max-h-80 overflow-y-auto">
+                {activeIncidents.slice(0, 4).map((incident, index) => (
+                  <div key={index} className={`border rounded p-4 ${getPriorityColor(incident.priority)}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        {getIncidentTypeIcon(incident.type)}
+                        <span className="ml-2 font-semibold text-white text-sm">{incident.title}</span>
+                      </div>
+                      <span className="text-xs bg-gray-700 px-2 py-1 rounded">
+                        {incident.priority}
+                      </span>
+                    </div>
+                    
+                    <div className="text-xs text-gray-300 mb-2">{incident.description}</div>
+                    
+                    <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                      <div>
+                        <span className="text-gray-400">Location: </span>
+                        <span className="text-blue-400">{incident.location}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">IC: </span>
+                        <span className="text-green-400">{incident.incidentCommander}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">Population: </span>
+                        <span className="text-white">{incident.populationAffected.toLocaleString()}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">Resources: </span>
+                        <span className="text-purple-400">{incident.resourcesAssigned}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between text-xs">
+                      <span className={`${getStatusColor(incident.status)}`}>{incident.status}</span>
+                      <span className="text-gray-400">Next Update: {incident.nextUpdate}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Resource Utilization */}
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-blue-400 mb-4 flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Resource Utilization
+              </h2>
+              
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={resourceUtilization}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="name" stroke="#9CA3AF" fontSize={10} />
+                  <YAxis stroke="#9CA3AF" fontSize={10} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1F2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '12px'
+                    }} 
+                  />
+                  <Legend />
+                  <Bar dataKey="deployed" fill="#3B82F6" name="Deployed" />
+                  <Bar dataKey="available" fill="#6B7280" name="Available" />
+                </BarChart>
+              </ResponsiveContainer>
+
+              {/* Facilities Status */}
+              <div className="mt-4 pt-4 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-3">Critical Facilities</div>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-gray-800 p-2 rounded">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">Shelters:</span>
+                      <span className="text-green-400">{resourceStatus?.facilities?.shelters?.occupied?.toLocaleString() || 0}</span>
+                    </div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">Hospital Beds:</span>
+                      <span className="text-blue-400">{resourceStatus?.facilities?.hospitals?.available || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Staging Areas:</span>
+                      <span className="text-purple-400">{resourceStatus?.facilities?.stagingAreas?.active || 0}</span>
+                    </div>
+                  </div>
+                  <div className="bg-gray-800 p-2 rounded">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">Water (bottles):</span>
+                      <span className="text-green-400">{resourceStatus?.supplies?.water?.remaining?.toLocaleString() || 0}</span>
+                    </div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">MREs:</span>
+                      <span className="text-blue-400">{resourceStatus?.supplies?.mre?.remaining?.toLocaleString() || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Blankets:</span>
+                      <span className="text-purple-400">{resourceStatus?.supplies?.blankets?.remaining?.toLocaleString() || 0}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Communication Channels */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Radio className="w-5 h-5 mr-2 text-green-400" />
-            COMMUNICATION CHANNELS
-          </h3>
-          <div className="space-y-3">
-            {communicationChannels.map(channel => (
-              <div key={channel.id} className="bg-gray-800 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{channel.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getTrafficColor(channel.traffic)}20`, 
-                      color: getTrafficColor(channel.traffic) 
-                    }}>
-                      {channel.traffic.toUpperCase()}
-                    </span>
-                    <span className="text-xs text-gray-400">{channel.units} units</span>
-                  </div>
+        {/* EOC Control Panel */}
+        <div className="space-y-4">
+          
+          {/* Situational Awareness */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-cyan-400 mb-3 flex items-center">
+              <Eye className="w-5 h-5 mr-2" />
+              Situational Awareness
+            </h2>
+            
+            {/* Weather Conditions */}
+            <div className="bg-gray-800 rounded-lg p-3 mb-3">
+              <div className="text-sm font-semibold text-white mb-2">Current Conditions</div>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Wind:</span>
+                  <span className="text-red-400">{situationalAwareness?.weatherData?.windSpeed || 0} mph {situationalAwareness?.weatherData?.windDirection || 'N'}</span>
                 </div>
-                
-                <div className="text-xs text-gray-400 mb-2">
-                  Frequency: <span className="text-blue-400">{channel.frequency}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Pressure:</span>
+                  <span className="text-blue-400">{situationalAwareness?.weatherData?.barometricPressure || 30.0}"</span>
                 </div>
-                
-                <div className="text-xs text-gray-300 mb-2">
-                  Last: <span className="text-white">{channel.lastTransmission}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Visibility:</span>
+                  <span className="text-yellow-400">{situationalAwareness?.weatherData?.visibility || 0} mi</span>
                 </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-purple-400">Priority: {channel.priority}</span>
-                  <span className={`w-2 h-2 rounded-full ${
-                    channel.status === 'active' ? 'bg-green-400' : 'bg-red-400'
-                  }`} />
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Humidity:</span>
+                  <span className="text-white">{situationalAwareness?.weatherData?.humidity || 0}%</span>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Infrastructure Status */}
+            <div className="bg-gray-800 rounded-lg p-3">
+              <div className="text-sm font-semibold text-white mb-2">Infrastructure</div>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Bridges Closed:</span>
+                  <span className="text-red-400">{situationalAwareness?.infrastructureStatus?.bridges?.closed || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Road Closures:</span>
+                  <span className="text-yellow-400">{situationalAwareness?.infrastructureStatus?.roads?.closed_miles || 0} mi</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Airports Open:</span>
+                  <span className="text-green-400">{situationalAwareness?.infrastructureStatus?.airports?.operational || 0}/3</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Hospitals Evac:</span>
+                  <span className="text-orange-400">{situationalAwareness?.infrastructureStatus?.emergencyServices?.hospitals?.evacuated || 0}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Watch Officers */}
-          <div className="mt-4 pt-3 border-t border-gray-700">
-            <div className="text-sm text-white font-semibold mb-2">Watch Officers</div>
-            <div className="space-y-1 text-xs">
-              {watchOfficers.slice(0, 3).map((officer, index) => (
-                <div key={index} className="flex justify-between">
-                  <span className="text-gray-400">{officer.position}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-white">{officer.name}</span>
-                    <span 
-                      className="w-2 h-2 rounded-full" 
-                      style={{ backgroundColor: officer.status === 'on-duty' ? '#10B981' : '#F59E0B' }}
-                    />
+          {/* Communications Status */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-green-400 mb-3 flex items-center">
+              <Radio className="w-5 h-5 mr-2" />
+              Communications
+            </h2>
+            
+            <div className="space-y-3">
+              <div className="bg-gray-800 rounded-lg p-3">
+                <div className="text-sm font-semibold text-white mb-2">Primary Systems</div>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Primary Radio:</span>
+                    <span className={getStatusColor(communicationsSystems.primaryRadio.status)}>
+                      {communicationsSystems.primaryRadio.status}
+                    </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Cellular:</span>
+                    <span className={getStatusColor(communicationsSystems.cellularNetwork.status)}>
+                      {communicationsSystems.cellularNetwork.status} ({communicationsSystems.cellularNetwork.coverage}%)
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Satellite:</span>
+                    <span className={getStatusColor(communicationsSystems.satelliteCom.status)}>
+                      {communicationsSystems.satelliteCom.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Internet:</span>
+                    <span className={getStatusColor(communicationsSystems.internetConnectivity.status)}>
+                      500 Mbps
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-800 rounded-lg p-3">
+                <div className="text-sm font-semibold text-white mb-2">Public Alerting</div>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">EAS:</span>
+                    <span className="text-green-400">ACTIVE</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Wireless Alert:</span>
+                    <span className="text-green-400">94% coverage</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Social Media:</span>
+                    <span className="text-blue-400">234K reached</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Media Outlets:</span>
+                    <span className="text-white">23 active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Operational Timeline */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-purple-400 mb-3 flex items-center">
+              <Clock className="w-5 h-5 mr-2" />
+              Timeline
+            </h2>
+            
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {operationalTimeline.slice(0, 8).map((event, index) => (
+                <div key={index} className="bg-gray-800 rounded p-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-blue-400 font-mono text-xs">{event.time}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded ${getPriorityColor(event.priority)}`}>
+                      {event.type}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-300">{event.event}</div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Emergency Response Analytics */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Real-time Response Metrics */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME RESPONSE METRICS</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={responseMetrics}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
-              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
-              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#fff'
-                }} 
-              />
-              <Legend />
-              <Line 
-                yAxisId="left"
-                type="monotone" 
-                dataKey="deployedUnits" 
-                stroke="#3B82F6" 
-                strokeWidth={3}
-                name="Deployed Units"
-                dot={false}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="evacuatedPersons" 
-                stroke="#EF4444" 
-                strokeWidth={2}
-                name="Evacuated Persons"
-                dot={false}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="shelterOccupancy" 
-                stroke="#10B981" 
-                strokeWidth={2}
-                name="Shelter Occupancy"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Incident Analysis & Shelter Management */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">INCIDENT TYPE ANALYSIS & SHELTER STATUS</h3>
-          <div className="flex">
-            <ResponsiveContainer width="60%" height={200}>
-              <PieChart>
+          {/* Incident Priority Distribution */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-orange-400 mb-3 flex items-center">
+              <PieChart className="w-5 h-5 mr-2" />
+              Incident Priority
+            </h2>
+            
+            <ResponsiveContainer width="100%" height={120}>
+              <RechartsPieChart>
                 <Pie
-                  data={incidentTypeDistribution}
+                  data={incidentPriorityDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={40}
-                  outerRadius={80}
+                  innerRadius={20}
+                  outerRadius={50}
                   paddingAngle={2}
                   dataKey="value"
                 >
-                  {incidentTypeDistribution.map((entry, index) => (
+                  {incidentPriorityDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -781,71 +932,31 @@ const EmergencyOperationsCenter = () => {
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#fff',
+                    fontSize: '12px'
                   }}
-                  formatter={(value) => [`${value}%`, 'Incident Type']}
+                  formatter={(value) => [`${value}`, 'Incidents']}
                 />
-              </PieChart>
+              </RechartsPieChart>
             </ResponsiveContainer>
-            <div className="w-2/5 space-y-2 mt-4">
-              {incidentTypeDistribution.map((incident, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+            
+            <div className="space-y-1 mt-2">
+              {incidentPriorityDistribution.map((priority, index) => (
+                <div key={index} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center">
                     <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: incident.color }}
+                      className="w-2 h-2 rounded-full mr-2" 
+                      style={{ backgroundColor: priority.color }}
                     />
-                    <span className="text-gray-400 text-sm">{incident.name}</span>
+                    <span className="text-gray-400">{priority.name}</span>
                   </div>
-                  <span className="text-white font-semibold">{incident.value}%</span>
+                  <span className="text-white font-semibold">{priority.value}</span>
                 </div>
               ))}
-              
-              {/* Shelter Summary */}
-              <div className="mt-4 pt-3 border-t border-gray-700">
-                <div className="text-sm text-white font-semibold mb-2">Active Shelters</div>
-                <div className="space-y-1 text-xs">
-                  {shelterStatus.filter(s => s.status === 'open').slice(0, 3).map((shelter, index) => (
-                    <div key={index} className="flex justify-between">
-                      <span className="text-gray-400">{shelter.name.split(' ')[0]} {shelter.name.split(' ')[1]}</span>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-white">{shelter.occupied}/{shelter.capacity}</span>
-                        <span 
-                          className="w-2 h-2 rounded-full" 
-                          style={{ backgroundColor: getShelterStatusColor(shelter.status) }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* EOC Command Panel */}
-          <div className="mt-4 pt-4 border-t border-gray-700">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Emergency Operations Command</span>
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-xs transition-colors">
-                  <Siren className="w-3 h-3 inline mr-1" />
-                  Emergency Alert
-                </button>
-                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
-                  <Phone className="w-3 h-3 inline mr-1" />
-                  ICP Comms
-                </button>
-                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
-                  <Eye className="w-3 h-3 inline mr-1" />
-                  Situation Report
-                </button>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default EmergencyOperationsCenter;
+}

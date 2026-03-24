@@ -1,814 +1,1035 @@
-import React, { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
-import { Factory, Cog, TrendingUp, AlertTriangle, CheckCircle, Zap, Activity, Clock, Target, Eye, Settings, Wrench } from 'lucide-react';
+// Manufacturing Operations Center (MOC) - Industry 4.0 SCADA/MES Integration 2026
+// Inspired by distributed SCADA systems, MES-ERP integration, and industrial automation
+import { useState, useEffect } from 'react';
+import { 
+  Activity, AlertTriangle, Cog, Factory, Gauge, Settings, 
+  Target, TrendingUp, TrendingDown, Zap, CheckCircle, XCircle,
+  BarChart3, PieChart, LineChart, Monitor, Database, Network,
+  Thermometer, Droplets, Wind, Battery, Power, Cpu, HardDrive,
+  Eye, Users, Clock, Calendar, Package, Truck, Archive,
+  Play, Pause, Square, RotateCcw, RefreshCw, Wrench, 
+  Shield, Lock, Unlock, Bell, MessageCircle, Phone,
+  MapPin, Navigation, Globe, Wifi, Bluetooth, Radio,
+  FileText, Clipboard, BarChart as BarChartIcon, PieChart as PieIcon,
+  Server, Router, Cloud, Link, Layers, Boxes, Workflow
+} from 'lucide-react';
+import { LineChart as RechartsLineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, RadialBarChart, RadialBar } from 'recharts';
 
-const ManufacturingOperationsCenter = () => {
-  const [productionStatus, setProductionStatus] = useState({
-    overallOEE: 87.3, // Overall Equipment Effectiveness
-    plannedProduction: 15000,
-    actualProduction: 13847,
-    defectRate: 1.2,
-    downtimeMinutes: 47,
-    energyEfficiency: 89.6,
-    safetyIncidents: 0,
-    activeWorkOrders: 24
+export default function ManufacturingOperationsCenter() {
+  const [mocStatus, setMocStatus] = useState({
+    overallEquipmentEffectiveness: 87.3, // OEE
+    totalProductionLines: 12,
+    activeLines: 11,
+    plannedDowntime: 1,
+    unplannedDowntime: 0,
+    currentShift: 'Night Shift',
+    shiftProduction: 8945,
+    targetProduction: 10000,
+    qualityRate: 98.7,
+    availabilityRate: 94.2,
+    performanceRate: 93.1,
+    scrapRate: 1.3,
+    energyEfficiency: 89.4
   });
 
   const [productionLines, setProductionLines] = useState([
     {
-      id: 'LINE-001',
-      name: 'Assembly Line A',
-      status: 'running',
-      oee: 91.2,
-      speed: 98.7, // % of target speed
-      quality: 98.9, // % good parts
-      availability: 94.1, // % uptime
-      target: 850, // units/hour
-      actual: 823,
-      product: 'Widget Pro',
-      operator: 'John Martinez',
-      lastMaintenance: new Date(Date.now() - 86400000 * 3)
+      lineId: 'LINE-A01',
+      name: 'Assembly Line Alpha',
+      status: 'RUNNING',
+      product: 'Motor Assembly Unit',
+      currentSpeed: 245, // units/hour
+      targetSpeed: 250,
+      efficiency: 98.0,
+      availability: 99.2,
+      quality: 98.9,
+      oee: 97.1,
+      temperature: 24.5,
+      vibration: 0.8, // mm/s
+      pressure: 6.2, // bar
+      operatorCount: 4,
+      cycleTime: 14.7, // seconds
+      lastMaintenance: '2026-03-10',
+      nextMaintenance: '2026-03-20'
     },
     {
-      id: 'LINE-002',
-      name: 'Assembly Line B',
-      status: 'running',
-      oee: 88.7,
-      speed: 95.2,
-      quality: 97.4,
-      availability: 95.7,
-      target: 720,
-      actual: 689,
-      product: 'Widget Standard',
-      operator: 'Sarah Kim',
-      lastMaintenance: new Date(Date.now() - 86400000 * 1)
-    },
-    {
-      id: 'LINE-003',
-      name: 'Packaging Line 1',
-      status: 'maintenance',
-      oee: 0,
-      speed: 0,
-      quality: 100,
-      availability: 0,
-      target: 1200,
-      actual: 0,
-      product: 'N/A',
-      operator: 'Maintenance Team',
-      lastMaintenance: new Date()
-    },
-    {
-      id: 'LINE-004',
-      name: 'Quality Control',
-      status: 'running',
-      oee: 95.4,
-      speed: 102.1,
-      quality: 99.8,
-      availability: 93.7,
-      target: 500,
-      actual: 478,
-      product: 'All Products',
-      operator: 'Lisa Rodriguez',
-      lastMaintenance: new Date(Date.now() - 86400000 * 5)
-    },
-    {
-      id: 'LINE-005',
-      name: 'Material Handling',
-      status: 'warning',
-      oee: 76.8,
-      speed: 85.3,
-      quality: 100,
-      availability: 90.1,
-      target: 300,
-      actual: 234,
-      product: 'Raw Materials',
-      operator: 'Mike Thompson',
-      lastMaintenance: new Date(Date.now() - 86400000 * 7)
-    }
-  ]);
-
-  const [equipmentStatus, setEquipmentStatus] = useState([
-    {
-      id: 'CNC-001',
-      name: 'CNC Machining Center 1',
-      type: 'CNC Machine',
-      status: 'running',
-      utilization: 94.2,
-      temperature: 68.5, // Celsius
-      vibration: 2.1, // mm/s
-      spindle: 8500, // RPM
-      nextMaintenance: '2026-03-10',
-      alerts: 0,
-      location: 'Zone A'
-    },
-    {
-      id: 'ROBOT-001',
-      name: 'Welding Robot #3',
-      type: 'Industrial Robot',
-      status: 'running',
-      utilization: 87.6,
-      temperature: 45.2,
-      vibration: 0.8,
-      spindle: 0,
-      nextMaintenance: '2026-03-08',
-      alerts: 0,
-      location: 'Zone B'
-    },
-    {
-      id: 'CONV-001',
-      name: 'Main Conveyor System',
-      type: 'Conveyor',
-      status: 'running',
-      utilization: 98.1,
-      temperature: 32.1,
+      lineId: 'LINE-B02',
+      name: 'Fabrication Line Beta',
+      status: 'RUNNING',
+      product: 'Housing Component',
+      currentSpeed: 189,
+      targetSpeed: 200,
+      efficiency: 94.5,
+      availability: 97.8,
+      quality: 96.7,
+      oee: 89.6,
+      temperature: 26.8,
       vibration: 1.2,
-      spindle: 0,
-      nextMaintenance: '2026-03-12',
-      alerts: 1,
-      location: 'Zone C'
+      pressure: 5.8,
+      operatorCount: 3,
+      cycleTime: 19.1,
+      lastMaintenance: '2026-03-08',
+      nextMaintenance: '2026-03-18'
     },
     {
-      id: 'PRESS-001',
-      name: 'Hydraulic Press #2',
-      type: 'Press',
-      status: 'warning',
-      utilization: 82.3,
-      temperature: 78.9,
-      vibration: 4.2,
-      spindle: 0,
-      nextMaintenance: '2026-03-07',
-      alerts: 2,
-      location: 'Zone A'
+      lineId: 'LINE-C03',
+      name: 'Packaging Line Charlie',
+      status: 'RUNNING',
+      product: 'Final Package',
+      currentSpeed: 456,
+      targetSpeed: 480,
+      efficiency: 95.0,
+      availability: 98.5,
+      quality: 99.2,
+      oee: 92.8,
+      temperature: 22.1,
+      vibration: 0.6,
+      pressure: 4.9,
+      operatorCount: 2,
+      cycleTime: 7.9,
+      lastMaintenance: '2026-03-12',
+      nextMaintenance: '2026-03-22'
     },
     {
-      id: 'INSPECT-001',
-      name: 'Vision Inspection System',
-      type: 'Quality Control',
-      status: 'running',
-      utilization: 96.7,
-      temperature: 28.4,
-      vibration: 0.3,
-      spindle: 0,
-      nextMaintenance: '2026-03-15',
-      alerts: 0,
-      location: 'Zone D'
+      lineId: 'LINE-D04',
+      name: 'Testing Line Delta',
+      status: 'MAINTENANCE',
+      product: 'Quality Inspection',
+      currentSpeed: 0,
+      targetSpeed: 120,
+      efficiency: 0,
+      availability: 0,
+      quality: 100,
+      oee: 0,
+      temperature: 23.4,
+      vibration: 0.0,
+      pressure: 0.0,
+      operatorCount: 1,
+      cycleTime: 30.0,
+      lastMaintenance: 'In Progress',
+      nextMaintenance: '2026-04-01'
+    },
+    {
+      lineId: 'LINE-E05',
+      name: 'Welding Line Echo',
+      status: 'RUNNING',
+      product: 'Frame Welding',
+      currentSpeed: 67,
+      targetSpeed: 75,
+      efficiency: 89.3,
+      availability: 95.2,
+      quality: 97.8,
+      oee: 83.1,
+      temperature: 28.9,
+      vibration: 1.8,
+      pressure: 7.3,
+      operatorCount: 5,
+      cycleTime: 53.7,
+      lastMaintenance: '2026-03-05',
+      nextMaintenance: '2026-03-25'
+    },
+    {
+      lineId: 'LINE-F06',
+      name: 'Paint Line Foxtrot',
+      status: 'WARNING',
+      product: 'Surface Coating',
+      currentSpeed: 89,
+      targetSpeed: 100,
+      efficiency: 89.0,
+      availability: 92.4,
+      quality: 95.6,
+      oee: 78.7,
+      temperature: 25.6,
+      vibration: 1.4,
+      pressure: 6.8,
+      operatorCount: 3,
+      cycleTime: 40.4,
+      lastMaintenance: '2026-03-01',
+      nextMaintenance: '2026-03-16'
     }
   ]);
 
-  const [qualityMetrics, setQualityMetrics] = useState([
-    {
-      product: 'Widget Pro',
-      totalProduced: 8234,
-      defective: 98,
-      defectRate: 1.19,
-      reworked: 34,
-      scrapped: 64,
-      firstPassYield: 98.81,
-      category: 'A-Grade'
+  const [scadaSystems, setScadaSystems] = useState({
+    primaryPLC: {
+      name: 'Primary PLC Controller',
+      model: 'Siemens S7-1500',
+      status: 'ONLINE',
+      cpuUsage: 34.7,
+      memoryUsage: 45.2,
+      ioModules: 24,
+      activeConnections: 156,
+      scanTime: '2.3ms',
+      diagnosticsStatus: 'HEALTHY',
+      firmwareVersion: 'V2.9.4',
+      lastUpdate: '2026-02-15'
     },
-    {
-      product: 'Widget Standard',
-      totalProduced: 5613,
-      defective: 67,
-      defectRate: 1.19,
-      reworked: 28,
-      scrapped: 39,
-      firstPassYield: 98.81,
-      category: 'A-Grade'
+    backupPLC: {
+      name: 'Backup PLC Controller',
+      model: 'Siemens S7-1500',
+      status: 'STANDBY',
+      cpuUsage: 12.1,
+      memoryUsage: 23.8,
+      ioModules: 24,
+      activeConnections: 0,
+      scanTime: '2.1ms',
+      diagnosticsStatus: 'HEALTHY',
+      firmwareVersion: 'V2.9.4',
+      lastUpdate: '2026-02-15'
     },
-    {
-      product: 'Widget Compact',
-      totalProduced: 2847,
-      defective: 45,
-      defectRate: 1.58,
-      reworked: 19,
-      scrapped: 26,
-      firstPassYield: 98.42,
-      category: 'B-Grade'
+    hmiStations: [
+      {
+        stationId: 'HMI-01',
+        location: 'Control Room Central',
+        status: 'ACTIVE',
+        operator: 'Shift Supervisor Johnson',
+        activeScreens: 4,
+        alarmCount: 2,
+        connectionStatus: 'CONNECTED'
+      },
+      {
+        stationId: 'HMI-02',
+        location: 'Line Floor Station A',
+        status: 'ACTIVE',
+        operator: 'Operator Williams',
+        activeScreens: 2,
+        alarmCount: 0,
+        connectionStatus: 'CONNECTED'
+      },
+      {
+        stationId: 'HMI-03',
+        location: 'Line Floor Station B',
+        status: 'ACTIVE',
+        operator: 'Operator Chen',
+        activeScreens: 3,
+        alarmCount: 1,
+        connectionStatus: 'CONNECTED'
+      },
+      {
+        stationId: 'HMI-04',
+        location: 'Maintenance Office',
+        status: 'IDLE',
+        operator: 'Maintenance Taylor',
+        activeScreens: 1,
+        alarmCount: 5,
+        connectionStatus: 'CONNECTED'
+      }
+    ],
+    communicationProtocols: {
+      ethernet: { status: 'ACTIVE', devices: 89, bandwidth: '85%' },
+      modbus: { status: 'ACTIVE', devices: 156, bandwidth: '67%' },
+      profinet: { status: 'ACTIVE', devices: 234, bandwidth: '72%' },
+      canbus: { status: 'ACTIVE', devices: 45, bandwidth: '34%' },
+      opcua: { status: 'ACTIVE', clients: 12, bandwidth: '23%' }
     }
-  ]);
+  });
+
+  const [mesIntegration, setMesIntegration] = useState({
+    productionOrders: {
+      active: 23,
+      completed: 156,
+      planned: 45,
+      urgent: 3,
+      onTime: 94.7,
+      qualityPassed: 98.2
+    },
+    inventoryManagement: {
+      rawMaterials: 'ADEQUATE',
+      workInProgress: 2340,
+      finishedGoods: 8945,
+      criticalShortages: 2,
+      reorderAlerts: 5,
+      warehouseUtilization: 78.9
+    },
+    qualityControl: {
+      inspectionStations: 8,
+      testsPerformed: 1567,
+      passRate: 98.7,
+      defectRate: 1.3,
+      rejectedLots: 2,
+      qualityTrends: 'IMPROVING'
+    },
+    maintenance: {
+      scheduledTasks: 12,
+      completedTasks: 8,
+      overdueTasks: 1,
+      emergencyRepairs: 0,
+      mtbf: '156 hours', // Mean Time Between Failures
+      mttr: '2.4 hours', // Mean Time To Repair
+      maintenanceEfficiency: 92.4
+    },
+    energyManagement: {
+      totalConsumption: '2.4 MWh',
+      peakDemand: '456 kW',
+      efficiency: 89.4,
+      costPerUnit: '$0.12/kWh',
+      renewablePercentage: 34.7,
+      carbonFootprint: '1.2 tons CO2/day'
+    }
+  });
 
   const [productionMetrics, setProductionMetrics] = useState([
     {
       time: new Date(Date.now() - 300000).toLocaleTimeString(),
-      production: 13456,
-      oee: 85.2,
-      quality: 98.1,
-      energy: 2847 // kWh
+      oee: 86.8,
+      production: 8734,
+      quality: 98.4,
+      efficiency: 87.2,
+      availability: 93.8
     },
     {
       time: new Date(Date.now() - 240000).toLocaleTimeString(),
-      production: 13523,
-      oee: 86.7,
-      quality: 98.3,
-      energy: 2892
+      oee: 87.1,
+      production: 8812,
+      quality: 98.6,
+      efficiency: 87.5,
+      availability: 94.1
     },
     {
       time: new Date(Date.now() - 180000).toLocaleTimeString(),
-      production: 13678,
-      oee: 87.1,
-      quality: 98.6,
-      energy: 2913
+      oee: 87.0,
+      production: 8856,
+      quality: 98.5,
+      efficiency: 87.3,
+      availability: 94.0
     },
     {
       time: new Date(Date.now() - 120000).toLocaleTimeString(),
-      production: 13734,
-      oee: 86.9,
-      quality: 98.4,
-      energy: 2931
+      oee: 87.2,
+      production: 8889,
+      quality: 98.7,
+      efficiency: 87.4,
+      availability: 94.2
     },
     {
       time: new Date(Date.now() - 60000).toLocaleTimeString(),
-      production: 13798,
-      oee: 87.8,
+      oee: 87.3,
+      production: 8912,
       quality: 98.7,
-      energy: 2956
+      efficiency: 87.6,
+      availability: 94.2
     },
     {
       time: new Date().toLocaleTimeString(),
-      production: 13847,
       oee: 87.3,
-      quality: 98.9,
-      energy: 2978
+      production: 8945,
+      quality: 98.7,
+      efficiency: 87.6,
+      availability: 94.2
     }
   ]);
 
-  const [manufactringAlerts, setManufacturingAlerts] = useState([
+  const [alarmManagement, setAlarmManagement] = useState([
     {
-      id: 'MFG-001',
-      severity: 'warning',
-      type: 'Predictive Maintenance',
-      message: 'Hydraulic Press #2 vibration levels elevated - maintenance recommended',
-      timestamp: new Date(),
-      status: 'active',
-      equipment: 'PRESS-001',
-      impact: 'medium'
-    },
-    {
-      id: 'MFG-002',
-      severity: 'caution',
-      type: 'Quality Alert',
-      message: 'Widget Compact defect rate trending upward - investigate cause',
+      alarmId: 'ALM-2026-001847',
+      severity: 'WARNING',
+      source: 'LINE-F06',
+      description: 'Paint booth temperature exceeding optimal range',
       timestamp: new Date(Date.now() - 180000),
-      status: 'investigating',
-      equipment: 'LINE-001',
-      impact: 'low'
+      status: 'ACTIVE',
+      operator: 'Operator Chen',
+      actionTaken: 'Adjusting cooling system setpoint',
+      acknowledgedBy: 'Supervisor Johnson',
+      category: 'PROCESS_DEVIATION'
     },
     {
-      id: 'MFG-003',
-      severity: 'info',
-      type: 'Maintenance Complete',
-      message: 'Packaging Line 1 scheduled maintenance completed successfully',
-      timestamp: new Date(Date.now() - 360000),
-      status: 'resolved',
-      equipment: 'LINE-003',
-      impact: 'none'
+      alarmId: 'ALM-2026-001848',
+      severity: 'HIGH',
+      source: 'LINE-E05',
+      description: 'Welding torch pressure below minimum threshold',
+      timestamp: new Date(Date.now() - 420000),
+      status: 'ACKNOWLEDGED',
+      operator: 'Operator Martinez',
+      actionTaken: 'Gas supply inspection initiated',
+      acknowledgedBy: 'Supervisor Johnson',
+      category: 'EQUIPMENT_FAULT'
+    },
+    {
+      alarmId: 'ALM-2026-001849',
+      severity: 'CRITICAL',
+      source: 'UTILITIES',
+      description: 'Compressed air pressure drop detected',
+      timestamp: new Date(Date.now() - 600000),
+      status: 'RESOLVED',
+      operator: 'Maintenance Taylor',
+      actionTaken: 'Compressor restart completed, pressure restored',
+      acknowledgedBy: 'Plant Manager Davis',
+      category: 'UTILITY_SYSTEM'
+    },
+    {
+      alarmId: 'ALM-2026-001850',
+      severity: 'WARNING',
+      source: 'LINE-A01',
+      description: 'Conveyor belt speed variance detected',
+      timestamp: new Date(Date.now() - 780000),
+      status: 'ACKNOWLEDGED',
+      operator: 'Operator Williams',
+      actionTaken: 'Belt tension adjustment in progress',
+      acknowledgedBy: 'Supervisor Johnson',
+      category: 'MECHANICAL'
     }
   ]);
 
-  const [workOrders, setWorkOrders] = useState([
+  const [operationsTeam, setOperationsTeam] = useState([
     {
-      id: 'WO-2847',
-      product: 'Widget Pro',
-      quantity: 500,
-      priority: 'high',
-      status: 'in-progress',
-      progress: 78,
-      line: 'Assembly Line A',
-      startTime: new Date(Date.now() - 14400000),
-      estimatedCompletion: new Date(Date.now() + 3600000),
-      operator: 'John Martinez'
-    },
-    {
-      id: 'WO-2848',
-      product: 'Widget Standard',
-      quantity: 750,
-      priority: 'normal',
-      status: 'in-progress',
-      progress: 45,
-      line: 'Assembly Line B',
-      startTime: new Date(Date.now() - 10800000),
-      estimatedCompletion: new Date(Date.now() + 7200000),
-      operator: 'Sarah Kim'
-    },
-    {
-      id: 'WO-2849',
-      product: 'Widget Compact',
-      quantity: 300,
-      priority: 'low',
-      status: 'scheduled',
-      progress: 0,
-      line: 'Assembly Line A',
-      startTime: new Date(Date.now() + 7200000),
-      estimatedCompletion: new Date(Date.now() + 21600000),
-      operator: 'TBD'
-    },
-    {
-      id: 'WO-2850',
-      product: 'Widget Pro',
-      quantity: 1000,
-      priority: 'high',
-      status: 'scheduled',
-      progress: 0,
-      line: 'Assembly Line B',
-      startTime: new Date(Date.now() + 14400000),
-      estimatedCompletion: new Date(Date.now() + 32400000),
-      operator: 'TBD'
-    }
-  ]);
-
-  const [plantOperators, setPlantOperators] = useState([
-    {
-      name: 'Plant Manager Rodriguez',
+      name: 'Plant Manager Davis',
       position: 'Plant Manager',
-      shift: 'Day Shift',
-      status: 'on-duty',
-      location: 'Control Room',
-      experience: '15 years'
+      shift: 'Day Shift (06:00-18:00)',
+      status: 'ON_DUTY',
+      location: 'Executive Office',
+      experience: '20 years',
+      certifications: ['Six Sigma Black Belt', 'Lean Manufacturing'],
+      responsibilities: 'Overall plant operations oversight'
     },
     {
-      name: 'Supervisor Martinez',
+      name: 'Supervisor Johnson',
       position: 'Production Supervisor',
-      shift: 'Day Shift',
-      status: 'on-floor',
-      location: 'Zone A',
-      experience: '8 years'
+      shift: 'Night Shift (18:00-06:00)',
+      status: 'ACTIVE_MONITORING',
+      location: 'Control Room',
+      experience: '12 years',
+      certifications: ['PLC Programming', 'Safety Management'],
+      responsibilities: 'Real-time production oversight, alarm management'
     },
     {
-      name: 'Operator Kim',
+      name: 'Operator Williams',
       position: 'Line Operator',
-      shift: 'Day Shift',
-      status: 'on-duty',
-      location: 'Assembly Line B',
-      experience: '6 years'
+      shift: 'Night Shift (18:00-06:00)',
+      status: 'LINE_OPERATION',
+      location: 'Assembly Line Alpha',
+      experience: '8 years',
+      certifications: ['HMI Operation', 'Quality Control'],
+      responsibilities: 'Line A01 operation and quality monitoring'
     },
     {
-      name: 'Technician Thompson',
-      position: 'Maintenance Tech',
-      shift: 'Day Shift',
-      status: 'maintenance',
-      location: 'Zone C',
-      experience: '12 years'
+      name: 'Operator Chen',
+      position: 'Line Operator',
+      shift: 'Night Shift (18:00-06:00)',
+      status: 'LINE_OPERATION',
+      location: 'Paint Line Foxtrot',
+      experience: '6 years',
+      certifications: ['Paint Systems', 'Environmental Safety'],
+      responsibilities: 'Paint line operation and environmental compliance'
+    },
+    {
+      name: 'Maintenance Taylor',
+      position: 'Maintenance Technician',
+      shift: 'On-Call',
+      status: 'MAINTENANCE_TASK',
+      location: 'Testing Line Delta',
+      experience: '15 years',
+      certifications: ['Electrical Systems', 'Mechanical Repair'],
+      responsibilities: 'Preventive maintenance and emergency repairs'
+    },
+    {
+      name: 'QA Rodriguez',
+      position: 'Quality Assurance',
+      shift: 'Night Shift (18:00-06:00)',
+      status: 'INSPECTION',
+      location: 'Quality Lab',
+      experience: '10 years',
+      certifications: ['ISO 9001', 'Statistical Process Control'],
+      responsibilities: 'Quality control and process validation'
     }
   ]);
 
-  // Real-time updates
+  // Real-time manufacturing updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update production status
-      setProductionStatus(prev => ({
+      // Update MOC status
+      setMocStatus(prev => ({
         ...prev,
-        actualProduction: Math.max(12000, Math.min(15000, prev.actualProduction + Math.floor(Math.random() * 20))),
-        overallOEE: Math.max(80, Math.min(95, prev.overallOEE + (Math.random() - 0.5) * 2)),
-        defectRate: Math.max(0.5, Math.min(3, prev.defectRate + (Math.random() - 0.5) * 0.1)),
-        downtimeMinutes: Math.max(30, Math.min(120, prev.downtimeMinutes + Math.floor((Math.random() - 0.7) * 5))),
-        energyEfficiency: Math.max(85, Math.min(95, prev.energyEfficiency + (Math.random() - 0.5) * 1))
+        overallEquipmentEffectiveness: Math.max(75, Math.min(95, prev.overallEquipmentEffectiveness + (Math.random() - 0.5) * 2)),
+        shiftProduction: Math.max(7000, Math.min(11000, prev.shiftProduction + Math.floor((Math.random() - 0.3) * 50))),
+        qualityRate: Math.max(95, Math.min(99.5, prev.qualityRate + (Math.random() - 0.5) * 0.5)),
+        energyEfficiency: Math.max(80, Math.min(95, prev.energyEfficiency + (Math.random() - 0.5) * 1))
       }));
 
       // Update production lines
       setProductionLines(prev => prev.map(line => {
-        if (line.status === 'running') {
+        if (line.status === 'RUNNING') {
           return {
             ...line,
-            actual: Math.max(line.target * 0.7, Math.min(line.target * 1.1, line.actual + Math.floor((Math.random() - 0.5) * 20))),
-            oee: Math.max(75, Math.min(98, line.oee + (Math.random() - 0.5) * 2)),
-            speed: Math.max(85, Math.min(105, line.speed + (Math.random() - 0.5) * 2)),
-            quality: Math.max(95, Math.min(100, line.quality + (Math.random() - 0.5) * 0.5)),
-            availability: Math.max(85, Math.min(100, line.availability + (Math.random() - 0.5) * 1))
+            currentSpeed: Math.max(line.targetSpeed * 0.8, Math.min(line.targetSpeed * 1.05, line.currentSpeed + (Math.random() - 0.5) * 10)),
+            efficiency: Math.max(80, Math.min(99, line.efficiency + (Math.random() - 0.5) * 2)),
+            temperature: Math.max(20, Math.min(35, line.temperature + (Math.random() - 0.5) * 1)),
+            vibration: Math.max(0.1, Math.min(3.0, line.vibration + (Math.random() - 0.5) * 0.2))
           };
         }
         return line;
       }));
 
-      // Update equipment status
-      setEquipmentStatus(prev => prev.map(equipment => {
-        if (equipment.status === 'running') {
-          return {
-            ...equipment,
-            utilization: Math.max(70, Math.min(100, equipment.utilization + (Math.random() - 0.5) * 2)),
-            temperature: Math.max(equipment.temperature - 10, Math.min(equipment.temperature + 20, equipment.temperature + (Math.random() - 0.5) * 2)),
-            vibration: Math.max(0.1, Math.min(5, equipment.vibration + (Math.random() - 0.5) * 0.2))
-          };
+      // Update SCADA systems
+      setScadaSystems(prev => ({
+        ...prev,
+        primaryPLC: {
+          ...prev.primaryPLC,
+          cpuUsage: Math.max(20, Math.min(60, prev.primaryPLC.cpuUsage + (Math.random() - 0.5) * 5)),
+          memoryUsage: Math.max(30, Math.min(70, prev.primaryPLC.memoryUsage + (Math.random() - 0.5) * 3))
         }
-        return equipment;
       }));
 
       // Update production metrics
       const newMetrics = {
         time: new Date().toLocaleTimeString(),
-        production: productionStatus.actualProduction,
-        oee: productionStatus.overallOEE,
-        quality: 96 + Math.random() * 4,
-        energy: 2800 + Math.random() * 400
+        oee: mocStatus.overallEquipmentEffectiveness,
+        production: mocStatus.shiftProduction,
+        quality: mocStatus.qualityRate,
+        efficiency: mocStatus.performanceRate,
+        availability: mocStatus.availabilityRate
       };
       
       setProductionMetrics(prev => [...prev.slice(1), newMetrics]);
 
-      // Occasionally add new manufacturing alerts
-      if (Math.random() > 0.96) {
-        const alertTypes = ['Predictive Maintenance', 'Quality Alert', 'Equipment Status', 'Energy Efficiency'];
-        const severities = ['info', 'caution', 'warning', 'critical'];
+      // Occasionally add new alarms
+      if (Math.random() > 0.95) {
+        const severities = ['WARNING', 'HIGH', 'CRITICAL'];
+        const sources = ['LINE-A01', 'LINE-B02', 'LINE-C03', 'LINE-E05', 'LINE-F06', 'UTILITIES'];
+        const categories = ['PROCESS_DEVIATION', 'EQUIPMENT_FAULT', 'UTILITY_SYSTEM', 'MECHANICAL'];
+        const descriptions = [
+          'Temperature variance detected',
+          'Pressure deviation from setpoint',
+          'Vibration levels exceeding threshold',
+          'Speed optimization required',
+          'Utility system check needed'
+        ];
         
-        const newAlert = {
-          id: `MFG-${Date.now()}`,
+        const newAlarm = {
+          alarmId: `ALM-2026-${Date.now().toString().slice(-6)}`,
           severity: severities[Math.floor(Math.random() * severities.length)],
-          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
-          message: 'Real-time manufacturing operations alert',
+          source: sources[Math.floor(Math.random() * sources.length)],
+          description: descriptions[Math.floor(Math.random() * descriptions.length)],
           timestamp: new Date(),
-          status: 'active',
-          equipment: equipmentStatus[Math.floor(Math.random() * equipmentStatus.length)].id,
-          impact: ['low', 'medium', 'high'][Math.floor(Math.random() * 3)]
+          status: 'ACTIVE',
+          operator: 'System Auto-Detection',
+          actionTaken: 'Awaiting operator response',
+          acknowledgedBy: 'Pending',
+          category: categories[Math.floor(Math.random() * categories.length)]
         };
         
-        setManufacturingAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+        setAlarmManagement(prev => [newAlarm, ...prev.slice(0, 9)]);
       }
-    }, 4000);
+    }, 6000);
 
     return () => clearInterval(interval);
-  }, [productionStatus.actualProduction, productionStatus.overallOEE]);
+  }, [mocStatus.overallEquipmentEffectiveness, mocStatus.shiftProduction, mocStatus.qualityRate, mocStatus.performanceRate, mocStatus.availabilityRate]);
 
-  const getLineStatusColor = (status) => {
-    switch (status) {
-      case 'running': return '#10B981';
-      case 'warning': return '#F59E0B';
-      case 'maintenance': return '#8B5CF6';
-      case 'stopped': return '#EF4444';
-      default: return '#6B7280';
+  const getStatusColor = (status) => {
+    switch(status?.toUpperCase()) {
+      case 'RUNNING': case 'ONLINE': case 'ACTIVE': case 'HEALTHY': case 'CONNECTED': return 'text-green-400';
+      case 'WARNING': case 'STANDBY': case 'IDLE': case 'ADEQUATE': return 'text-yellow-400';
+      case 'CRITICAL': case 'MAINTENANCE': case 'OFFLINE': case 'FAILED': return 'text-red-400';
+      case 'ACKNOWLEDGED': case 'RESOLVED': case 'IMPROVING': return 'text-blue-400';
+      default: return 'text-gray-400';
     }
   };
 
-  const getEquipmentStatusColor = (status) => {
-    switch (status) {
-      case 'running': return '#10B981';
-      case 'warning': return '#F59E0B';
-      case 'maintenance': return '#8B5CF6';
-      case 'fault': return '#EF4444';
-      default: return '#6B7280';
+  const getSeverityColor = (severity) => {
+    switch(severity?.toUpperCase()) {
+      case 'CRITICAL': return 'bg-red-900/30 border-red-500/50 text-red-300';
+      case 'HIGH': return 'bg-orange-900/30 border-orange-500/50 text-orange-300';
+      case 'WARNING': return 'bg-yellow-900/30 border-yellow-500/50 text-yellow-300';
+      case 'INFO': return 'bg-blue-900/30 border-blue-500/50 text-blue-300';
+      default: return 'bg-gray-900/30 border-gray-500/50 text-gray-300';
     }
   };
 
-  const getAlertSeverityColor = (severity) => {
-    switch (severity) {
-      case 'critical': return '#EF4444';
-      case 'warning': return '#F59E0B';
-      case 'caution': return '#3B82F6';
-      case 'info': return '#10B981';
-      default: return '#6B7280';
+  const getLineStatusIcon = (status) => {
+    switch(status) {
+      case 'RUNNING': return <Play className="w-4 h-4 text-green-400" />;
+      case 'MAINTENANCE': return <Wrench className="w-4 h-4 text-orange-400" />;
+      case 'WARNING': return <AlertTriangle className="w-4 h-4 text-yellow-400" />;
+      case 'STOPPED': return <Square className="w-4 h-4 text-red-400" />;
+      case 'PAUSED': return <Pause className="w-4 h-4 text-blue-400" />;
+      default: return <Activity className="w-4 h-4 text-gray-400" />;
     }
   };
 
-  const getWorkOrderPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high': return '#EF4444';
-      case 'normal': return '#3B82F6';
-      case 'low': return '#10B981';
-      default: return '#6B7280';
-    }
+  const getEfficiencyColor = (efficiency) => {
+    if (efficiency >= 95) return 'text-green-400';
+    if (efficiency >= 90) return 'text-blue-400';
+    if (efficiency >= 85) return 'text-yellow-400';
+    return 'text-red-400';
   };
 
-  const productionBreakdown = [
-    { name: 'Widget Pro', value: 60, color: '#3B82F6' },
-    { name: 'Widget Standard', value: 30, color: '#10B981' },
-    { name: 'Widget Compact', value: 10, color: '#8B5CF6' }
+  const productionDistribution = [
+    { name: 'On Schedule', value: 83, color: '#10B981' },
+    { name: 'Ahead', value: 12, color: '#3B82F6' },
+    { name: 'Behind', value: 5, color: '#F59E0B' }
+  ];
+
+  const qualityDistribution = [
+    { name: 'Pass', value: 98.7, color: '#10B981' },
+    { name: 'Rework', value: 1.0, color: '#F59E0B' },
+    { name: 'Scrap', value: 0.3, color: '#EF4444' }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 font-mono">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
-        <div className="flex items-center space-x-3">
-          <Factory className="w-8 h-8 text-green-400" />
-          <div>
-            <h1 className="text-2xl font-bold text-white">MANUFACTURING OPERATIONS CENTER</h1>
-            <p className="text-gray-400">Real-time production monitoring, industrial automation, and Manufacturing Execution System (MES)</p>
+    <div className="h-screen bg-black text-white p-6 overflow-hidden">
+      {/* MOC Header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-bold text-blue-400 flex items-center">
+            <Factory className="w-8 h-8 mr-3" />
+            Manufacturing Operations Center
+          </h1>
+          <div className="text-sm text-gray-400 flex items-center space-x-4">
+            <div className="flex items-center">
+              <Gauge className="w-4 h-4 mr-2" />
+              <span>OEE: {mocStatus.overallEquipmentEffectiveness.toFixed(1)}%</span>
+            </div>
+            <div className="flex items-center">
+              <Target className="w-4 h-4 mr-2" />
+              <span>Production: {mocStatus.shiftProduction.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 mr-2" />
+              <span>Quality: {mocStatus.qualityRate.toFixed(1)}%</span>
+            </div>
+            <div>Shift: {mocStatus.currentShift}</div>
           </div>
         </div>
-        <div className="flex items-center space-x-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-400">{productionStatus.overallOEE.toFixed(1)}%</div>
-            <div className="text-xs text-gray-400">OVERALL OEE</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-400">{productionStatus.actualProduction.toLocaleString()}</div>
-            <div className="text-xs text-gray-400">UNITS PRODUCED</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-400">{productionStatus.defectRate.toFixed(1)}%</div>
-            <div className="text-xs text-gray-400">DEFECT RATE</div>
-          </div>
-        </div>
+        <p className="text-gray-300">Industry 4.0 SCADA/MES integration with distributed control systems, real-time analytics & predictive maintenance</p>
       </div>
 
-      {/* Manufacturing KPIs */}
-      <div className="grid grid-cols-6 gap-4 mb-6">
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Target className="w-5 h-5 text-green-400" />
-            <span className="text-xs text-gray-400">PLANNED</span>
-          </div>
-          <div className="text-xl font-bold text-white">{productionStatus.plannedProduction.toLocaleString()}</div>
-          <div className="text-xs text-gray-400">Units Target</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-yellow-400" />
-            <span className="text-xs text-gray-400">DOWNTIME</span>
-          </div>
-          <div className="text-xl font-bold text-white">{productionStatus.downtimeMinutes}</div>
-          <div className="text-xs text-gray-400">Minutes</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Zap className="w-5 h-5 text-orange-400" />
-            <span className="text-xs text-gray-400">ENERGY</span>
-          </div>
-          <div className="text-xl font-bold text-white">{productionStatus.energyEfficiency.toFixed(1)}%</div>
-          <div className="text-xs text-gray-400">Efficiency</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <CheckCircle className="w-5 h-5 text-red-400" />
-            <span className="text-xs text-gray-400">SAFETY</span>
-          </div>
-          <div className="text-xl font-bold text-white">{productionStatus.safetyIncidents}</div>
-          <div className="text-xs text-gray-400">Incidents</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Cog className="w-5 h-5 text-blue-400" />
-            <span className="text-xs text-gray-400">WORK ORDERS</span>
-          </div>
-          <div className="text-xl font-bold text-white">{productionStatus.activeWorkOrders}</div>
-          <div className="text-xs text-gray-400">Active</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Activity className="w-5 h-5 text-purple-400" />
-            <span className="text-xs text-gray-400">EFFICIENCY</span>
-          </div>
-          <div className="text-xl font-bold text-white">{((productionStatus.actualProduction / productionStatus.plannedProduction) * 100).toFixed(1)}%</div>
-          <div className="text-xs text-gray-400">Target vs Actual</div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6 mb-6">
-        {/* Production Lines */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Factory className="w-5 h-5 mr-2 text-green-400" />
-            PRODUCTION LINES
-          </h3>
-          <div className="space-y-3">
-            {productionLines.map(line => (
-              <div key={line.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getLineStatusColor(line.status) }}>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-200px)]">
+        
+        {/* Main Manufacturing Dashboard */}
+        <div className="lg:col-span-3 space-y-6">
+          
+          {/* Manufacturing Overview */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-green-400 mb-4 flex items-center">
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Production Operations Overview
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+              <div className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{line.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getLineStatusColor(line.status)}20`, 
-                      color: getLineStatusColor(line.status) 
-                    }}>
-                      {line.status.toUpperCase()}
-                    </span>
-                    <span className="text-xs text-gray-400">OEE: {line.oee.toFixed(1)}%</span>
-                  </div>
+                  <span className="text-gray-400 text-sm">OEE</span>
+                  <Gauge className="w-4 h-4 text-blue-400" />
                 </div>
-                
-                <div className="text-xs text-gray-400 mb-2">
-                  Product: <span className="text-blue-400">{line.product}</span>
+                <div className="text-2xl font-bold text-blue-400">
+                  {mocStatus.overallEquipmentEffectiveness.toFixed(1)}%
                 </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Speed</span>
-                    <span className="text-green-400">{line.speed.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Quality</span>
-                    <span className="text-blue-400">{line.quality.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Availability</span>
-                    <span className="text-purple-400">{line.availability.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Output</span>
-                    <span className="text-white">{line.actual}/{line.target}</span>
-                  </div>
+                <div className="text-sm text-gray-400">overall efficiency</div>
+              </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Active Lines</span>
+                  <Factory className="w-4 h-4 text-green-400" />
                 </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-yellow-400">Operator: {line.operator.split(' ')[0]}</span>
-                  <span className="text-gray-500">
-                    Maint: {Math.floor((Date.now() - line.lastMaintenance) / (1000 * 60 * 60 * 24))}d ago
-                  </span>
+                <div className="text-2xl font-bold text-green-400">
+                  {mocStatus.activeLines}/{mocStatus.totalProductionLines}
+                </div>
+                <div className="text-sm text-gray-400">production lines</div>
+              </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Shift Output</span>
+                  <Package className="w-4 h-4 text-purple-400" />
+                </div>
+                <div className="text-2xl font-bold text-purple-400">
+                  {(mocStatus.shiftProduction / 1000).toFixed(1)}K
+                </div>
+                <div className="text-sm text-gray-400">
+                  Target: {(mocStatus.targetProduction / 1000).toFixed(0)}K
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Equipment Status */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Cog className="w-5 h-5 mr-2 text-blue-400" />
-            EQUIPMENT STATUS
-          </h3>
-          <div className="space-y-3">
-            {equipmentStatus.map(equipment => (
-              <div key={equipment.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getEquipmentStatusColor(equipment.status) }}>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{equipment.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getEquipmentStatusColor(equipment.status)}20`, 
-                      color: getEquipmentStatusColor(equipment.status) 
-                    }}>
-                      {equipment.status.toUpperCase()}
-                    </span>
-                    {equipment.alerts > 0 && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-red-900 text-red-400">
-                        {equipment.alerts} Alert{equipment.alerts > 1 ? 's' : ''}
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-gray-400 text-sm">Quality Rate</span>
+                  <CheckCircle className="w-4 h-4 text-green-400" />
                 </div>
-                
-                <div className="text-xs text-gray-400 mb-2">{equipment.type}</div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Utilization</span>
-                    <span className="text-green-400">{equipment.utilization.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Temp</span>
-                    <span className="text-blue-400">{equipment.temperature.toFixed(1)}°C</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Vibration</span>
-                    <span className="text-purple-400">{equipment.vibration.toFixed(1)} mm/s</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Location</span>
-                    <span className="text-white">{equipment.location}</span>
-                  </div>
+                <div className="text-2xl font-bold text-green-400">
+                  {mocStatus.qualityRate.toFixed(1)}%
                 </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-yellow-400">Next Maint: {equipment.nextMaintenance}</span>
-                  <span className="text-gray-500">{equipment.id}</span>
-                </div>
+                <div className="text-sm text-gray-400">pass rate</div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Work Orders & Alerts */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
-            WORK ORDERS & ALERTS
-          </h3>
-          <div className="space-y-3 mb-4">
-            {workOrders.slice(0, 3).map(order => (
-              <div key={order.id} className="bg-gray-800 rounded-lg p-3">
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{order.id}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getWorkOrderPriorityColor(order.priority)}20`, 
-                      color: getWorkOrderPriorityColor(order.priority) 
-                    }}>
-                      {order.priority.toUpperCase()}
-                    </span>
-                    <span className="text-xs text-gray-400">{order.quantity} units</span>
-                  </div>
+                  <span className="text-gray-400 text-sm">Availability</span>
+                  <Activity className="w-4 h-4 text-cyan-400" />
                 </div>
-                
-                <div className="text-xs text-gray-400 mb-2">
-                  Product: <span className="text-blue-400">{order.product}</span>
+                <div className="text-2xl font-bold text-cyan-400">
+                  {mocStatus.availabilityRate.toFixed(1)}%
                 </div>
-                
-                <div className="flex items-center justify-between text-xs mb-2">
-                  <span className="text-gray-400">Progress</span>
-                  <span className="text-white">{order.progress}%</span>
-                </div>
-                
-                <div className="bg-gray-700 rounded-full h-1.5 mb-2">
-                  <div 
-                    className="bg-green-500 rounded-full h-1.5 transition-all duration-500" 
-                    style={{ width: `${order.progress}%` }}
-                  />
-                </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-purple-400">{order.line}</span>
-                  <span className="text-gray-500">{order.status}</span>
-                </div>
+                <div className="text-sm text-gray-400">uptime</div>
               </div>
-            ))}
-          </div>
+              
+              <div className="bg-gray-800 p-4 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-400 text-sm">Energy Efficiency</span>
+                  <Zap className="w-4 h-4 text-yellow-400" />
+                </div>
+                <div className="text-2xl font-bold text-yellow-400">
+                  {mocStatus.energyEfficiency.toFixed(1)}%
+                </div>
+                <div className="text-sm text-gray-400">efficiency</div>
+              </div>
+            </div>
 
-          {/* Manufacturing Alerts */}
-          <div className="border-t border-gray-700 pt-3">
-            <div className="text-sm text-white font-semibold mb-2">Manufacturing Alerts</div>
-            <div className="space-y-2">
-              {manufactringAlerts.slice(0, 3).map(alert => (
-                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-white">{alert.type}</span>
-                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
-                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
-                      color: getAlertSeverityColor(alert.severity) 
-                    }}>
-                      {alert.severity.toUpperCase()}
-                    </span>
+            {/* Production Lines Status */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white mb-3">Production Lines</h3>
+              {productionLines.map((line, index) => (
+                <div key={index} className="bg-gray-800 rounded-lg p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-8 gap-4">
+                    <div>
+                      <div className="flex items-center mb-1">
+                        {getLineStatusIcon(line.status)}
+                        <span className="ml-2 font-bold text-white text-sm">{line.lineId}</span>
+                      </div>
+                      <div className="text-sm text-gray-400">{line.name}</div>
+                      <div className="text-xs text-gray-500">{line.product}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Status</div>
+                      <div className={`font-semibold ${getStatusColor(line.status)}`}>
+                        {line.status}
+                      </div>
+                      <div className="text-xs text-gray-500">Operators: {line.operatorCount}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Speed</div>
+                      <div className="text-white font-mono">
+                        {line.currentSpeed.toFixed(0)} u/h
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Target: {line.targetSpeed}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">OEE</div>
+                      <div className={`font-mono ${getEfficiencyColor(line.oee)}`}>
+                        {line.oee.toFixed(1)}%
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Cycle: {line.cycleTime}s
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Efficiency</div>
+                      <div className={`font-mono ${getEfficiencyColor(line.efficiency)}`}>
+                        {line.efficiency.toFixed(1)}%
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Avail: {line.availability.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Temperature</div>
+                      <div className={`font-mono ${line.temperature > 30 ? 'text-red-400' : line.temperature > 25 ? 'text-yellow-400' : 'text-green-400'}`}>
+                        {line.temperature.toFixed(1)}°C
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        Vib: {line.vibration.toFixed(1)}mm/s
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Quality</div>
+                      <div className="text-green-400 font-mono">{line.quality.toFixed(1)}%</div>
+                      <div className="text-xs text-gray-500">
+                        Pressure: {line.pressure.toFixed(1)}bar
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-400">Maintenance</div>
+                      <div className="text-blue-400 text-xs">{line.nextMaintenance}</div>
+                      <div className="text-xs text-gray-500">
+                        Last: {line.lastMaintenance}
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-blue-400">{alert.equipment}</span>
-                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
+                  <div className="mt-3">
+                    <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          line.oee > 90 ? 'bg-green-400' :
+                          line.oee > 80 ? 'bg-blue-400' :
+                          line.oee > 70 ? 'bg-yellow-400' :
+                          'bg-red-400'
+                        }`}
+                        style={{width: `${line.oee}%`}}
+                      ></div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Manufacturing Analytics */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Real-time Production Metrics */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME PRODUCTION METRICS</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={productionMetrics}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
-              <YAxis yAxisId="left" stroke="#9CA3AF" fontSize={12} />
-              <YAxis yAxisId="right" orientation="right" stroke="#9CA3AF" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#fff'
-                }} 
-              />
-              <Legend />
-              <Line 
-                yAxisId="left"
-                type="monotone" 
-                dataKey="production" 
-                stroke="#3B82F6" 
-                strokeWidth={3}
-                name="Production (Units)"
-                dot={false}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="oee" 
-                stroke="#10B981" 
-                strokeWidth={2}
-                name="OEE %"
-                dot={false}
-              />
-              <Line 
-                yAxisId="right"
-                type="monotone" 
-                dataKey="quality" 
-                stroke="#F59E0B" 
-                strokeWidth={2}
-                name="Quality %"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          {/* SCADA Systems & Real-Time Analytics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* SCADA Systems */}
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-orange-400 mb-4 flex items-center">
+                <Cpu className="w-5 h-5 mr-2" />
+                SCADA Systems
+              </h2>
+              
+              {/* PLC Controllers */}
+              <div className="space-y-4 mb-4">
+                <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-semibold text-white text-sm">Primary PLC</span>
+                    <span className={`text-sm font-semibold ${getStatusColor(scadaSystems.primaryPLC.status)}`}>
+                      {scadaSystems.primaryPLC.status}
+                    </span>
+                  </div>
+                  
+                  <div className="text-sm text-blue-300 mb-2">{scadaSystems.primaryPLC.model}</div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">CPU:</span>
+                      <span className={getEfficiencyColor(100 - scadaSystems.primaryPLC.cpuUsage)}>
+                        {scadaSystems.primaryPLC.cpuUsage.toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Memory:</span>
+                      <span className={getEfficiencyColor(100 - scadaSystems.primaryPLC.memoryUsage)}>
+                        {scadaSystems.primaryPLC.memoryUsage.toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">I/O Modules:</span>
+                      <span className="text-green-400">{scadaSystems.primaryPLC.ioModules}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Scan Time:</span>
+                      <span className="text-blue-400">{scadaSystems.primaryPLC.scanTime}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-400">
+                    Connections: <span className="text-white">{scadaSystems.primaryPLC.activeConnections}</span>
+                  </div>
+                </div>
+
+                <div className="bg-gray-800 border border-gray-600 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-semibold text-white text-sm">Backup PLC</span>
+                    <span className={`text-sm font-semibold ${getStatusColor(scadaSystems.backupPLC.status)}`}>
+                      {scadaSystems.backupPLC.status}
+                    </span>
+                  </div>
+                  
+                  <div className="text-sm text-blue-300 mb-2">{scadaSystems.backupPLC.model}</div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">CPU:</span>
+                      <span className="text-green-400">{scadaSystems.backupPLC.cpuUsage.toFixed(1)}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Scan Time:</span>
+                      <span className="text-blue-400">{scadaSystems.backupPLC.scanTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* HMI Stations */}
+              <div className="border-t border-gray-700 pt-4">
+                <div className="text-sm text-white font-semibold mb-2">HMI Stations</div>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {scadaSystems.hmiStations.map((station, index) => (
+                    <div key={index} className="bg-gray-800 rounded p-2">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-white text-xs font-medium">{station.stationId}</span>
+                        <span className={`text-xs ${getStatusColor(station.status)}`}>
+                          {station.status}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-400 mb-1">{station.operator}</div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Screens: {station.activeScreens}</span>
+                        <span className="text-red-400">Alarms: {station.alarmCount}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Real-Time Production Analytics */}
+            <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-purple-400 mb-4 flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2" />
+                Real-Time Analytics
+              </h2>
+              
+              <ResponsiveContainer width="100%" height={200}>
+                <RechartsLineChart data={productionMetrics}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                  <XAxis dataKey="time" stroke="#9CA3AF" fontSize={10} />
+                  <YAxis stroke="#9CA3AF" fontSize={10} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1F2937', 
+                      border: '1px solid #374151',
+                      borderRadius: '8px',
+                      color: '#fff',
+                      fontSize: '12px'
+                    }} 
+                  />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="oee" 
+                    stroke="#3B82F6" 
+                    strokeWidth={2}
+                    name="OEE %"
+                    dot={false}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="quality" 
+                    stroke="#10B981" 
+                    strokeWidth={2}
+                    name="Quality %"
+                    dot={false}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="efficiency" 
+                    stroke="#F59E0B" 
+                    strokeWidth={2}
+                    name="Performance %"
+                    dot={false}
+                  />
+                </RechartsLineChart>
+              </ResponsiveContainer>
+
+              {/* MES Integration Summary */}
+              <div className="mt-4 pt-4 border-t border-gray-700">
+                <div className="text-sm text-white font-semibold mb-3">MES Integration</div>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-gray-800 p-2 rounded">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">Active Orders:</span>
+                      <span className="text-blue-400">{mesIntegration.productionOrders.active}</span>
+                    </div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">On-Time Rate:</span>
+                      <span className="text-green-400">{mesIntegration.productionOrders.onTime}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Quality Pass:</span>
+                      <span className="text-green-400">{mesIntegration.productionOrders.qualityPassed}%</span>
+                    </div>
+                  </div>
+                  <div className="bg-gray-800 p-2 rounded">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">WIP Units:</span>
+                      <span className="text-purple-400">{mesIntegration.inventoryManagement.workInProgress.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-400">Maintenance:</span>
+                      <span className="text-orange-400">{mesIntegration.maintenance.scheduledTasks}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Energy:</span>
+                      <span className="text-yellow-400">{mesIntegration.energyManagement.totalConsumption}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Production Mix & Quality Analysis */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">PRODUCTION MIX & QUALITY ANALYSIS</h3>
-          <div className="flex">
-            <ResponsiveContainer width="60%" height={200}>
-              <PieChart>
+        {/* MOC Control Panel */}
+        <div className="space-y-4">
+          
+          {/* Active Alarms */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-red-400 mb-3 flex items-center">
+              <Bell className="w-5 h-5 mr-2" />
+              Active Alarms
+            </h2>
+            
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {alarmManagement.slice(0, 4).map((alarm) => (
+                <div key={alarm.alarmId} className={`border rounded p-3 ${getSeverityColor(alarm.severity)}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-semibold text-white text-sm">{alarm.source}</span>
+                    <span className="text-xs bg-gray-700 px-2 py-1 rounded">
+                      {alarm.severity}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-300 mb-2">{alarm.description}</div>
+                  <div className="text-xs text-blue-400 mb-1">
+                    <strong>Action:</strong> {alarm.actionTaken}
+                  </div>
+                  <div className="text-xs text-gray-400 mb-1">
+                    <strong>Operator:</strong> {alarm.operator}
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className={`${getStatusColor(alarm.status)}`}>{alarm.status}</span>
+                    <span className="text-gray-400">{alarm.timestamp.toLocaleTimeString()}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Production Team */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-blue-400 mb-3 flex items-center">
+              <Users className="w-5 h-5 mr-2" />
+              Operations Team
+            </h2>
+            
+            <div className="space-y-3 max-h-64 overflow-y-auto">
+              {operationsTeam.map((member, index) => (
+                <div key={index} className="bg-gray-800 rounded-lg p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-medium text-sm">{member.name}</span>
+                    <span className={`text-xs px-2 py-1 rounded ${getStatusColor(member.status)}`}>
+                      {member.status.replace('_', ' ')}
+                    </span>
+                  </div>
+                  
+                  <div className="text-xs text-blue-300 mb-1">{member.position}</div>
+                  <div className="text-xs text-gray-500 mb-2">{member.location}</div>
+                  
+                  <div className="text-xs text-gray-400 mb-1">
+                    <strong>Shift:</strong> {member.shift}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Experience: {member.experience}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Production & Quality Distribution */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-green-400 mb-3 flex items-center">
+              <PieChart className="w-5 h-5 mr-2" />
+              Production Status
+            </h2>
+            
+            <ResponsiveContainer width="100%" height={120}>
+              <RechartsPieChart>
                 <Pie
-                  data={productionBreakdown}
+                  data={productionDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={40}
-                  outerRadius={80}
+                  innerRadius={20}
+                  outerRadius={50}
                   paddingAngle={2}
                   dataKey="value"
                 >
-                  {productionBreakdown.map((entry, index) => (
+                  {productionDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -817,68 +1038,56 @@ const ManufacturingOperationsCenter = () => {
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#fff',
+                    fontSize: '12px'
                   }}
-                  formatter={(value) => [`${value}%`, 'Production Mix']}
+                  formatter={(value) => [`${value}%`, 'Production']}
                 />
-              </PieChart>
+              </RechartsPieChart>
             </ResponsiveContainer>
-            <div className="w-2/5 space-y-2 mt-4">
-              {productionBreakdown.map((product, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
+            
+            <div className="space-y-1 mt-2">
+              {productionDistribution.map((status, index) => (
+                <div key={index} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center">
                     <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: product.color }}
+                      className="w-2 h-2 rounded-full mr-2" 
+                      style={{ backgroundColor: status.color }}
                     />
-                    <span className="text-gray-400 text-sm">{product.name}</span>
+                    <span className="text-gray-400">{status.name}</span>
                   </div>
-                  <span className="text-white font-semibold">{product.value}%</span>
+                  <span className="text-white font-semibold">{status.value}%</span>
                 </div>
               ))}
-              
-              {/* Quality Summary */}
-              <div className="mt-4 pt-3 border-t border-gray-700">
-                <div className="text-sm text-white font-semibold mb-2">Quality Summary</div>
-                <div className="space-y-1 text-xs">
-                  {qualityMetrics.slice(0, 3).map((metric, index) => (
-                    <div key={index} className="flex justify-between">
-                      <span className="text-gray-400">{metric.product.split(' ')[1]}</span>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-white">{metric.firstPassYield.toFixed(1)}%</span>
-                        <span className="text-green-400">FPY</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
-          
-          {/* Manufacturing Control Panel */}
-          <div className="mt-4 pt-4 border-t border-gray-700">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Manufacturing Operations Control</span>
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
-                  <Factory className="w-3 h-3 inline mr-1" />
-                  Production Control
-                </button>
-                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
-                  <Wrench className="w-3 h-3 inline mr-1" />
-                  Maintenance
-                </button>
-                <button className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-xs transition-colors">
-                  <Eye className="w-3 h-3 inline mr-1" />
-                  Quality Control
-                </button>
-              </div>
+
+          {/* Communication Protocols */}
+          <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
+            <h2 className="text-lg font-semibold text-cyan-400 mb-3 flex items-center">
+              <Network className="w-5 h-5 mr-2" />
+              Communication
+            </h2>
+            
+            <div className="space-y-2">
+              {Object.entries(scadaSystems.communicationProtocols).map(([protocol, data]) => (
+                <div key={protocol} className="bg-gray-800 rounded p-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white text-xs font-medium uppercase">{protocol}</span>
+                    <span className={`text-xs ${getStatusColor(data.status)}`}>
+                      {data.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-400">Devices: {data.devices}</span>
+                    <span className="text-blue-400">Load: {data.bandwidth}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default ManufacturingOperationsCenter;
+}
