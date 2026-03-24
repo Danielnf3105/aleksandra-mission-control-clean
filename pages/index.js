@@ -364,6 +364,7 @@ import JaegerDistributedTracingDashboard from '../components/JaegerDistributedTr
 import NewRelicAPMDashboard from '../components/NewRelicAPMDashboard';
 import SplunkSecurityDashboard from '../components/SplunkSecurityDashboard';
 import CloudWatchDashboard from '../components/CloudWatchDashboard';
+import SentryErrorTrackingDashboard from '../components/SentryErrorTrackingDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -874,6 +875,13 @@ export default function MissionControl() {
       icon: '☁️', 
       color: 'text-blue-400',
       description: 'Cloud Infrastructure Monitoring | EC2 Metrics | Lambda Analytics | Cost Optimization | Auto Scaling | CloudWatch Logs'
+    },
+    { 
+      id: 'sentry-error-tracking-dashboard', 
+      name: '🐛 Sentry Error Tracking', 
+      icon: '🐛', 
+      color: 'text-purple-400',
+      description: 'Error Tracking | Performance Monitoring | Release Health | User Feedback | Issue Management | Application Stability'
     },
     { 
       id: 'telemetry-stream', 
@@ -3642,6 +3650,9 @@ export default function MissionControl() {
 
         {/* AWS CloudWatch Dashboard */}
         {currentView === 'cloudwatch-dashboard' && <CloudWatchDashboard />}
+
+        {/* Sentry Error Tracking Dashboard */}
+        {currentView === 'sentry-error-tracking-dashboard' && <SentryErrorTrackingDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
