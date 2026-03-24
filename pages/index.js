@@ -366,6 +366,7 @@ import SplunkSecurityDashboard from '../components/SplunkSecurityDashboard';
 import CloudWatchDashboard from '../components/CloudWatchDashboard';
 import SentryErrorTrackingDashboard from '../components/SentryErrorTrackingDashboard';
 import PagerDutyIncidentDashboard from '../components/PagerDutyIncidentDashboard';
+import DatadogRUMDashboard from '../components/DatadogRUMDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -890,6 +891,13 @@ export default function MissionControl() {
       icon: '🚨', 
       color: 'text-red-400',
       description: 'Incident Response | On-Call Management | Escalation Policies | Service Health | MTTA/MTTR Metrics | Enterprise Operations'
+    },
+    { 
+      id: 'datadog-rum-dashboard', 
+      name: '👁️ Datadog Real User Monitoring', 
+      icon: '👁️', 
+      color: 'text-indigo-400',
+      description: 'Real User Monitoring | Core Web Vitals | Frontend Performance | User Journey Analytics | Error Tracking | Experience Optimization'
     },
     { 
       id: 'telemetry-stream', 
@@ -3664,6 +3672,9 @@ export default function MissionControl() {
 
         {/* PagerDuty Incident Management Dashboard */}
         {currentView === 'pagerduty-incident-dashboard' && <PagerDutyIncidentDashboard />}
+
+        {/* Datadog Real User Monitoring Dashboard */}
+        {currentView === 'datadog-rum-dashboard' && <DatadogRUMDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
