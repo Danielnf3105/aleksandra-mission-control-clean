@@ -375,6 +375,7 @@ import GoogleCloudOperationsDashboard from '../components/GoogleCloudOperationsD
 import HoneycombObservabilityDashboard from '../components/HoneycombObservabilityDashboard';
 import DynatraceAPMDashboard from '../components/DynatraceAPMDashboard';
 import AppDynamicsBusinessMonitoringDashboard from '../components/AppDynamicsBusinessMonitoringDashboard';
+import DatadogSecurityMonitoringDashboard from '../components/DatadogSecurityMonitoringDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -962,6 +963,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-blue-400',
       description: 'Business Transaction Monitoring | Application Flow Mapping | Code Hotspots | JVM Monitoring | Database Performance | Business Impact'
+    },
+    { 
+      id: 'datadog-security-monitoring-dashboard', 
+      name: '🛡️ Datadog Security Monitoring', 
+      icon: '🛡️', 
+      color: 'text-purple-400',
+      description: 'Threat Detection | Security Analytics | Compliance Monitoring | User Behavior Analytics | Incident Response | SIEM Operations'
     },
     { 
       id: 'telemetry-stream', 
@@ -3763,6 +3771,9 @@ export default function MissionControl() {
 
         {/* AppDynamics Business Monitoring Dashboard */}
         {currentView === 'appdynamics-business-monitoring-dashboard' && <AppDynamicsBusinessMonitoringDashboard />}
+
+        {/* Datadog Security Monitoring Dashboard */}
+        {currentView === 'datadog-security-monitoring-dashboard' && <DatadogSecurityMonitoringDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
