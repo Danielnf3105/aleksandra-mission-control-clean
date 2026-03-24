@@ -381,6 +381,7 @@ import SolarWindsNetworkMonitoringDashboard from '../components/SolarWindsNetwor
 import VMwarevSphereMonitoringDashboard from '../components/VMwarevSphereMonitoringDashboard';
 import ZabbixNetworkMonitoringDashboard from '../components/ZabbixNetworkMonitoringDashboard';
 import NagiosMonitoringDashboard from '../components/NagiosMonitoringDashboard';
+import ICINGANetworkMonitoringDashboard from '../components/ICINGANetworkMonitoringDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -1010,6 +1011,13 @@ export default function MissionControl() {
       icon: '👁️', 
       color: 'text-green-400',
       description: 'Host Monitoring | Service Checks | Performance Statistics | Alert Management | Configuration Status | Infrastructure Surveillance'
+    },
+    { 
+      id: 'icinga-network-monitoring-dashboard', 
+      name: '❄️ ICINGA Network Monitoring', 
+      icon: '❄️', 
+      color: 'text-blue-400',
+      description: 'Distributed Monitoring | Cluster Management | Notification System | Check Statistics | Feature Management | Infrastructure Surveillance'
     },
     { 
       id: 'telemetry-stream', 
@@ -3829,6 +3837,9 @@ export default function MissionControl() {
 
         {/* Nagios Network Monitoring Dashboard */}
         {currentView === 'nagios-monitoring-dashboard' && <NagiosMonitoringDashboard />}
+
+        {/* ICINGA Network Monitoring Dashboard */}
+        {currentView === 'icinga-network-monitoring-dashboard' && <ICINGANetworkMonitoringDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
