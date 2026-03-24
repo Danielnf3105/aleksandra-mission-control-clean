@@ -361,6 +361,7 @@ import GrafanaInspiredMetricsDashboard from '../components/GrafanaInspiredMetric
 import PrometheusAlertingCenter from '../components/PrometheusAlertingCenter';
 import ElasticSearchLogAnalyticsDashboard from '../components/ElasticSearchLogAnalyticsDashboard';
 import JaegerDistributedTracingDashboard from '../components/JaegerDistributedTracingDashboard';
+import NewRelicAPMDashboard from '../components/NewRelicAPMDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -850,6 +851,13 @@ export default function MissionControl() {
       icon: '🔗', 
       color: 'text-teal-400',
       description: 'Microservices Tracing | Span Analysis | Service Dependencies | Performance Monitoring | OpenTracing | Request Flow Visualization'
+    },
+    { 
+      id: 'newrelic-apm-dashboard', 
+      name: '📊 New Relic APM', 
+      icon: '📊', 
+      color: 'text-emerald-400',
+      description: 'Application Performance Monitoring | Transaction Traces | Error Tracking | Database Monitoring | Infrastructure Metrics | Apdex Scoring'
     },
     { 
       id: 'telemetry-stream', 
@@ -3609,6 +3617,9 @@ export default function MissionControl() {
 
         {/* Jaeger Distributed Tracing Dashboard */}
         {currentView === 'jaeger-distributed-tracing-dashboard' && <JaegerDistributedTracingDashboard />}
+
+        {/* New Relic APM Dashboard */}
+        {currentView === 'newrelic-apm-dashboard' && <NewRelicAPMDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
