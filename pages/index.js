@@ -363,6 +363,7 @@ import ElasticSearchLogAnalyticsDashboard from '../components/ElasticSearchLogAn
 import JaegerDistributedTracingDashboard from '../components/JaegerDistributedTracingDashboard';
 import NewRelicAPMDashboard from '../components/NewRelicAPMDashboard';
 import SplunkSecurityDashboard from '../components/SplunkSecurityDashboard';
+import CloudWatchDashboard from '../components/CloudWatchDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -866,6 +867,13 @@ export default function MissionControl() {
       icon: '🛡️', 
       color: 'text-orange-400',
       description: 'SIEM Analytics | Threat Intelligence | Incident Response | MITRE ATT&CK | Compliance Monitoring | Security Event Management'
+    },
+    { 
+      id: 'cloudwatch-dashboard', 
+      name: '☁️ AWS CloudWatch', 
+      icon: '☁️', 
+      color: 'text-blue-400',
+      description: 'Cloud Infrastructure Monitoring | EC2 Metrics | Lambda Analytics | Cost Optimization | Auto Scaling | CloudWatch Logs'
     },
     { 
       id: 'telemetry-stream', 
@@ -3631,6 +3639,9 @@ export default function MissionControl() {
 
         {/* Splunk Enterprise Security Dashboard */}
         {currentView === 'splunk-security-dashboard' && <SplunkSecurityDashboard />}
+
+        {/* AWS CloudWatch Dashboard */}
+        {currentView === 'cloudwatch-dashboard' && <CloudWatchDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
