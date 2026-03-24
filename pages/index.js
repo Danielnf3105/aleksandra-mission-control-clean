@@ -357,6 +357,7 @@ import NASAInspiredRealTimeTelemetry from '../components/NASAInspiredRealTimeTel
 import SpaceXInspiredOperationsMonitor from '../components/SpaceXInspiredOperationsMonitor';
 import DevOpsKubernetesOperationsCenter from '../components/DevOpsKubernetesOperationsCenter';
 import DatadogInspiredObservabilityDashboard from '../components/DatadogInspiredObservabilityDashboard';
+import GrafanaInspiredMetricsDashboard from '../components/GrafanaInspiredMetricsDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -818,6 +819,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-purple-400',
       description: 'Full-Stack Observability | APM Traces | Log Analysis | Infrastructure Health | Custom Metrics | Real-time Alerting | Service Maps'
+    },
+    { 
+      id: 'grafana-inspired-metrics-dashboard', 
+      name: '📈 Grafana Metrics Dashboard', 
+      icon: '📈', 
+      color: 'text-orange-400',
+      description: 'Advanced Visualization | Time Series Metrics | Alert Rules | Data Source Management | Custom Panels | Query Performance | Annotations'
     },
     { 
       id: 'telemetry-stream', 
@@ -3565,6 +3573,9 @@ export default function MissionControl() {
 
         {/* Datadog Observability Dashboard */}
         {currentView === 'datadog-inspired-observability-dashboard' && <DatadogInspiredObservabilityDashboard />}
+
+        {/* Grafana Metrics Dashboard */}
+        {currentView === 'grafana-inspired-metrics-dashboard' && <GrafanaInspiredMetricsDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}

@@ -168,7 +168,7 @@ export default function DatadogInspiredObservabilityDashboard() {
               <span className="text-2xl">🚨</span>
             </div>
             <div className="text-2xl font-bold text-red-400 mb-1">{(observabilityMetrics.errorRate * 100).toFixed(3)}%</div>
-            <div className="text-xs text-gray-400">Target: < 0.1%</div>
+            <div className="text-xs text-gray-400">Target: &lt; 0.1%</div>
           </div>
 
           <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
@@ -177,7 +177,7 @@ export default function DatadogInspiredObservabilityDashboard() {
               <span className="text-2xl">⏱️</span>
             </div>
             <div className="text-2xl font-bold text-orange-400 mb-1">{observabilityMetrics.p99Latency.toFixed(1)}ms</div>
-            <div className="text-xs text-gray-400">Target: < 200ms</div>
+            <div className="text-xs text-gray-400">Target: &lt; 200ms</div>
           </div>
 
           <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
@@ -186,7 +186,7 @@ export default function DatadogInspiredObservabilityDashboard() {
               <span className="text-2xl">🔧</span>
             </div>
             <div className="text-2xl font-bold text-blue-400 mb-1">{observabilityMetrics.mttr.toFixed(1)}m</div>
-            <div className="text-xs text-gray-400">Target: < 10m</div>
+            <div className="text-xs text-gray-400">Target: &lt; 10m</div>
           </div>
 
           <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
