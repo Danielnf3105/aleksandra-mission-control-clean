@@ -356,6 +356,7 @@ import AdvancedInstagramContentIntelligence from '../components/AdvancedInstagra
 import NASAInspiredRealTimeTelemetry from '../components/NASAInspiredRealTimeTelemetry';
 import SpaceXInspiredOperationsMonitor from '../components/SpaceXInspiredOperationsMonitor';
 import DevOpsKubernetesOperationsCenter from '../components/DevOpsKubernetesOperationsCenter';
+import DatadogInspiredObservabilityDashboard from '../components/DatadogInspiredObservabilityDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -810,6 +811,13 @@ export default function MissionControl() {
       icon: '⚙️', 
       color: 'text-cyan-400',
       description: 'Modern DevOps Monitoring | Kubernetes Cluster Management | CI/CD Pipelines | Real-time Resource Metrics | Pod & Node Monitoring'
+    },
+    { 
+      id: 'datadog-inspired-observability-dashboard', 
+      name: '📊 Datadog Observability Dashboard', 
+      icon: '📊', 
+      color: 'text-purple-400',
+      description: 'Full-Stack Observability | APM Traces | Log Analysis | Infrastructure Health | Custom Metrics | Real-time Alerting | Service Maps'
     },
     { 
       id: 'telemetry-stream', 
@@ -3554,6 +3562,9 @@ export default function MissionControl() {
 
         {/* DevOps Kubernetes Operations Center */}
         {currentView === 'devops-kubernetes-operations-center' && <DevOpsKubernetesOperationsCenter />}
+
+        {/* Datadog Observability Dashboard */}
+        {currentView === 'datadog-inspired-observability-dashboard' && <DatadogInspiredObservabilityDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
