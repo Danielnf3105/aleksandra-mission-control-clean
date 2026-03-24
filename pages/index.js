@@ -365,6 +365,7 @@ import NewRelicAPMDashboard from '../components/NewRelicAPMDashboard';
 import SplunkSecurityDashboard from '../components/SplunkSecurityDashboard';
 import CloudWatchDashboard from '../components/CloudWatchDashboard';
 import SentryErrorTrackingDashboard from '../components/SentryErrorTrackingDashboard';
+import PagerDutyIncidentDashboard from '../components/PagerDutyIncidentDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -882,6 +883,13 @@ export default function MissionControl() {
       icon: '🐛', 
       color: 'text-purple-400',
       description: 'Error Tracking | Performance Monitoring | Release Health | User Feedback | Issue Management | Application Stability'
+    },
+    { 
+      id: 'pagerduty-incident-dashboard', 
+      name: '🚨 PagerDuty Incident Management', 
+      icon: '🚨', 
+      color: 'text-red-400',
+      description: 'Incident Response | On-Call Management | Escalation Policies | Service Health | MTTA/MTTR Metrics | Enterprise Operations'
     },
     { 
       id: 'telemetry-stream', 
@@ -3653,6 +3661,9 @@ export default function MissionControl() {
 
         {/* Sentry Error Tracking Dashboard */}
         {currentView === 'sentry-error-tracking-dashboard' && <SentryErrorTrackingDashboard />}
+
+        {/* PagerDuty Incident Management Dashboard */}
+        {currentView === 'pagerduty-incident-dashboard' && <PagerDutyIncidentDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
