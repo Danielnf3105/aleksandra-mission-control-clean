@@ -367,6 +367,7 @@ import CloudWatchDashboard from '../components/CloudWatchDashboard';
 import SentryErrorTrackingDashboard from '../components/SentryErrorTrackingDashboard';
 import PagerDutyIncidentDashboard from '../components/PagerDutyIncidentDashboard';
 import DatadogRUMDashboard from '../components/DatadogRUMDashboard';
+import GitHubActionsDashboard from '../components/GitHubActionsDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -898,6 +899,13 @@ export default function MissionControl() {
       icon: '👁️', 
       color: 'text-indigo-400',
       description: 'Real User Monitoring | Core Web Vitals | Frontend Performance | User Journey Analytics | Error Tracking | Experience Optimization'
+    },
+    { 
+      id: 'github-actions-dashboard', 
+      name: '🔧 GitHub Actions CI/CD', 
+      icon: '🔧', 
+      color: 'text-green-400',
+      description: 'CI/CD Pipeline Automation | Workflow Management | DORA Metrics | Security Scanning | Test Automation | Deployment Orchestration'
     },
     { 
       id: 'telemetry-stream', 
@@ -3675,6 +3683,9 @@ export default function MissionControl() {
 
         {/* Datadog Real User Monitoring Dashboard */}
         {currentView === 'datadog-rum-dashboard' && <DatadogRUMDashboard />}
+
+        {/* GitHub Actions CI/CD Dashboard */}
+        {currentView === 'github-actions-dashboard' && <GitHubActionsDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
