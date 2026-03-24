@@ -355,6 +355,7 @@ import HealthcareHospitalCenter from '../components/HealthcareHospitalCenter';
 import AdvancedInstagramContentIntelligence from '../components/AdvancedInstagramContentIntelligence';
 import NASAInspiredRealTimeTelemetry from '../components/NASAInspiredRealTimeTelemetry';
 import SpaceXInspiredOperationsMonitor from '../components/SpaceXInspiredOperationsMonitor';
+import DevOpsKubernetesOperationsCenter from '../components/DevOpsKubernetesOperationsCenter';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -802,6 +803,13 @@ export default function MissionControl() {
       icon: '🛸', 
       color: 'text-blue-400',
       description: 'SpaceX-Style Mission Operations | Real-time Performance Metrics | Operations Timeline | Systems Health | Dragon Mission Control Interface'
+    },
+    { 
+      id: 'devops-kubernetes-operations-center', 
+      name: '⚙️ DevOps Kubernetes Center', 
+      icon: '⚙️', 
+      color: 'text-cyan-400',
+      description: 'Modern DevOps Monitoring | Kubernetes Cluster Management | CI/CD Pipelines | Real-time Resource Metrics | Pod & Node Monitoring'
     },
     { 
       id: 'telemetry-stream', 
@@ -3543,6 +3551,9 @@ export default function MissionControl() {
 
         {/* SpaceX Operations Monitor */}
         {currentView === 'spacex-inspired-operations-monitor' && <SpaceXInspiredOperationsMonitor />}
+
+        {/* DevOps Kubernetes Operations Center */}
+        {currentView === 'devops-kubernetes-operations-center' && <DevOpsKubernetesOperationsCenter />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
