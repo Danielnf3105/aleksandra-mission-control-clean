@@ -359,6 +359,7 @@ import DevOpsKubernetesOperationsCenter from '../components/DevOpsKubernetesOper
 import DatadogInspiredObservabilityDashboard from '../components/DatadogInspiredObservabilityDashboard';
 import GrafanaInspiredMetricsDashboard from '../components/GrafanaInspiredMetricsDashboard';
 import PrometheusAlertingCenter from '../components/PrometheusAlertingCenter';
+import ElasticSearchLogAnalyticsDashboard from '../components/ElasticSearchLogAnalyticsDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -834,6 +835,13 @@ export default function MissionControl() {
       icon: '🔥', 
       color: 'text-red-400',
       description: 'Advanced Alerting | PromQL Rules | Scrape Targets | AlertManager | Silence Management | Rule Evaluation | Time Series Monitoring'
+    },
+    { 
+      id: 'elasticsearch-log-analytics-dashboard', 
+      name: '🔍 ElasticSearch Log Analytics', 
+      icon: '🔍', 
+      color: 'text-indigo-400',
+      description: 'Advanced Log Search | Kibana-Inspired Analytics | Pattern Detection | Real-time Indexing | Full-Text Search | Log Aggregation'
     },
     { 
       id: 'telemetry-stream', 
@@ -3587,6 +3595,9 @@ export default function MissionControl() {
 
         {/* Prometheus Alerting Center */}
         {currentView === 'prometheus-alerting-center' && <PrometheusAlertingCenter />}
+
+        {/* ElasticSearch Log Analytics Dashboard */}
+        {currentView === 'elasticsearch-log-analytics-dashboard' && <ElasticSearchLogAnalyticsDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
