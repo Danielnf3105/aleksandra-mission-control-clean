@@ -369,6 +369,7 @@ import PagerDutyIncidentDashboard from '../components/PagerDutyIncidentDashboard
 import DatadogRUMDashboard from '../components/DatadogRUMDashboard';
 import GitHubActionsDashboard from '../components/GitHubActionsDashboard';
 import TerraformInfrastructureDashboard from '../components/TerraformInfrastructureDashboard';
+import NetworkOperationsCenterDashboard from '../components/NetworkOperationsCenterDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -914,6 +915,13 @@ export default function MissionControl() {
       icon: '🏗️', 
       color: 'text-violet-400',
       description: 'Infrastructure as Code | Resource Management | Cost Optimization | Drift Detection | Security Compliance | State Management'
+    },
+    { 
+      id: 'network-operations-center-dashboard', 
+      name: '🌐 Network Operations Center', 
+      icon: '🌐', 
+      color: 'text-cyan-400',
+      description: 'Network Monitoring | BGP Management | Traffic Analysis | DDoS Protection | Circuit Monitoring | Geographic Distribution'
     },
     { 
       id: 'telemetry-stream', 
@@ -3697,6 +3705,9 @@ export default function MissionControl() {
 
         {/* Terraform Infrastructure Dashboard */}
         {currentView === 'terraform-infrastructure-dashboard' && <TerraformInfrastructureDashboard />}
+
+        {/* Network Operations Center Dashboard */}
+        {currentView === 'network-operations-center-dashboard' && <NetworkOperationsCenterDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
