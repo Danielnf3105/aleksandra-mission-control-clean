@@ -368,6 +368,7 @@ import SentryErrorTrackingDashboard from '../components/SentryErrorTrackingDashb
 import PagerDutyIncidentDashboard from '../components/PagerDutyIncidentDashboard';
 import DatadogRUMDashboard from '../components/DatadogRUMDashboard';
 import GitHubActionsDashboard from '../components/GitHubActionsDashboard';
+import TerraformInfrastructureDashboard from '../components/TerraformInfrastructureDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -906,6 +907,13 @@ export default function MissionControl() {
       icon: '🔧', 
       color: 'text-green-400',
       description: 'CI/CD Pipeline Automation | Workflow Management | DORA Metrics | Security Scanning | Test Automation | Deployment Orchestration'
+    },
+    { 
+      id: 'terraform-infrastructure-dashboard', 
+      name: '🏗️ Terraform Infrastructure', 
+      icon: '🏗️', 
+      color: 'text-violet-400',
+      description: 'Infrastructure as Code | Resource Management | Cost Optimization | Drift Detection | Security Compliance | State Management'
     },
     { 
       id: 'telemetry-stream', 
@@ -3686,6 +3694,9 @@ export default function MissionControl() {
 
         {/* GitHub Actions CI/CD Dashboard */}
         {currentView === 'github-actions-dashboard' && <GitHubActionsDashboard />}
+
+        {/* Terraform Infrastructure Dashboard */}
+        {currentView === 'terraform-infrastructure-dashboard' && <TerraformInfrastructureDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
