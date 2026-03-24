@@ -354,6 +354,7 @@ import EnergyGridManagementCenter from '../components/EnergyGridManagementCenter
 import HealthcareHospitalCenter from '../components/HealthcareHospitalCenter';
 import AdvancedInstagramContentIntelligence from '../components/AdvancedInstagramContentIntelligence';
 import NASAInspiredRealTimeTelemetry from '../components/NASAInspiredRealTimeTelemetry';
+import SpaceXInspiredOperationsMonitor from '../components/SpaceXInspiredOperationsMonitor';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -794,6 +795,13 @@ export default function MissionControl() {
       icon: '🚀', 
       color: 'text-green-400',
       description: 'Authentic NASA Flight Operations | Flight Director Console | Real-time System Telemetry | Mission Phase Tracking | GO/NO-GO Polling'
+    },
+    { 
+      id: 'spacex-inspired-operations-monitor', 
+      name: '🚀 SpaceX Operations Monitor', 
+      icon: '🛸', 
+      color: 'text-blue-400',
+      description: 'SpaceX-Style Mission Operations | Real-time Performance Metrics | Operations Timeline | Systems Health | Dragon Mission Control Interface'
     },
     { 
       id: 'telemetry-stream', 
@@ -3532,6 +3540,9 @@ export default function MissionControl() {
 
         {/* NASA Mission Control Telemetry */}
         {currentView === 'nasa-inspired-real-time-telemetry' && <NASAInspiredRealTimeTelemetry />}
+
+        {/* SpaceX Operations Monitor */}
+        {currentView === 'spacex-inspired-operations-monitor' && <SpaceXInspiredOperationsMonitor />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
