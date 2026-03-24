@@ -360,6 +360,7 @@ import DatadogInspiredObservabilityDashboard from '../components/DatadogInspired
 import GrafanaInspiredMetricsDashboard from '../components/GrafanaInspiredMetricsDashboard';
 import PrometheusAlertingCenter from '../components/PrometheusAlertingCenter';
 import ElasticSearchLogAnalyticsDashboard from '../components/ElasticSearchLogAnalyticsDashboard';
+import JaegerDistributedTracingDashboard from '../components/JaegerDistributedTracingDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -842,6 +843,13 @@ export default function MissionControl() {
       icon: '🔍', 
       color: 'text-indigo-400',
       description: 'Advanced Log Search | Kibana-Inspired Analytics | Pattern Detection | Real-time Indexing | Full-Text Search | Log Aggregation'
+    },
+    { 
+      id: 'jaeger-distributed-tracing-dashboard', 
+      name: '🔗 Jaeger Distributed Tracing', 
+      icon: '🔗', 
+      color: 'text-teal-400',
+      description: 'Microservices Tracing | Span Analysis | Service Dependencies | Performance Monitoring | OpenTracing | Request Flow Visualization'
     },
     { 
       id: 'telemetry-stream', 
@@ -3598,6 +3606,9 @@ export default function MissionControl() {
 
         {/* ElasticSearch Log Analytics Dashboard */}
         {currentView === 'elasticsearch-log-analytics-dashboard' && <ElasticSearchLogAnalyticsDashboard />}
+
+        {/* Jaeger Distributed Tracing Dashboard */}
+        {currentView === 'jaeger-distributed-tracing-dashboard' && <JaegerDistributedTracingDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
