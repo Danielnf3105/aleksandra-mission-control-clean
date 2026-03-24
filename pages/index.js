@@ -353,6 +353,7 @@ import SupplyChainLogisticsCenter from '../components/SupplyChainLogisticsCenter
 import EnergyGridManagementCenter from '../components/EnergyGridManagementCenter';
 import HealthcareHospitalCenter from '../components/HealthcareHospitalCenter';
 import AdvancedInstagramContentIntelligence from '../components/AdvancedInstagramContentIntelligence';
+import NASAInspiredRealTimeTelemetry from '../components/NASAInspiredRealTimeTelemetry';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -786,6 +787,13 @@ export default function MissionControl() {
       icon: '📱', 
       color: 'text-pink-400',
       description: 'Real-time Instagram Video Processing | AssemblyAI Transcription | Viral Prediction | Content Optimization | Trend Analysis | AI-Powered Insights'
+    },
+    { 
+      id: 'nasa-inspired-real-time-telemetry', 
+      name: '🚀 NASA Mission Control Telemetry', 
+      icon: '🚀', 
+      color: 'text-green-400',
+      description: 'Authentic NASA Flight Operations | Flight Director Console | Real-time System Telemetry | Mission Phase Tracking | GO/NO-GO Polling'
     },
     { 
       id: 'telemetry-stream', 
@@ -3521,6 +3529,9 @@ export default function MissionControl() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 2026 Advanced Instagram Content Intelligence Center */}
         {currentView === 'advanced-instagram-content-intelligence' && <AdvancedInstagramContentIntelligence />}
+
+        {/* NASA Mission Control Telemetry */}
+        {currentView === 'nasa-inspired-real-time-telemetry' && <NASAInspiredRealTimeTelemetry />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
