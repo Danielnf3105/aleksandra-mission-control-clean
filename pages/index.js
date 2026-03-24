@@ -362,6 +362,7 @@ import PrometheusAlertingCenter from '../components/PrometheusAlertingCenter';
 import ElasticSearchLogAnalyticsDashboard from '../components/ElasticSearchLogAnalyticsDashboard';
 import JaegerDistributedTracingDashboard from '../components/JaegerDistributedTracingDashboard';
 import NewRelicAPMDashboard from '../components/NewRelicAPMDashboard';
+import SplunkSecurityDashboard from '../components/SplunkSecurityDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -858,6 +859,13 @@ export default function MissionControl() {
       icon: '📊', 
       color: 'text-emerald-400',
       description: 'Application Performance Monitoring | Transaction Traces | Error Tracking | Database Monitoring | Infrastructure Metrics | Apdex Scoring'
+    },
+    { 
+      id: 'splunk-security-dashboard', 
+      name: '🛡️ Splunk Enterprise Security', 
+      icon: '🛡️', 
+      color: 'text-orange-400',
+      description: 'SIEM Analytics | Threat Intelligence | Incident Response | MITRE ATT&CK | Compliance Monitoring | Security Event Management'
     },
     { 
       id: 'telemetry-stream', 
@@ -3620,6 +3628,9 @@ export default function MissionControl() {
 
         {/* New Relic APM Dashboard */}
         {currentView === 'newrelic-apm-dashboard' && <NewRelicAPMDashboard />}
+
+        {/* Splunk Enterprise Security Dashboard */}
+        {currentView === 'splunk-security-dashboard' && <SplunkSecurityDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
