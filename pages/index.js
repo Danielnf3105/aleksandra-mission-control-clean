@@ -378,6 +378,7 @@ import AppDynamicsBusinessMonitoringDashboard from '../components/AppDynamicsBus
 import DatadogSecurityMonitoringDashboard from '../components/DatadogSecurityMonitoringDashboard';
 import CrowdStrikeEndpointProtectionDashboard from '../components/CrowdStrikeEndpointProtectionDashboard';
 import SolarWindsNetworkMonitoringDashboard from '../components/SolarWindsNetworkMonitoringDashboard';
+import VMwarevSphereMonitoringDashboard from '../components/VMwarevSphereMonitoringDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -986,6 +987,13 @@ export default function MissionControl() {
       icon: '🌞', 
       color: 'text-orange-400',
       description: 'Network Monitoring | Device Management | Interface Analytics | Bandwidth Analysis | SLA Compliance | Topology Health'
+    },
+    { 
+      id: 'vmware-vsphere-monitoring-dashboard', 
+      name: '⚡ VMware vSphere Monitoring', 
+      icon: '⚡', 
+      color: 'text-blue-400',
+      description: 'ESXi Host Management | Virtual Machine Monitoring | Cluster Health | Resource Pool Management | Datastore Analysis | vCenter Operations'
     },
     { 
       id: 'telemetry-stream', 
@@ -3796,6 +3804,9 @@ export default function MissionControl() {
 
         {/* SolarWinds Network Monitoring Dashboard */}
         {currentView === 'solarwinds-network-monitoring-dashboard' && <SolarWindsNetworkMonitoringDashboard />}
+
+        {/* VMware vSphere Monitoring Dashboard */}
+        {currentView === 'vmware-vsphere-monitoring-dashboard' && <VMwarevSphereMonitoringDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
