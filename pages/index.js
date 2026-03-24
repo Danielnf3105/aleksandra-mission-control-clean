@@ -374,6 +374,7 @@ import AzureMonitorDashboard from '../components/AzureMonitorDashboard';
 import GoogleCloudOperationsDashboard from '../components/GoogleCloudOperationsDashboard';
 import HoneycombObservabilityDashboard from '../components/HoneycombObservabilityDashboard';
 import DynatraceAPMDashboard from '../components/DynatraceAPMDashboard';
+import AppDynamicsBusinessMonitoringDashboard from '../components/AppDynamicsBusinessMonitoringDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -954,6 +955,13 @@ export default function MissionControl() {
       icon: '🧠', 
       color: 'text-purple-400',
       description: 'AI-Powered Monitoring | Root Cause Analysis | Smartscape Topology | Real User Monitoring | Synthetic Monitoring | Business Impact'
+    },
+    { 
+      id: 'appdynamics-business-monitoring-dashboard', 
+      name: '📊 AppDynamics Business Monitoring', 
+      icon: '📊', 
+      color: 'text-blue-400',
+      description: 'Business Transaction Monitoring | Application Flow Mapping | Code Hotspots | JVM Monitoring | Database Performance | Business Impact'
     },
     { 
       id: 'telemetry-stream', 
@@ -3752,6 +3760,9 @@ export default function MissionControl() {
 
         {/* Dynatrace APM Dashboard */}
         {currentView === 'dynatrace-apm-dashboard' && <DynatraceAPMDashboard />}
+
+        {/* AppDynamics Business Monitoring Dashboard */}
+        {currentView === 'appdynamics-business-monitoring-dashboard' && <AppDynamicsBusinessMonitoringDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
