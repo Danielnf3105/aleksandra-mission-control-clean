@@ -371,6 +371,7 @@ import GitHubActionsDashboard from '../components/GitHubActionsDashboard';
 import TerraformInfrastructureDashboard from '../components/TerraformInfrastructureDashboard';
 import NetworkOperationsCenterDashboard from '../components/NetworkOperationsCenterDashboard';
 import AzureMonitorDashboard from '../components/AzureMonitorDashboard';
+import GoogleCloudOperationsDashboard from '../components/GoogleCloudOperationsDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -930,6 +931,13 @@ export default function MissionControl() {
       icon: '☁️', 
       color: 'text-blue-400',
       description: 'Azure Cloud Monitoring | Application Insights | Cost Analysis | Resource Health | Log Analytics | Regional Performance'
+    },
+    { 
+      id: 'google-cloud-operations-dashboard', 
+      name: '☁️ Google Cloud Operations', 
+      icon: '☁️', 
+      color: 'text-green-400',
+      description: 'GCP Cloud Monitoring | Cloud Logging | Cloud Trace | Billing Analysis | Performance Metrics | Regional Distribution'
     },
     { 
       id: 'telemetry-stream', 
@@ -3719,6 +3727,9 @@ export default function MissionControl() {
 
         {/* Azure Monitor Dashboard */}
         {currentView === 'azure-monitor-dashboard' && <AzureMonitorDashboard />}
+
+        {/* Google Cloud Operations Dashboard */}
+        {currentView === 'google-cloud-operations-dashboard' && <GoogleCloudOperationsDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
