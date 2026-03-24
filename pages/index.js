@@ -377,6 +377,7 @@ import DynatraceAPMDashboard from '../components/DynatraceAPMDashboard';
 import AppDynamicsBusinessMonitoringDashboard from '../components/AppDynamicsBusinessMonitoringDashboard';
 import DatadogSecurityMonitoringDashboard from '../components/DatadogSecurityMonitoringDashboard';
 import CrowdStrikeEndpointProtectionDashboard from '../components/CrowdStrikeEndpointProtectionDashboard';
+import SolarWindsNetworkMonitoringDashboard from '../components/SolarWindsNetworkMonitoringDashboard';
 
 export default function MissionControl() {
   const [currentView, setCurrentView] = useState('advanced-instagram-content-intelligence');
@@ -978,6 +979,13 @@ export default function MissionControl() {
       icon: '🦅', 
       color: 'text-red-400',
       description: 'Endpoint Security | Threat Hunting | Falcon Intelligence | Malware Detection | Policy Compliance | Zero-Day Protection'
+    },
+    { 
+      id: 'solarwinds-network-monitoring-dashboard', 
+      name: '🌞 SolarWinds Network Performance Monitor', 
+      icon: '🌞', 
+      color: 'text-orange-400',
+      description: 'Network Monitoring | Device Management | Interface Analytics | Bandwidth Analysis | SLA Compliance | Topology Health'
     },
     { 
       id: 'telemetry-stream', 
@@ -3785,6 +3793,9 @@ export default function MissionControl() {
 
         {/* CrowdStrike Endpoint Protection Dashboard */}
         {currentView === 'crowdstrike-endpoint-protection-dashboard' && <CrowdStrikeEndpointProtectionDashboard />}
+
+        {/* SolarWinds Network Monitoring Dashboard */}
+        {currentView === 'solarwinds-network-monitoring-dashboard' && <SolarWindsNetworkMonitoringDashboard />}
 
         {/* 2026 Advanced Materials & Nanotechnology Intelligence Center */}
         {currentView === 'advanced-materials-nanotechnology-intelligence-center' && <AdvancedMaterialsNanotechnologyIntelligenceCenter />}
