@@ -5,6 +5,10 @@ import RealTimeMonitoring from '../components/RealTimeMonitoring';
 import ContentPipelineStatus from '../components/ContentPipelineStatus';
 import AgentMetrics from '../components/AgentMetrics';
 import SystemOrchestration from '../components/SystemOrchestration';
+import AIAgentCommandControl from '../components/AIAgentCommandControl';
+import CERNParticlePhysicsControlCenter from '../components/CERNParticlePhysicsControlCenter';
+import NuclearPowerControlCenter from '../components/NuclearPowerControlCenter';
+import SpaceXStyleOperationsCenter from '../components/SpaceXStyleOperationsCenter';
 import AdvancedPerformanceAnalytics from '../components/AdvancedPerformanceAnalytics';
 import PredictiveIntelligence from '../components/PredictiveIntelligence';
 import ErrorRecovery from '../components/ErrorRecovery';
@@ -43,7 +47,6 @@ import APIManagementCenter from '../components/APIManagementCenter';
 import DataMonitoringCenter from '../components/DataMonitoringCenter';
 import AIPredictiveCenter from '../components/AIPredictiveCenter';
 import SpaceMissionCenter from '../components/SpaceMissionCenter';
-import CyberSecuritySOC from '../components/CyberSecuritySOC';
 import MilitaryTacticalTOC from '../components/MilitaryTacticalTOC';
 import EmergencyOperationsEOC from '../components/EmergencyOperationsEOC';
 import AirTrafficControlATC from '../components/AirTrafficControlATC';
@@ -88,7 +91,7 @@ import SmartBuildingOperations from '../components/SmartBuildingOperations';
 import SportsVenueOperations from '../components/SportsVenueOperations';
 import FleetOperationsCenter from '../components/FleetOperationsCenter';
 import FinancialTradingOperations from '../components/FinancialTradingOperations';
-import CybersecurityOperationsCenter from '../components/CyberSecuritySOC';
+import CybersecurityOperationsCenter from '../components/CybersecurityOperationsCenter';
 import LogisticsOperationsCenter from '../components/LogisticsOperationsCenter';
 import WaterUtilityOperationsCenter from '../components/WaterUtilityOperationsCenter';
 import HealthcareOperationsCenter from '../components/HealthcareOperationsCenter';
@@ -120,6 +123,8 @@ import RealTimeDataObservabilityCenter from '../components/RealTimeDataObservabi
 import ExecutiveBusinessIntelligenceCenter from '../components/ExecutiveBusinessIntelligenceCenter';
 import EnterpriseNetworkOperationsCenter from '../components/EnterpriseNetworkOperationsCenter';
 import FinancialTradingFloorCenter from '../components/FinancialTradingFloorCenter';
+import MilitaryTacticalOperationsCenter from '../components/MilitaryTacticalOperationsCenter';
+import CyberSecuritySOC from '../components/CyberSecuritySOC';
 import SpaceMissionControlCenter from '../components/SpaceMissionControlCenter';
 import AirTrafficControlCenter from '../components/AirTrafficControlCenter';
 import AleksandraAgentMonitor from '../components/AleksandraAgentMonitor';
@@ -142,6 +147,8 @@ import EnergyOperationsCenter from '../components/EnergyOperationsCenter';
 import TransportationOperationsCenter from '../components/TransportationOperationsCenter';
 import NetworkOperationsCenter from '../components/NetworkOperationsCenter';
 import EmergencyOperationsCenter from '../components/EmergencyOperationsCenter';
+import IndustrialManufacturingOperationsCenter from '../components/IndustrialManufacturingOperationsCenter';
+import HospitalOperationsCenter from '../components/HospitalOperationsCenter';
 import ManufacturingOperationsCenter from '../components/ManufacturingOperationsCenter';
 import EnhancedRealTimeIntelligence from '../components/EnhancedRealTimeIntelligence';
 import EnterpriseObservabilityCenter from '../components/EnterpriseObservabilityCenter';
@@ -836,6 +843,69 @@ export default function MissionControl() {
       icon: '⚙️', 
       color: 'text-cyan-400',
       description: 'Modern DevOps Monitoring | Kubernetes Cluster Management | CI/CD Pipelines | Real-time Resource Metrics | Pod & Node Monitoring'
+    },
+    { 
+      id: 'system-orchestration', 
+      name: '🎛️ System Orchestration Center', 
+      icon: '🎛️', 
+      color: 'text-blue-400',
+      description: 'NASA-Inspired Real-time System Monitoring | Resource Telemetry | Mission Operations | Alert Management | Performance Analytics | System Health'
+    },
+    { 
+      id: 'ai-agent-command-control', 
+      name: '🤖 AI Agent Command & Control', 
+      icon: '🤖', 
+      color: 'text-cyan-400',
+      description: 'Multi-Agent Fleet Management | Real-time Agent Status | Task Queue Orchestration | Performance Monitoring | Communication Logs | AI Analytics'
+    },
+    { 
+      id: 'cern-particle-physics-control-center', 
+      name: '⚛️ CERN Particle Physics Control', 
+      icon: '⚛️', 
+      color: 'text-blue-300',
+      description: 'LHC Beam Status | ATLAS/CMS Detector Monitoring | Real-time Event Display | Particle Physics Analytics | Scientific Computing | CERN-Inspired Interface'
+    },
+    { 
+      id: 'nuclear-power-control-center', 
+      name: '☢️ Nuclear Power Control Center', 
+      icon: '☢️', 
+      color: 'text-red-400',
+      description: 'Reactor Status Monitoring | Safety System Oversight | Critical Parameter Tracking | Radiation Monitoring | Electrical Grid Management | Emergency Response'
+    },
+    { 
+      id: 'emergency-operations-center', 
+      name: '🚨 Emergency Operations Center', 
+      icon: '🚨', 
+      color: 'text-red-400',
+      description: 'Incident Command Management | Multi-Agency Coordination | Resource Deployment | Weather Monitoring | Shelter Management | Emergency Communications'
+    },
+    { 
+      id: 'financial-trading-floor-center', 
+      name: '💹 Financial Trading Floor Control', 
+      icon: '💹', 
+      color: 'text-yellow-400',
+      description: 'Real-Time Market Data | Risk Management | Portfolio Monitoring | Trading Activity | Sector Analysis | Currency Exchange | Alert Systems'
+    },
+    { 
+      id: 'military-tactical-operations-center', 
+      name: '⚔️ Military Tactical Operations Center', 
+      icon: '⚔️', 
+      color: 'text-green-400',
+      description: 'Battlespace Awareness | Unit Tracking | ISR Assets | Threat Assessment | Communications | Logistics | Command Guidance | Force Protection'
+    },
+    { 
+      id: 'cybersecurity-soc', 
+      name: '🛡️ Cybersecurity Security Operations Center', 
+      icon: '🛡️', 
+      color: 'text-cyan-400',
+      description: 'Threat Detection | SIEM Analytics | Incident Response | Vulnerability Management | Network Security | Endpoint Protection | Threat Intelligence | Kill Chain Analysis'
+    },
+    { 
+      id: 'air-traffic-control-center', 
+      name: '✈️ Air Traffic Control Center', 
+      icon: '✈️', 
+      color: 'text-green-400',
+      description: 'Real-time Radar Display | Aircraft Tracking | Weather Monitoring | Runway Status | Controller Positions | Flight Strips | ATC Communications'
     },
     { 
       id: 'datadog-inspired-observability-dashboard', 
@@ -4333,6 +4403,27 @@ export default function MissionControl() {
         
         {/* System Orchestration */}
         {currentView === 'system-orchestration' && <SystemOrchestration />}
+        
+        {/* AI Agent Command Control */}
+        {currentView === 'ai-agent-command-control' && <AIAgentCommandControl />}
+        
+        {/* CERN Particle Physics Control Center */}
+        {currentView === 'cern-particle-physics-control-center' && <CERNParticlePhysicsControlCenter />}
+        
+        {/* Nuclear Power Control Center */}
+        {currentView === 'nuclear-power-control-center' && <NuclearPowerControlCenter />}
+        
+        {/* Emergency Operations Center */}
+        {currentView === 'emergency-operations-center' && <EmergencyOperationsCenter />}
+        
+        {/* Financial Trading Floor Center */}
+        {currentView === 'financial-trading-floor-center' && <FinancialTradingFloorCenter />}
+        
+        {/* Military Tactical Operations Center */}
+        {currentView === 'military-tactical-operations-center' && <MilitaryTacticalOperationsCenter />}
+        
+        {/* Cybersecurity SOC */}
+        {currentView === 'cybersecurity-soc' && <CyberSecuritySOC />}
         
         {/* Performance Analytics */}
         {currentView === 'performance-analytics' && <AdvancedPerformanceAnalytics />}

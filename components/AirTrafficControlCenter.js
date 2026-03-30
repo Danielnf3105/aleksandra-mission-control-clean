@@ -1,839 +1,487 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, ScatterChart, Scatter } from 'recharts';
-import { Plane, Radar, Radio, Navigation, MapPin, Clock, AlertTriangle, CheckCircle, Zap, Activity, Eye, Target } from 'lucide-react';
+import { Plane, Radar, Radio, AlertTriangle, MapPin, Clock, Activity, Target, Gauge, Layers, Zap, Eye } from 'lucide-react';
 
 const AirTrafficControlCenter = () => {
-  const [atcStatus, setAtcStatus] = useState({
-    totalAircraft: 2847,
-    activeFlights: 1247,
-    controlledAirspace: 89.7, // percentage
-    delayedFlights: 23,
-    averageDelay: 8.4, // minutes
-    weatherImpact: 'low',
-    systemUptime: 99.97,
-    communicationChannels: 24
+  const [timestamp, setTimestamp] = useState(Date.now());
+  const [weatherConditions, setWeatherConditions] = useState({
+    visibility: 10, // km
+    windSpeed: 15, // knots
+    windDirection: 270, // degrees
+    ceiling: 2500, // feet
+    temperature: 18, // celsius
+    pressure: 1013.2, // hPa
+    conditions: 'CLEAR'
   });
 
-  const [activeAircraft, setActiveAircraft] = useState([
-    {
-      id: 'UAL1847',
-      callsign: 'United 1847',
-      aircraft: 'Boeing 737-800',
-      origin: 'LAX',
-      destination: 'SFO',
-      altitude: 37000, // feet
-      speed: 478, // knots
-      heading: 315, // degrees
-      status: 'en-route',
-      eta: '14:32',
-      fuel: 3.2, // hours
-      souls: 167,
-      sector: 'ZLA-42'
+  const [runwayStatus, setRunwayStatus] = useState({
+    '09L': { status: 'ACTIVE', traffic: 'ARRIVAL', nextSlot: '14:32' },
+    '09R': { status: 'ACTIVE', traffic: 'DEPARTURE', nextSlot: '14:29' },
+    '27L': { status: 'CLOSED', traffic: 'MAINTENANCE', nextSlot: '16:00' },
+    '27R': { status: 'STANDBY', traffic: 'NONE', nextSlot: '--:--' }
+  });
+
+  const [aircraftTracking, setAircraftTracking] = useState([
+    { 
+      id: 'UAL123', 
+      callsign: 'United 123', 
+      type: 'B737', 
+      altitude: 8500, 
+      heading: 90, 
+      speed: 280, 
+      x: 45, 
+      y: 32, 
+      status: 'APPROACH',
+      frequency: '124.35',
+      squawk: '2341'
     },
-    {
-      id: 'DAL2156',
-      callsign: 'Delta 2156',
-      aircraft: 'Airbus A320',
-      origin: 'DEN',
-      destination: 'LAX',
-      altitude: 12000,
-      speed: 245,
-      heading: 245,
-      status: 'approach',
-      eta: '13:45',
-      fuel: 2.1,
-      souls: 152,
-      sector: 'ZLA-18'
+    { 
+      id: 'DAL456', 
+      callsign: 'Delta 456', 
+      type: 'A320', 
+      altitude: 12000, 
+      heading: 180, 
+      speed: 420, 
+      x: 78, 
+      y: 45, 
+      status: 'ENROUTE',
+      frequency: '120.9',
+      squawk: '1200'
     },
-    {
-      id: 'SWA1234',
-      callsign: 'Southwest 1234',
-      aircraft: 'Boeing 737-700',
-      origin: 'LAS',
-      destination: 'LAX',
-      altitude: 2500,
-      speed: 180,
-      heading: 200,
-      status: 'landing',
-      eta: '13:28',
-      fuel: 1.8,
-      souls: 142,
-      sector: 'LAX-TWR'
+    { 
+      id: 'AAL789', 
+      callsign: 'American 789', 
+      type: 'B777', 
+      altitude: 2500, 
+      heading: 270, 
+      speed: 190, 
+      x: 15, 
+      y: 68, 
+      status: 'DEPARTURE',
+      frequency: '121.7',
+      squawk: '0547'
     },
-    {
-      id: 'AAL789',
-      callsign: 'American 789',
-      aircraft: 'Boeing 777-300',
-      origin: 'JFK',
-      destination: 'LAX',
-      altitude: 39000,
-      speed: 512,
-      heading: 275,
-      status: 'cruise',
-      eta: '16:15',
-      fuel: 5.7,
-      souls: 298,
-      sector: 'ZDV-21'
-    },
-    {
-      id: 'JBU567',
-      callsign: 'JetBlue 567',
-      aircraft: 'Airbus A321',
-      origin: 'BOS',
-      destination: 'LAX',
-      altitude: 8000,
-      speed: 210,
-      heading: 90,
-      status: 'departure',
-      eta: '17:22',
-      fuel: 4.3,
-      souls: 189,
-      sector: 'BOS-DEP'
+    { 
+      id: 'SWA321', 
+      callsign: 'Southwest 321', 
+      type: 'B737', 
+      altitude: 35000, 
+      heading: 45, 
+      speed: 480, 
+      x: 89, 
+      y: 12, 
+      status: 'CRUISE',
+      frequency: '127.8',
+      squawk: '7634'
     }
   ]);
 
-  const [controlSectors, setControlSectors] = useState([
-    {
-      id: 'ZLA-42',
-      name: 'Los Angeles High',
-      controller: 'ATC Johnson',
-      aircraft: 18,
-      status: 'normal',
-      frequency: '127.350',
-      altitudeRange: '24,000 - 40,000',
-      workload: 'medium',
-      weather: 'clear'
-    },
-    {
-      id: 'ZLA-18',
-      name: 'Los Angeles Approach',
-      controller: 'ATC Martinez',
-      aircraft: 23,
-      status: 'busy',
-      frequency: '124.900',
-      altitudeRange: '5,000 - 18,000',
-      workload: 'high',
-      weather: 'clear'
-    },
-    {
-      id: 'LAX-TWR',
-      name: 'LAX Tower',
-      controller: 'ATC Williams',
-      aircraft: 12,
-      status: 'normal',
-      frequency: '120.950',
-      altitudeRange: 'Surface - 5,000',
-      workload: 'medium',
-      weather: 'light winds'
-    },
-    {
-      id: 'LAX-GND',
-      name: 'LAX Ground',
-      controller: 'ATC Davis',
-      aircraft: 15,
-      status: 'normal',
-      frequency: '121.750',
-      altitudeRange: 'Surface',
-      workload: 'low',
-      weather: 'clear'
-    },
-    {
-      id: 'ZDV-21',
-      name: 'Denver Center',
-      controller: 'ATC Thompson',
-      aircraft: 32,
-      status: 'busy',
-      frequency: '135.750',
-      altitudeRange: '20,000 - 45,000',
-      workload: 'high',
-      weather: 'thunderstorms'
-    }
+  const [systemAlerts, setSystemAlerts] = useState([
+    { id: 1, level: 'CAUTION', message: 'Runway 27L maintenance in progress', time: '14:15', acknowledged: false },
+    { id: 2, level: 'ADVISORY', message: 'Weather update: Wind shift to 280°', time: '14:22', acknowledged: true },
+    { id: 3, level: 'WARNING', message: 'Aircraft UAL123 below glide path', time: '14:26', acknowledged: false }
   ]);
 
-  const [trafficFlow, setTrafficFlow] = useState([
-    {
-      time: new Date(Date.now() - 300000).toLocaleTimeString(),
-      arrivals: 28,
-      departures: 24,
-      overflights: 45,
-      total: 97
-    },
-    {
-      time: new Date(Date.now() - 240000).toLocaleTimeString(),
-      arrivals: 31,
-      departures: 27,
-      overflights: 42,
-      total: 100
-    },
-    {
-      time: new Date(Date.now() - 180000).toLocaleTimeString(),
-      arrivals: 29,
-      departures: 25,
-      overflights: 48,
-      total: 102
-    },
-    {
-      time: new Date(Date.now() - 120000).toLocaleTimeString(),
-      arrivals: 33,
-      departures: 30,
-      overflights: 44,
-      total: 107
-    },
-    {
-      time: new Date(Date.now() - 60000).toLocaleTimeString(),
-      arrivals: 35,
-      departures: 32,
-      overflights: 46,
-      total: 113
-    },
-    {
-      time: new Date().toLocaleTimeString(),
-      arrivals: 32,
-      departures: 28,
-      overflights: 49,
-      total: 109
-    }
-  ]);
-
-  const [atcAlerts, setAtcAlerts] = useState([
-    {
-      id: 'ATC-001',
-      severity: 'warning',
-      type: 'Weather Alert',
-      message: 'Thunderstorms developing in ZDV-21 sector - expect delays',
-      timestamp: new Date(),
-      status: 'active',
-      sector: 'ZDV-21',
-      affected: 8
-    },
-    {
-      id: 'ATC-002',
-      severity: 'caution',
-      type: 'Traffic Volume',
-      message: 'High traffic volume in LAX approach sector',
-      timestamp: new Date(Date.now() - 180000),
-      status: 'monitoring',
-      sector: 'ZLA-18',
-      affected: 23
-    },
-    {
-      id: 'ATC-003',
-      severity: 'info',
-      type: 'System Update',
-      message: 'ADS-B surveillance system operating nominally',
-      timestamp: new Date(Date.now() - 360000),
-      status: 'resolved',
-      sector: 'All',
-      affected: 0
-    }
-  ]);
-
-  const [weatherConditions, setWeatherConditions] = useState([
-    {
-      airport: 'LAX',
-      conditions: 'Clear',
-      visibility: '10+ miles',
-      winds: '250/08',
-      temperature: 72,
-      pressure: 30.12,
-      status: 'green'
-    },
-    {
-      airport: 'SFO',
-      conditions: 'Light Fog',
-      visibility: '3 miles',
-      winds: '280/15G25',
-      temperature: 58,
-      pressure: 30.05,
-      status: 'yellow'
-    },
-    {
-      airport: 'DEN',
-      conditions: 'Thunderstorms',
-      visibility: '5 miles',
-      winds: '190/22G35',
-      temperature: 65,
-      pressure: 29.95,
-      status: 'red'
-    },
-    {
-      airport: 'JFK',
-      conditions: 'Partly Cloudy',
-      visibility: '8 miles',
-      winds: '310/12',
-      temperature: 68,
-      pressure: 30.08,
-      status: 'green'
-    }
-  ]);
-
-  const [atcControllers, setAtcControllers] = useState([
-    {
-      position: 'Facility Manager',
-      name: 'Manager Sarah Chen',
-      status: 'on-duty',
-      shift: 'Day Shift',
-      sector: 'Operations',
-      experience: '22 years'
-    },
-    {
-      position: 'Approach Control',
-      name: 'Controller Martinez',
-      status: 'on-duty',
-      shift: 'Day Shift',
-      sector: 'ZLA-18',
-      experience: '14 years'
-    },
-    {
-      position: 'Tower Control',
-      name: 'Controller Williams',
-      status: 'on-duty',
-      shift: 'Day Shift',
-      sector: 'LAX-TWR',
-      experience: '18 years'
-    },
-    {
-      position: 'Ground Control',
-      name: 'Controller Davis',
-      status: 'on-duty',
-      shift: 'Day Shift',
-      sector: 'LAX-GND',
-      experience: '12 years'
-    }
-  ]);
+  const [controllerStations, setControllerStations] = useState({
+    ground: { controller: 'ATC-G1', frequency: '121.9', active: true, traffic: 8 },
+    tower: { controller: 'ATC-T1', frequency: '118.1', active: true, traffic: 12 },
+    approach: { controller: 'ATC-A1', frequency: '124.35', active: true, traffic: 15 },
+    departure: { controller: 'ATC-D1', frequency: '121.7', active: true, traffic: 9 }
+  });
 
   const [systemMetrics, setSystemMetrics] = useState({
-    radarCoverage: 99.8, // percentage
-    communicationReliability: 99.95,
-    navigationAccuracy: 99.92,
-    automationLevel: 87.3,
-    conflictAlerts: 0,
-    separationViolations: 0,
-    handoffSuccessRate: 99.97,
-    dataLinkOperational: 98.4
+    radarRange: 60, // nautical miles
+    primaryRadarStatus: 'OPERATIONAL',
+    secondaryRadarStatus: 'OPERATIONAL',
+    communicationsStatus: 'NORMAL',
+    weatherRadarStatus: 'OPERATIONAL',
+    navaidStatus: 'OPERATIONAL',
+    lightingStatus: 'NORMAL',
+    powerStatus: 'NORMAL',
+    backupPowerStatus: 'STANDBY'
   });
 
-  // Real-time updates
+  const [flightStrips, setFlightStrips] = useState([
+    { flight: 'UAL123', type: 'ARR', runway: '09L', time: '14:32', altitude: '8500→GND', remarks: 'RNAV APCH' },
+    { flight: 'AAL789', type: 'DEP', runway: '09R', time: '14:29', altitude: 'GND→FL350', remarks: 'HEAVY' },
+    { flight: 'DAL456', type: 'ARR', runway: '09L', time: '14:45', altitude: 'FL120→GND', remarks: 'PRIORITY' },
+    { flight: 'SWA321', type: 'OVR', runway: 'N/A', time: '14:28', altitude: 'FL350', remarks: 'TRANSIT' }
+  ]);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      // Update ATC status
-      setAtcStatus(prev => ({
+      setTimestamp(Date.now());
+
+      // Update aircraft positions
+      setAircraftTracking(prev => prev.map(aircraft => ({
+        ...aircraft,
+        x: Math.max(5, Math.min(95, aircraft.x + (Math.random() - 0.5) * 3)),
+        y: Math.max(5, Math.min(95, aircraft.y + (Math.random() - 0.5) * 3)),
+        altitude: aircraft.status === 'APPROACH' 
+          ? Math.max(0, aircraft.altitude - Math.random() * 200)
+          : aircraft.status === 'DEPARTURE'
+          ? Math.min(35000, aircraft.altitude + Math.random() * 500)
+          : aircraft.altitude + (Math.random() - 0.5) * 100,
+        heading: (aircraft.heading + (Math.random() - 0.5) * 10 + 360) % 360
+      })));
+
+      // Update weather conditions
+      setWeatherConditions(prev => ({
         ...prev,
-        activeFlights: Math.max(1000, Math.min(1500, prev.activeFlights + Math.floor((Math.random() - 0.5) * 20))),
-        delayedFlights: Math.max(10, Math.min(50, prev.delayedFlights + Math.floor((Math.random() - 0.5) * 5))),
-        averageDelay: Math.max(5, Math.min(25, prev.averageDelay + (Math.random() - 0.5) * 2)),
-        controlledAirspace: Math.max(85, Math.min(95, prev.controlledAirspace + (Math.random() - 0.5) * 1)),
-        systemUptime: Math.max(99.5, Math.min(100, prev.systemUptime + (Math.random() - 0.3) * 0.01))
+        windSpeed: Math.max(5, Math.min(35, prev.windSpeed + (Math.random() - 0.5) * 3)),
+        windDirection: (prev.windDirection + (Math.random() - 0.5) * 5 + 360) % 360,
+        visibility: Math.max(1, Math.min(15, prev.visibility + (Math.random() - 0.5) * 0.5))
       }));
 
-      // Update active aircraft
-      setActiveAircraft(prev => prev.map(aircraft => {
-        const newAltitude = aircraft.status === 'approach' || aircraft.status === 'landing' ? 
-          Math.max(0, aircraft.altitude - Math.random() * 1000) :
-          aircraft.status === 'departure' ?
-          Math.min(40000, aircraft.altitude + Math.random() * 2000) :
-          aircraft.altitude + (Math.random() - 0.5) * 500;
-
-        return {
-          ...aircraft,
-          altitude: Math.max(0, Math.min(45000, newAltitude)),
-          speed: Math.max(150, Math.min(580, aircraft.speed + (Math.random() - 0.5) * 20)),
-          heading: (aircraft.heading + (Math.random() - 0.5) * 10) % 360,
-          fuel: Math.max(0.5, aircraft.fuel - 0.02)
-        };
-      }));
-
-      // Update control sectors
-      setControlSectors(prev => prev.map(sector => {
-        const workloadLevels = ['low', 'medium', 'high'];
-        return {
-          ...sector,
-          aircraft: Math.max(5, Math.min(40, sector.aircraft + Math.floor((Math.random() - 0.5) * 3))),
-          workload: Math.random() > 0.8 ? workloadLevels[Math.floor(Math.random() * workloadLevels.length)] : sector.workload
-        };
-      }));
-
-      // Update traffic flow
-      const newTrafficData = {
-        time: new Date().toLocaleTimeString(),
-        arrivals: 25 + Math.floor(Math.random() * 15),
-        departures: 20 + Math.floor(Math.random() * 15),
-        overflights: 40 + Math.floor(Math.random() * 15),
-        total: 0
-      };
-      newTrafficData.total = newTrafficData.arrivals + newTrafficData.departures + newTrafficData.overflights;
-      
-      setTrafficFlow(prev => [...prev.slice(1), newTrafficData]);
-
-      // Update system metrics
-      setSystemMetrics(prev => ({
-        ...prev,
-        radarCoverage: Math.max(98, Math.min(100, prev.radarCoverage + (Math.random() - 0.5) * 0.1)),
-        communicationReliability: Math.max(99, Math.min(100, prev.communicationReliability + (Math.random() - 0.5) * 0.05)),
-        navigationAccuracy: Math.max(99, Math.min(100, prev.navigationAccuracy + (Math.random() - 0.5) * 0.05)),
-        automationLevel: Math.max(80, Math.min(95, prev.automationLevel + (Math.random() - 0.5) * 1))
-      }));
-
-      // Occasionally add new ATC alerts
-      if (Math.random() > 0.96) {
-        const alertTypes = ['Weather Alert', 'Traffic Volume', 'System Update', 'Equipment Status'];
-        const severities = ['info', 'caution', 'warning', 'critical'];
-        const sectors = controlSectors.map(s => s.id);
+      // Simulate new alerts occasionally
+      if (Math.random() > 0.85) {
+        const alertTypes = [
+          { level: 'ADVISORY', message: 'Traffic pattern adjustment requested' },
+          { level: 'CAUTION', message: 'Ground equipment maintenance scheduled' },
+          { level: 'WARNING', message: 'Aircraft separation minimum approach' }
+        ];
+        const newAlert = alertTypes[Math.floor(Math.random() * alertTypes.length)];
         
-        const newAlert = {
-          id: `ATC-${Date.now()}`,
-          severity: severities[Math.floor(Math.random() * severities.length)],
-          type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
-          message: 'Real-time air traffic control alert',
-          timestamp: new Date(),
-          status: 'active',
-          sector: sectors[Math.floor(Math.random() * sectors.length)],
-          affected: Math.floor(Math.random() * 20)
-        };
-        
-        setAtcAlerts(prev => [newAlert, ...prev.slice(0, 9)]);
+        setSystemAlerts(prev => [
+          {
+            id: Date.now(),
+            ...newAlert,
+            time: new Date().toLocaleTimeString().slice(0, 5),
+            acknowledged: false
+          },
+          ...prev.slice(0, 9)
+        ]);
       }
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(interval);
-  }, [controlSectors]);
+  }, []);
 
-  const getAircraftStatusColor = (status) => {
+  const getAlertColor = (level) => {
+    switch (level) {
+      case 'WARNING': return 'text-red-400 bg-red-900/30 border-red-500';
+      case 'CAUTION': return 'text-yellow-400 bg-yellow-900/30 border-yellow-500';
+      case 'ADVISORY': return 'text-blue-400 bg-blue-900/30 border-blue-500';
+      default: return 'text-gray-400 bg-gray-900/30 border-gray-500';
+    }
+  };
+
+  const getRunwayStatusColor = (status) => {
     switch (status) {
-      case 'cruise': return '#10B981';
-      case 'en-route': return '#3B82F6';
-      case 'approach': return '#F59E0B';
-      case 'landing': return '#EF4444';
-      case 'departure': return '#8B5CF6';
-      default: return '#6B7280';
+      case 'ACTIVE': return 'text-green-400';
+      case 'STANDBY': return 'text-yellow-400';
+      case 'CLOSED': return 'text-red-400';
+      default: return 'text-gray-400';
     }
   };
 
-  const getSectorStatusColor = (status) => {
-    switch (status) {
-      case 'normal': return '#10B981';
-      case 'busy': return '#F59E0B';
-      case 'critical': return '#EF4444';
-      default: return '#6B7280';
-    }
+  const formatFrequency = (freq) => {
+    return `${freq} MHz`;
   };
-
-  const getWorkloadColor = (workload) => {
-    switch (workload) {
-      case 'low': return '#10B981';
-      case 'medium': return '#F59E0B';
-      case 'high': return '#EF4444';
-      default: return '#6B7280';
-    }
-  };
-
-  const getWeatherStatusColor = (status) => {
-    switch (status) {
-      case 'green': return '#10B981';
-      case 'yellow': return '#F59E0B';
-      case 'red': return '#EF4444';
-      default: return '#6B7280';
-    }
-  };
-
-  const getAlertSeverityColor = (severity) => {
-    switch (severity) {
-      case 'critical': return '#EF4444';
-      case 'warning': return '#F59E0B';
-      case 'caution': return '#3B82F6';
-      case 'info': return '#10B981';
-      default: return '#6B7280';
-    }
-  };
-
-  const aircraftTypeDistribution = [
-    { name: 'Boeing 737', value: 28, color: '#3B82F6' },
-    { name: 'Airbus A320', value: 25, color: '#10B981' },
-    { name: 'Boeing 777', value: 18, color: '#8B5CF6' },
-    { name: 'Airbus A330', value: 15, color: '#F59E0B' },
-    { name: 'Other', value: 14, color: '#EF4444' }
-  ];
 
   return (
-    <div className="min-h-screen bg-black text-white p-4 font-mono">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
-        <div className="flex items-center space-x-3">
-          <Radar className="w-8 h-8 text-blue-400" />
-          <div>
-            <h1 className="text-2xl font-bold text-white">AIR TRAFFIC CONTROL CENTER</h1>
-            <p className="text-gray-400">24/7 aviation operations, real-time aircraft monitoring, and strategic airspace management</p>
-          </div>
-        </div>
-        <div className="flex items-center space-x-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-400">{atcStatus.activeFlights.toLocaleString()}</div>
-            <div className="text-xs text-gray-400">ACTIVE FLIGHTS</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-400">{atcStatus.controlledAirspace.toFixed(1)}%</div>
-            <div className="text-xs text-gray-400">AIRSPACE</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-400">{atcStatus.systemUptime.toFixed(2)}%</div>
-            <div className="text-xs text-gray-400">UPTIME</div>
-          </div>
-        </div>
-      </div>
-
-      {/* ATC System KPIs */}
-      <div className="grid grid-cols-6 gap-4 mb-6">
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Plane className="w-5 h-5 text-green-400" />
-            <span className="text-xs text-gray-400">TOTAL AIRCRAFT</span>
-          </div>
-          <div className="text-xl font-bold text-white">{atcStatus.totalAircraft.toLocaleString()}</div>
-          <div className="text-xs text-gray-400">In System</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Clock className="w-5 h-5 text-yellow-400" />
-            <span className="text-xs text-gray-400">DELAYED</span>
-          </div>
-          <div className="text-xl font-bold text-white">{atcStatus.delayedFlights}</div>
-          <div className="text-xs text-gray-400">Flights</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Activity className="w-5 h-5 text-orange-400" />
-            <span className="text-xs text-gray-400">AVG DELAY</span>
-          </div>
-          <div className="text-xl font-bold text-white">{atcStatus.averageDelay.toFixed(1)}</div>
-          <div className="text-xs text-gray-400">Minutes</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Radio className="w-5 h-5 text-blue-400" />
-            <span className="text-xs text-gray-400">COMM CHANNELS</span>
-          </div>
-          <div className="text-xl font-bold text-white">{atcStatus.communicationChannels}</div>
-          <div className="text-xs text-gray-400">Active</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <CheckCircle className="w-5 h-5 text-purple-400" />
-            <span className="text-xs text-gray-400">RADAR</span>
-          </div>
-          <div className="text-xl font-bold text-white">{systemMetrics.radarCoverage.toFixed(1)}%</div>
-          <div className="text-xs text-gray-400">Coverage</div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <div className="flex items-center justify-between mb-2">
-            <Navigation className="w-5 h-5 text-red-400" />
-            <span className="text-xs text-gray-400">WEATHER</span>
-          </div>
-          <div className="text-xl font-bold text-white">{atcStatus.weatherImpact.toUpperCase()}</div>
-          <div className="text-xs text-gray-400">Impact</div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6 mb-6">
-        {/* Active Aircraft */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Plane className="w-5 h-5 mr-2 text-blue-400" />
-            ACTIVE AIRCRAFT
-          </h3>
-          <div className="space-y-3">
-            {activeAircraft.map(aircraft => (
-              <div key={aircraft.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getAircraftStatusColor(aircraft.status) }}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{aircraft.callsign}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getAircraftStatusColor(aircraft.status)}20`, 
-                      color: getAircraftStatusColor(aircraft.status) 
-                    }}>
-                      {aircraft.status.toUpperCase()}
-                    </span>
-                    <span className="text-xs text-gray-400">{aircraft.aircraft.split(' ')[1]}</span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-400 mb-2">{aircraft.origin} → {aircraft.destination}</div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Altitude</span>
-                    <span className="text-blue-400">{aircraft.altitude.toLocaleString()}'</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Speed</span>
-                    <span className="text-green-400">{aircraft.speed.toFixed(0)} kts</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Heading</span>
-                    <span className="text-white">{aircraft.heading.toFixed(0)}°</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">ETA</span>
-                    <span className="text-purple-400">{aircraft.eta}</span>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-yellow-400">Sector: {aircraft.sector}</span>
-                  <span className="text-gray-400">SOB: {aircraft.souls}</span>
-                </div>
-              </div>
-            ))}
+    <div className="bg-black text-white p-6 font-mono">
+      <div className="mb-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-green-400">AIR TRAFFIC CONTROL CENTER</h1>
+          <div className="flex items-center text-sm text-gray-400">
+            <span className="mr-4">FACILITY: KORD</span>
+            <span className="mr-4">SECTOR: 09L/27R</span>
+            <span>{new Date(timestamp).toLocaleTimeString()} UTC</span>
           </div>
         </div>
 
-        {/* Control Sectors */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <Target className="w-5 h-5 mr-2 text-green-400" />
-            CONTROL SECTORS
-          </h3>
-          <div className="space-y-3">
-            {controlSectors.map(sector => (
-              <div key={sector.id} className="bg-gray-800 rounded-lg p-3 border-l-4" style={{ borderLeftColor: getSectorStatusColor(sector.status) }}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{sector.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs px-2 py-1 rounded-full" style={{ 
-                      backgroundColor: `${getSectorStatusColor(sector.status)}20`, 
-                      color: getSectorStatusColor(sector.status) 
-                    }}>
-                      {sector.status.toUpperCase()}
-                    </span>
-                    <span className="text-xs text-gray-400">{sector.aircraft} A/C</span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-400 mb-2">
-                  Controller: <span className="text-blue-400">{sector.controller}</span>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Frequency</span>
-                    <span className="text-green-400">{sector.frequency}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Workload</span>
-                    <span style={{color: getWorkloadColor(sector.workload)}}>{sector.workload.toUpperCase()}</span>
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-300 mb-2">
-                  Altitude: <span className="text-white">{sector.altitudeRange}</span>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-purple-400">Weather: {sector.weather}</span>
-                  <span className="text-gray-500">{sector.id}</span>
-                </div>
-              </div>
-            ))}
+        {/* Weather Strip */}
+        <div className="bg-blue-900/30 border border-blue-500 rounded-lg p-3 mb-6">
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center">
+              <Eye className="w-5 h-5 text-blue-400 mr-2" />
+              <span className="text-blue-400 font-bold mr-4">WEATHER:</span>
+              <span>{weatherConditions.conditions}</span>
+            </div>
+            <div className="flex items-center space-x-6">
+              <span>VIS: {weatherConditions.visibility.toFixed(1)}km</span>
+              <span>WIND: {weatherConditions.windDirection.toFixed(0)}°/{weatherConditions.windSpeed.toFixed(0)}kt</span>
+              <span>CEIL: {weatherConditions.ceiling}ft</span>
+              <span>TEMP: {weatherConditions.temperature}°C</span>
+              <span>QNH: {weatherConditions.pressure.toFixed(1)}</span>
+            </div>
           </div>
         </div>
 
-        {/* Weather & Alerts */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-            <AlertTriangle className="w-5 h-5 mr-2 text-yellow-400" />
-            WEATHER & ALERTS
-          </h3>
-          <div className="space-y-3 mb-4">
-            {weatherConditions.map((weather, index) => (
-              <div key={index} className="bg-gray-800 rounded-lg p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{weather.airport}</span>
-                  <span 
-                    className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: getWeatherStatusColor(weather.status) }}
+        {/* Main Control Grid */}
+        <div className="grid grid-cols-4 gap-6 mb-6">
+          {/* Radar Display */}
+          <div className="col-span-2 bg-gray-900 rounded border border-green-500">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Radar className="w-5 h-5 mr-2 text-green-400 animate-spin" />
+                PRIMARY RADAR DISPLAY - {systemMetrics.radarRange}NM
+              </h3>
+            </div>
+            <div className="p-4">
+              <div className="relative bg-black border border-green-600 rounded h-80 overflow-hidden">
+                <svg width="100%" height="100%" viewBox="0 0 400 300" className="absolute inset-0">
+                  {/* Radar rings */}
+                  <circle cx="200" cy="150" r="60" fill="none" stroke="#065f46" strokeWidth="1" />
+                  <circle cx="200" cy="150" r="120" fill="none" stroke="#065f46" strokeWidth="1" />
+                  <circle cx="200" cy="150" r="180" fill="none" stroke="#065f46" strokeWidth="1" />
+                  
+                  {/* Radar sweep line */}
+                  <line 
+                    x1="200" 
+                    y1="150" 
+                    x2={200 + 180 * Math.cos((timestamp / 1000) % (2 * Math.PI))} 
+                    y2={150 + 180 * Math.sin((timestamp / 1000) % (2 * Math.PI))} 
+                    stroke="#10b981" 
+                    strokeWidth="2" 
+                    opacity="0.8"
                   />
-                </div>
+                  
+                  {/* Cross-hairs */}
+                  <line x1="200" y1="0" x2="200" y2="300" stroke="#065f46" strokeWidth="1" />
+                  <line x1="0" y1="150" x2="400" y2="150" stroke="#065f46" strokeWidth="1" />
+                  
+                  {/* Aircraft blips */}
+                  {aircraftTracking.map((aircraft, index) => {
+                    const x = (aircraft.x / 100) * 400;
+                    const y = (aircraft.y / 100) * 300;
+                    return (
+                      <g key={aircraft.id}>
+                        <circle 
+                          cx={x} 
+                          cy={y} 
+                          r="4" 
+                          fill={aircraft.status === 'WARNING' ? '#ef4444' : '#10b981'} 
+                          className="animate-pulse"
+                        />
+                        <text 
+                          x={x + 8} 
+                          y={y - 8} 
+                          fontSize="8" 
+                          fill="#10b981" 
+                          className="font-mono"
+                        >
+                          {aircraft.id}
+                        </text>
+                        <text 
+                          x={x + 8} 
+                          y={y + 2} 
+                          fontSize="6" 
+                          fill="#065f46" 
+                          className="font-mono"
+                        >
+                          {Math.round(aircraft.altitude / 100)}
+                        </text>
+                      </g>
+                    );
+                  })}
+                  
+                  {/* Runway overlay */}
+                  <line x1="80" y1="150" x2="320" y2="150" stroke="#fbbf24" strokeWidth="3" />
+                  <text x="85" y="145" fontSize="8" fill="#fbbf24" className="font-mono">09L</text>
+                  <text x="300" y="145" fontSize="8" fill="#fbbf24" className="font-mono">27R</text>
+                </svg>
                 
-                <div className="text-xs text-gray-300 mb-2">{weather.conditions}</div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Visibility</span>
-                    <span className="text-blue-400">{weather.visibility}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Winds</span>
-                    <span className="text-green-400">{weather.winds}</span>
-                  </div>
+                <div className="absolute bottom-2 left-2 text-xs text-green-400">
+                  RANGE: {systemMetrics.radarRange}NM | MODE: S | CONTACTS: {aircraftTracking.length}
                 </div>
               </div>
-            ))}
+            </div>
           </div>
 
-          {/* ATC Alerts */}
-          <div className="border-t border-gray-700 pt-3">
-            <div className="text-sm text-white font-semibold mb-2">ATC Alerts</div>
-            <div className="space-y-2">
-              {atcAlerts.slice(0, 3).map(alert => (
-                <div key={alert.id} className="bg-gray-800 rounded-lg p-2 border-l-2" style={{ borderLeftColor: getAlertSeverityColor(alert.severity) }}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-white">{alert.type}</span>
-                    <span className="text-xs px-1 py-0.5 rounded-full" style={{ 
-                      backgroundColor: `${getAlertSeverityColor(alert.severity)}20`, 
-                      color: getAlertSeverityColor(alert.severity) 
-                    }}>
-                      {alert.severity.toUpperCase()}
+          {/* Flight Strips & Aircraft Data */}
+          <div className="col-span-1 bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Plane className="w-5 h-5 mr-2 text-blue-400" />
+                ACTIVE TRAFFIC
+              </h3>
+            </div>
+            <div className="p-4 space-y-2 max-h-80 overflow-y-auto">
+              {aircraftTracking.map((aircraft) => (
+                <div key={aircraft.id} className="bg-gray-800 p-3 rounded border border-gray-600">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-cyan-400 font-bold">{aircraft.callsign}</span>
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      aircraft.status === 'APPROACH' ? 'bg-green-900 text-green-400' :
+                      aircraft.status === 'DEPARTURE' ? 'bg-blue-900 text-blue-400' :
+                      aircraft.status === 'CRUISE' ? 'bg-purple-900 text-purple-400' :
+                      'bg-gray-700 text-gray-400'
+                    }`}>
+                      {aircraft.status}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-300 mb-1">{alert.message}</p>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-blue-400">{alert.sector}</span>
-                    <span className="text-gray-500">{alert.timestamp.toLocaleTimeString()}</span>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-gray-400">ALT:</span>
+                      <span className="text-white ml-1">{Math.round(aircraft.altitude)}ft</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">HDG:</span>
+                      <span className="text-white ml-1">{aircraft.heading.toFixed(0)}°</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">SPD:</span>
+                      <span className="text-white ml-1">{aircraft.speed}kt</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">FREQ:</span>
+                      <span className="text-yellow-400 ml-1">{aircraft.frequency}</span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs">
+                    <span className="text-gray-400">SQUAWK:</span>
+                    <span className="text-orange-400 ml-1">{aircraft.squawk}</span>
+                    <span className="text-gray-400 ml-3">TYPE:</span>
+                    <span className="text-white ml-1">{aircraft.type}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Air Traffic Analytics */}
-      <div className="grid grid-cols-2 gap-6">
-        {/* Real-time Traffic Flow */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">REAL-TIME TRAFFIC FLOW</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={trafficFlow}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
-              <YAxis stroke="#9CA3AF" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: '1px solid #374151',
-                  borderRadius: '8px',
-                  color: '#fff'
-                }} 
-              />
-              <Legend />
-              <Area 
-                type="monotone" 
-                dataKey="arrivals" 
-                stackId="1"
-                stroke="#3B82F6" 
-                fill="#3B82F6"
-                fillOpacity={0.6}
-                name="Arrivals"
-              />
-              <Area 
-                type="monotone" 
-                dataKey="departures" 
-                stackId="1"
-                stroke="#10B981" 
-                fill="#10B981"
-                fillOpacity={0.6}
-                name="Departures"
-              />
-              <Area 
-                type="monotone" 
-                dataKey="overflights" 
-                stackId="1"
-                stroke="#8B5CF6" 
-                fill="#8B5CF6"
-                fillOpacity={0.6}
-                name="Overflights"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Aircraft Fleet Analysis & System Status */}
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">FLEET ANALYSIS & SYSTEM STATUS</h3>
-          <div className="flex">
-            <ResponsiveContainer width="60%" height={200}>
-              <PieChart>
-                <Pie
-                  data={aircraftTypeDistribution}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {aircraftTypeDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#fff'
-                  }}
-                  formatter={(value) => [`${value}%`, 'Fleet Composition']}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="w-2/5 space-y-2 mt-4">
-              {aircraftTypeDistribution.map((aircraft, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: aircraft.color }}
-                    />
-                    <span className="text-gray-400 text-sm">{aircraft.name}</span>
+          {/* System Status */}
+          <div className="col-span-1 bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Activity className="w-5 h-5 mr-2 text-yellow-400" />
+                SYSTEM STATUS
+              </h3>
+            </div>
+            <div className="p-4 space-y-3">
+              {Object.entries(systemMetrics).map(([key, status]) => {
+                if (key === 'radarRange') return null;
+                const isOperational = status === 'OPERATIONAL' || status === 'NORMAL' || status === 'STANDBY';
+                return (
+                  <div key={key} className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</span>
+                    <span className={`font-bold ${
+                      isOperational ? 'text-green-400' : 'text-red-400'
+                    }`}>
+                      {status}
+                    </span>
                   </div>
-                  <span className="text-white font-semibold">{aircraft.value}%</span>
-                </div>
-              ))}
+                );
+              })}
               
-              {/* System Status */}
-              <div className="mt-4 pt-3 border-t border-gray-700">
-                <div className="text-sm text-white font-semibold mb-2">System Status</div>
-                <div className="space-y-1 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Navigation Accuracy</span>
-                    <span className="text-green-400">{systemMetrics.navigationAccuracy.toFixed(1)}%</span>
+              {/* Runway Status */}
+              <div className="pt-3 border-t border-gray-700">
+                <div className="text-sm text-gray-400 mb-2">RUNWAY STATUS:</div>
+                {Object.entries(runwayStatus).map(([runway, status]) => (
+                  <div key={runway} className="flex justify-between items-center text-xs mb-1">
+                    <span className="text-white">{runway}:</span>
+                    <span className={`font-bold ${getRunwayStatusColor(status.status)}`}>
+                      {status.status}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Automation Level</span>
-                    <span className="text-blue-400">{systemMetrics.automationLevel.toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Handoff Success</span>
-                    <span className="text-green-400">{systemMetrics.handoffSuccessRate.toFixed(2)}%</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-          
-          {/* ATC Command Panel */}
-          <div className="mt-4 pt-4 border-t border-gray-700">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-400">Air Traffic Control Operations</span>
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs transition-colors">
-                  <Radar className="w-3 h-3 inline mr-1" />
-                  Radar Display
-                </button>
-                <button className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-xs transition-colors">
-                  <Radio className="w-3 h-3 inline mr-1" />
-                  Frequency Mgmt
-                </button>
-                <button className="px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded text-xs transition-colors">
-                  <Eye className="w-3 h-3 inline mr-1" />
-                  Flight Tracking
-                </button>
+        </div>
+
+        {/* Controller Stations & Communications */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Radio className="w-5 h-5 mr-2 text-purple-400" />
+                CONTROLLER POSITIONS
+              </h3>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-2 gap-4">
+                {Object.entries(controllerStations).map(([position, info]) => (
+                  <div key={position} className="bg-gray-800 p-3 rounded">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-white font-bold uppercase">{position}</span>
+                      <div className={`w-3 h-3 rounded-full ${info.active ? 'bg-green-400' : 'bg-red-400'} animate-pulse`}></div>
+                    </div>
+                    <div className="text-xs space-y-1">
+                      <div>
+                        <span className="text-gray-400">FREQ:</span>
+                        <span className="text-yellow-400 ml-2">{formatFrequency(info.frequency)}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">CONTROLLER:</span>
+                        <span className="text-cyan-400 ml-2">{info.controller}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400">TRAFFIC:</span>
+                        <span className="text-white ml-2">{info.traffic} A/C</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
+            </div>
+          </div>
+
+          {/* Alerts & Messages */}
+          <div className="bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
+                SYSTEM ALERTS & MESSAGES
+              </h3>
+            </div>
+            <div className="p-4 max-h-60 overflow-y-auto">
+              {systemAlerts.map((alert) => (
+                <div 
+                  key={alert.id} 
+                  className={`p-3 rounded border mb-2 ${getAlertColor(alert.level)} ${
+                    !alert.acknowledged ? 'animate-pulse' : 'opacity-70'
+                  }`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center mb-1">
+                        <span className="text-xs font-bold uppercase">{alert.level}</span>
+                        <span className="text-xs ml-2 text-gray-400">{alert.time}</span>
+                      </div>
+                      <div className="text-sm">{alert.message}</div>
+                    </div>
+                    {!alert.acknowledged && (
+                      <span className="text-xs bg-red-900 text-red-300 px-2 py-1 rounded">ACK</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Flight Progress Strips */}
+        <div className="bg-gray-900 rounded border border-gray-700">
+          <div className="p-4 border-b border-gray-700">
+            <h3 className="font-bold text-white flex items-center">
+              <Clock className="w-5 h-5 mr-2 text-orange-400" />
+              FLIGHT PROGRESS STRIPS
+            </h3>
+          </div>
+          <div className="p-4">
+            <div className="grid grid-cols-4 gap-2">
+              {flightStrips.map((strip, index) => (
+                <div key={index} className="bg-yellow-100 text-black p-2 rounded text-xs font-mono">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="font-bold">{strip.flight}</span>
+                    <span className={`px-1 rounded ${
+                      strip.type === 'ARR' ? 'bg-green-600 text-white' :
+                      strip.type === 'DEP' ? 'bg-blue-600 text-white' :
+                      'bg-gray-600 text-white'
+                    }`}>
+                      {strip.type}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <div><strong>RWY:</strong> {strip.runway}</div>
+                    <div><strong>TIME:</strong> {strip.time}</div>
+                    <div><strong>ALT:</strong> {strip.altitude}</div>
+                    <div><strong>RMK:</strong> {strip.remarks}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -1,768 +1,492 @@
-// Financial Trading Floor & Risk Management Center - 2026 Market Intelligence
-// Based on Nasdaq Trade Surveillance, Solidus Labs, LSEG, Eventus systems
-import { useState, useEffect } from 'react';
-import { 
-  TrendingUp, TrendingDown, DollarSign, BarChart3, Activity, AlertTriangle,
-  CheckCircle, Eye, Monitor, Shield, Target, Clock, RefreshCw,
-  ArrowRight, ArrowLeft, Plus, Minus, Play, Pause, StopCircle,
-  Search, Settings, Info, MapPin, Users, Zap, Battery,
-  Database, HardDrive, Cpu, MemoryStick, Layers, FileCode,
-  Building, Home, Car, Truck, Plane, Ship, Network, Server,
-  Globe, Wifi, Signal, Radio, Tower, Radar, Navigation,
-  Calendar, Timer, PhoneCall, Mail, UserCheck, Package,
-  Warehouse, Box, Store, CreditCard, ShoppingCart, Gauge,
-  Thermometer, Droplets, Wind, Sun, Moon, Star, Circle
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown, DollarSign, BarChart3, Activity, AlertTriangle, Clock, Zap, Target, Eye, Phone, Users } from 'lucide-react';
 
-export default function FinancialTradingFloorCenter() {
-  const [tradingData, setTradingData] = useState({
-    currentTime: new Date().toISOString(),
-    marketStatus: 'OPEN',
-    totalVolume: 2847293847, // shares
-    totalValue: 89472837292, // USD
-    activeTraders: 1847,
-    riskAlerts: 23,
-    pnl: 12487292.87, // daily P&L
-    riskUtilization: 73.4, // %
-    surveillanceAlerts: 156,
-    tradingDesks: [
-      {
-        name: 'Equity Trading',
-        location: 'Floor 42, Desk A1-A20',
-        traders: 45,
-        volume: 847293847,
-        pnl: 2847292.50,
-        riskLimit: 50000000,
-        riskUsed: 34782942,
-        utilization: 69.6,
-        alerts: 8,
-        status: 'ACTIVE',
-        avgLatency: 0.23, // ms
-        successRate: 99.7
-      },
-      {
-        name: 'Fixed Income',
-        location: 'Floor 42, Desk B1-B15',
-        traders: 32,
-        volume: 456789123,
-        pnl: 1592847.25,
-        riskLimit: 75000000,
-        riskUsed: 52847392,
-        utilization: 70.5,
-        alerts: 3,
-        status: 'ACTIVE',
-        avgLatency: 0.18,
-        successRate: 99.8
-      },
-      {
-        name: 'FX Trading',
-        location: 'Floor 43, Desk C1-C25',
-        traders: 38,
-        volume: 923847561,
-        pnl: 3947582.30,
-        riskLimit: 40000000,
-        riskUsed: 31847293,
-        utilization: 79.6,
-        alerts: 12,
-        status: 'HIGH_ACTIVITY',
-        avgLatency: 0.15,
-        successRate: 99.9
-      },
-      {
-        name: 'Derivatives',
-        location: 'Floor 44, Desk D1-D18',
-        traders: 28,
-        volume: 234856791,
-        pnl: 4847392.82,
-        riskLimit: 100000000,
-        riskUsed: 67293847,
-        utilization: 67.3,
-        alerts: 0,
-        status: 'OPTIMAL',
-        avgLatency: 0.28,
-        successRate: 99.6
-      }
-    ],
-    marketPositions: [
-      {
-        symbol: 'SPY',
-        position: 2847293,
-        marketValue: 134782948.27,
-        pnl: 2847291.50,
-        risk: 'LOW',
-        exposure: 12.4, // %
-        delta: 0.78,
-        gamma: 0.12,
-        theta: -0.05,
-        vega: 0.23
-      },
-      {
-        symbol: 'QQQ',
-        position: -1456789,
-        marketValue: -89473628.92,
-        pnl: -847392.25,
-        risk: 'MEDIUM',
-        exposure: 8.7,
-        delta: -0.65,
-        gamma: -0.09,
-        theta: 0.08,
-        vega: -0.18
-      },
-      {
-        symbol: 'TSLA',
-        position: 847293,
-        marketValue: 178294763.84,
-        pnl: 5847392.75,
-        risk: 'HIGH',
-        exposure: 15.2,
-        delta: 0.89,
-        gamma: 0.23,
-        theta: -0.12,
-        vega: 0.34
-      },
-      {
-        symbol: 'MSFT',
-        position: 1293847,
-        marketValue: 523847293.47,
-        pnl: 8472938.92,
-        risk: 'LOW',
-        exposure: 18.9,
-        delta: 0.72,
-        gamma: 0.08,
-        theta: -0.04,
-        vega: 0.15
-      }
-    ],
-    riskMetrics: [
-      {
-        metric: 'Value at Risk (VaR)',
-        current: 12847293.50,
-        limit: 25000000,
-        utilization: 51.4,
-        confidence: '95%',
-        timeframe: '1-day',
-        trend: 'stable'
-      },
-      {
-        metric: 'Expected Shortfall',
-        current: 18472938.25,
-        limit: 35000000,
-        utilization: 52.8,
-        confidence: '95%',
-        timeframe: '1-day',
-        trend: 'increasing'
-      },
-      {
-        metric: 'Maximum Drawdown',
-        current: 5847293.75,
-        limit: 15000000,
-        utilization: 39.0,
-        confidence: 'N/A',
-        timeframe: 'YTD',
-        trend: 'decreasing'
-      },
-      {
-        metric: 'Leverage Ratio',
-        current: 2.34,
-        limit: 4.0,
-        utilization: 58.5,
-        confidence: 'N/A',
-        timeframe: 'Real-time',
-        trend: 'stable'
-      }
-    ],
-    surveillanceEvents: [
-      {
-        id: 'SUR-2026-001',
-        timestamp: '15:38',
-        priority: 'HIGH',
-        type: 'SUSPICIOUS_PATTERN',
-        trader: 'John M. (ID: T4729)',
-        desk: 'FX Trading',
-        symbol: 'EUR/USD',
-        pattern: 'Layering detected',
-        volume: 50000000,
-        timeWindow: '2 minutes',
-        confidence: 94.7,
-        action: 'Trade halted, investigation initiated',
-        status: 'INVESTIGATING'
-      },
-      {
-        id: 'SUR-2026-002',
-        timestamp: '15:35',
-        priority: 'MEDIUM',
-        type: 'LIMIT_BREACH',
-        trader: 'Sarah L. (ID: T2847)',
-        desk: 'Equity Trading',
-        symbol: 'AAPL',
-        pattern: 'Position limit approached',
-        volume: 2000000,
-        timeWindow: '15 minutes',
-        confidence: 99.2,
-        action: 'Risk team notified',
-        status: 'MONITORING'
-      },
-      {
-        id: 'SUR-2026-003',
-        timestamp: '15:32',
-        priority: 'LOW',
-        type: 'UNUSUAL_TIMING',
-        trader: 'Mike R. (ID: T1847)',
-        desk: 'Fixed Income',
-        symbol: 'US10Y',
-        pattern: 'After-hours activity',
-        volume: 10000000,
-        timeWindow: '30 minutes',
-        confidence: 87.3,
-        action: 'Automated log entry',
-        status: 'LOGGED'
-      }
-    ],
-    marketData: [
-      {
-        symbol: 'S&P 500',
-        price: 4847.29,
-        change: +23.47,
-        changePercent: +0.49,
-        volume: '3.2B',
-        volatility: 12.4,
-        marketCap: '$39.2T'
-      },
-      {
-        symbol: 'NASDAQ',
-        price: 15294.73,
-        change: +145.92,
-        changePercent: +0.97,
-        volume: '4.8B',
-        volatility: 18.7,
-        marketCap: '$18.4T'
-      },
-      {
-        symbol: 'EUR/USD',
-        price: 1.0847,
-        change: -0.0023,
-        changePercent: -0.21,
-        volume: '847M',
-        volatility: 8.9,
-        marketCap: 'N/A'
-      },
-      {
-        symbol: 'BTC/USD',
-        price: 67829.45,
-        change: +1847.23,
-        changePercent: +2.80,
-        volume: '23.4B',
-        volatility: 45.2,
-        marketCap: '$1.3T'
-      },
-      {
-        symbol: '10Y Treasury',
-        price: 4.287,
-        change: +0.023,
-        changePercent: +0.54,
-        volume: '156B',
-        volatility: 6.8,
-        marketCap: 'N/A'
-      }
-    ],
-    tradingAlerts: [
-      {
-        id: 'alert-trade001',
-        timestamp: '15:38',
-        priority: 'CRITICAL',
-        type: 'RISK_LIMIT',
-        desk: 'FX Trading',
-        message: 'Risk utilization approaching 80% threshold',
-        currentRisk: 31847293,
-        riskLimit: 40000000,
-        trader: 'Multiple traders',
-        recommendation: 'Reduce position sizes or hedge exposure',
-        autoAction: 'Risk alerts sent to all FX traders',
-        status: 'ACTIVE'
-      },
-      {
-        id: 'alert-trade002',
-        timestamp: '15:35',
-        priority: 'HIGH',
-        type: 'MARKET_VOLATILITY',
-        desk: 'All Desks',
-        message: 'Unusual volatility spike detected in tech sector',
-        volatility: 'NASDAQ up 25% from daily average',
-        affectedSymbols: 'TSLA, NVDA, AAPL, MSFT',
-        recommendation: 'Monitor positions closely, consider hedging',
-        autoAction: 'Volatility alerts enabled',
-        status: 'MONITORING'
-      },
-      {
-        id: 'alert-trade003',
-        timestamp: '15:30',
-        priority: 'MEDIUM',
-        type: 'SYSTEM_LATENCY',
-        desk: 'Derivatives',
-        message: 'Execution latency elevated above normal',
-        currentLatency: 0.28,
-        normalLatency: 0.18,
-        affectedSystems: 'Options trading platform',
-        recommendation: 'Consider manual order routing',
-        autoAction: 'IT team notified',
-        status: 'RESOLVING'
-      }
-    ]
+const FinancialTradingFloorCenter = () => {
+  const [timestamp, setTimestamp] = useState(Date.now());
+  const [marketStatus, setMarketStatus] = useState({
+    session: 'REGULAR',
+    nyseStatus: 'OPEN',
+    nasdaqStatus: 'OPEN',
+    volumeToday: 2847392847,
+    totalValue: 847392847293,
+    activeTraders: 247,
+    openPositions: 18947
+  });
+
+  const [majorIndices, setMajorIndices] = useState([
+    { 
+      symbol: 'SPX', 
+      name: 'S&P 500', 
+      price: 5847.23, 
+      change: +23.45, 
+      changePercent: +0.40, 
+      volume: '2.8B',
+      trend: 'up'
+    },
+    { 
+      symbol: 'INDU', 
+      name: 'Dow Jones', 
+      price: 38924.17, 
+      change: -89.23, 
+      changePercent: -0.23, 
+      volume: '1.2B',
+      trend: 'down'
+    },
+    { 
+      symbol: 'COMP', 
+      name: 'NASDAQ', 
+      price: 18234.67, 
+      change: +156.78, 
+      changePercent: +0.87, 
+      volume: '3.1B',
+      trend: 'up'
+    },
+    { 
+      symbol: 'RUT', 
+      name: 'Russell 2000', 
+      price: 2087.45, 
+      change: -12.34, 
+      changePercent: -0.59, 
+      volume: '892M',
+      trend: 'down'
+    }
+  ]);
+
+  const [topMovers, setTopMovers] = useState([
+    { symbol: 'NVDA', price: 847.23, change: +47.89, changePercent: +5.99, volume: '89M' },
+    { symbol: 'TSLA', price: 234.56, change: -12.34, changePercent: -5.01, volume: '67M' },
+    { symbol: 'AAPL', price: 189.45, change: +3.78, changePercent: +2.03, volume: '45M' },
+    { symbol: 'MSFT', price: 423.67, change: +8.92, changePercent: +2.15, volume: '34M' },
+    { symbol: 'GOOGL', price: 167.89, change: -4.23, changePercent: -2.46, volume: '28M' },
+    { symbol: 'META', price: 456.78, change: +19.45, changePercent: +4.45, volume: '41M' }
+  ]);
+
+  const [tradingActivity, setTradingActivity] = useState([
+    { time: '15:34:23', trader: 'DESK-A1', action: 'BUY', symbol: 'NVDA', quantity: '5,000', price: '$847.20', value: '$4.2M' },
+    { time: '15:34:18', trader: 'DESK-B3', action: 'SELL', symbol: 'TSLA', quantity: '2,500', price: '$234.60', value: '$586K' },
+    { time: '15:34:12', trader: 'DESK-C2', action: 'BUY', symbol: 'SPY', quantity: '10,000', price: '$584.30', value: '$5.8M' },
+    { time: '15:34:08', trader: 'ALGO-7', action: 'SELL', symbol: 'QQQ', quantity: '7,500', price: '$456.80', value: '$3.4M' },
+    { time: '15:34:02', trader: 'DESK-A4', action: 'BUY', symbol: 'AAPL', quantity: '3,200', price: '$189.50', value: '$606K' }
+  ]);
+
+  const [riskMetrics, setRiskMetrics] = useState({
+    var95: 2847392, // Value at Risk 95%
+    portfolioValue: 847392847,
+    exposure: 234789234,
+    marginUsed: 89.3, // %
+    availableMargin: 45782394,
+    beta: 1.23,
+    sharpeRatio: 1.87,
+    maxDrawdown: -2.34 // %
+  });
+
+  const [alertSystem, setAlertSystem] = useState([
+    { id: 1, level: 'HIGH', message: 'NVDA volatility spike detected - IV above 90th percentile', time: '15:32:45', acknowledged: false },
+    { id: 2, level: 'MEDIUM', message: 'Sector rotation from Tech to Financials detected', time: '15:28:12', acknowledged: false },
+    { id: 3, level: 'LOW', message: 'Volume surge in Energy sector +15% above average', time: '15:25:33', acknowledged: true },
+    { id: 4, level: 'HIGH', message: 'Margin utilization approaching 90% threshold', time: '15:22:08', acknowledged: false }
+  ]);
+
+  const [currencyRates, setCurrencyRates] = useState({
+    'EUR/USD': { rate: 1.0847, change: +0.0023, trend: 'up' },
+    'GBP/USD': { rate: 1.2634, change: -0.0015, trend: 'down' },
+    'USD/JPY': { rate: 149.67, change: +0.34, trend: 'up' },
+    'USD/CHF': { rate: 0.8923, change: -0.0008, trend: 'down' }
+  });
+
+  const [sectorPerformance, setSectorPerformance] = useState([
+    { name: 'Technology', change: +1.23, color: 'text-green-400' },
+    { name: 'Healthcare', change: +0.87, color: 'text-green-400' },
+    { name: 'Financials', change: +0.56, color: 'text-green-400' },
+    { name: 'Consumer Disc', change: -0.34, color: 'text-red-400' },
+    { name: 'Energy', change: -0.78, color: 'text-red-400' },
+    { name: 'Utilities', change: -1.12, color: 'text-red-400' }
+  ]);
+
+  const [tradingDesks, setTradingDesks] = useState({
+    equity: { traders: 12, pnl: +2847392, status: 'ACTIVE' },
+    fixed: { traders: 8, pnl: +1234567, status: 'ACTIVE' },
+    forex: { traders: 6, pnl: -234567, status: 'ACTIVE' },
+    commodities: { traders: 5, pnl: +567890, status: 'ACTIVE' },
+    derivatives: { traders: 10, pnl: +3456789, status: 'ACTIVE' },
+    algo: { traders: 4, pnl: +5678901, status: 'ACTIVE' }
   });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTradingData(prev => ({
-        ...prev,
-        currentTime: new Date().toISOString(),
-        totalVolume: Math.max(2000000000, (prev?.totalVolume || 2847293847) + Math.floor(Math.random() * 10000000)),
-        totalValue: Math.max(80000000000, (prev?.totalValue || 89472837292) + Math.floor(Math.random() * 100000000)),
-        pnl: Math.max(-50000000, Math.min(50000000, (prev?.pnl || 12487292.87) + (Math.random() - 0.5) * 1000000)),
-        riskUtilization: Math.max(60, Math.min(90, (prev?.riskUtilization || 73.4) + (Math.random() - 0.5) * 2)),
-        tradingDesks: prev?.tradingDesks?.map(desk => ({
-          ...desk,
-          pnl: Math.max(-10000000, Math.min(10000000, (desk?.pnl || 0) + (Math.random() - 0.5) * 100000)),
-          riskUsed: Math.max(0, Math.min(desk?.riskLimit || 50000000, (desk?.riskUsed || 25000000) + (Math.random() - 0.5) * 1000000)),
-          utilization: Math.max(50, Math.min(95, (desk?.utilization || 70) + (Math.random() - 0.5) * 3))
-        })) || prev.tradingDesks,
-        marketPositions: prev?.marketPositions?.map(position => ({
-          ...position,
-          pnl: Math.max(-20000000, Math.min(20000000, (position?.pnl || 0) + (Math.random() - 0.5) * 500000)),
-          delta: Math.max(-1, Math.min(1, (position?.delta || 0) + (Math.random() - 0.5) * 0.05))
-        })) || prev.marketPositions,
-        marketData: prev?.marketData?.map(market => ({
-          ...market,
-          price: Math.max(0.1, (market?.price || 100) + (market?.price || 100) * (Math.random() - 0.5) * 0.01),
-          change: (Math.random() - 0.5) * (market?.price || 100) * 0.02,
-          changePercent: (Math.random() - 0.5) * 2
-        })) || prev.marketData
+      setTimestamp(Date.now());
+
+      // Update market indices with realistic fluctuations
+      setMajorIndices(prev => prev.map(index => {
+        const change = (Math.random() - 0.5) * 2; // Random change between -1 and +1
+        const newChange = index.change + change;
+        const newPrice = index.price + change;
+        const newChangePercent = (newChange / (newPrice - newChange)) * 100;
+        
+        return {
+          ...index,
+          price: Math.max(0, newPrice),
+          change: newChange,
+          changePercent: newChangePercent,
+          trend: newChange >= 0 ? 'up' : 'down'
+        };
       }));
-    }, 3000);
+
+      // Update top movers
+      setTopMovers(prev => prev.map(stock => ({
+        ...stock,
+        price: Math.max(0, stock.price + (Math.random() - 0.5) * 5),
+        change: stock.change + (Math.random() - 0.5) * 2
+      })));
+
+      // Update risk metrics
+      setRiskMetrics(prev => ({
+        ...prev,
+        marginUsed: Math.max(70, Math.min(95, prev.marginUsed + (Math.random() - 0.5) * 1)),
+        beta: Math.max(0.8, Math.min(1.5, prev.beta + (Math.random() - 0.5) * 0.05)),
+        sharpeRatio: Math.max(1.0, Math.min(2.5, prev.sharpeRatio + (Math.random() - 0.5) * 0.1))
+      }));
+
+      // Simulate new trading activity
+      if (Math.random() > 0.7) {
+        const actions = ['BUY', 'SELL'];
+        const symbols = ['NVDA', 'TSLA', 'AAPL', 'MSFT', 'GOOGL', 'META', 'SPY', 'QQQ'];
+        const desks = ['DESK-A1', 'DESK-A2', 'DESK-B1', 'DESK-B2', 'DESK-C1', 'ALGO-1', 'ALGO-2'];
+        
+        const newTrade = {
+          time: new Date().toLocaleTimeString(),
+          trader: desks[Math.floor(Math.random() * desks.length)],
+          action: actions[Math.floor(Math.random() * actions.length)],
+          symbol: symbols[Math.floor(Math.random() * symbols.length)],
+          quantity: (Math.floor(Math.random() * 10000) + 1000).toLocaleString(),
+          price: `$${(Math.random() * 500 + 50).toFixed(2)}`,
+          value: `$${(Math.random() * 10 + 0.5).toFixed(1)}M`
+        };
+
+        setTradingActivity(prev => [newTrade, ...prev.slice(0, 19)]);
+      }
+
+      // Occasionally add new alerts
+      if (Math.random() > 0.85) {
+        const alertTypes = [
+          { level: 'HIGH', message: 'Circuit breaker triggered on individual stock' },
+          { level: 'MEDIUM', message: 'Unusual options activity detected' },
+          { level: 'LOW', message: 'End-of-day position reconciliation required' }
+        ];
+        
+        const newAlert = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+        setAlertSystem(prev => [
+          {
+            id: Date.now(),
+            ...newAlert,
+            time: new Date().toLocaleTimeString(),
+            acknowledged: false
+          },
+          ...prev.slice(0, 9)
+        ]);
+      }
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'OPTIMAL': case 'ACTIVE': case 'OPEN': case 'LOGGED': return 'text-green-400';
-      case 'HIGH_ACTIVITY': case 'MONITORING': case 'RESOLVING': case 'MEDIUM': return 'text-blue-400';
-      case 'INVESTIGATING': case 'ACTIVE': case 'HIGH': return 'text-yellow-400';
-      case 'CRITICAL': case 'SUSPENDED': case 'HALTED': case 'CLOSED': return 'text-red-400';
-      default: return 'text-gray-400';
+  const getChangeColor = (change) => {
+    return change >= 0 ? 'text-green-400' : 'text-red-400';
+  };
+
+  const getAlertColor = (level) => {
+    switch (level) {
+      case 'HIGH': return 'text-red-400 bg-red-900/30 border-red-500';
+      case 'MEDIUM': return 'text-yellow-400 bg-yellow-900/30 border-yellow-500';
+      case 'LOW': return 'text-blue-400 bg-blue-900/30 border-blue-500';
+      default: return 'text-gray-400 bg-gray-900/30 border-gray-500';
     }
   };
 
-  const getStatusBg = (status) => {
-    switch (status) {
-      case 'OPTIMAL': case 'ACTIVE': case 'OPEN': case 'LOGGED': return 'bg-green-400/20';
-      case 'HIGH_ACTIVITY': case 'MONITORING': case 'RESOLVING': case 'MEDIUM': return 'bg-blue-400/20';
-      case 'INVESTIGATING': case 'ACTIVE': case 'HIGH': return 'bg-yellow-400/20';
-      case 'CRITICAL': case 'SUSPENDED': case 'HALTED': case 'CLOSED': return 'bg-red-400/20';
-      default: return 'bg-gray-400/20';
-    }
-  };
-
-  const getRiskColor = (risk) => {
-    switch (risk) {
-      case 'LOW': return 'text-green-400';
-      case 'MEDIUM': return 'text-yellow-400';
-      case 'HIGH': return 'text-red-400';
-      default: return 'text-gray-400';
-    }
-  };
-
-  const getTrendIcon = (trend) => {
-    switch (trend) {
-      case 'increasing': return <TrendingUp className="w-4 h-4 text-red-400" />;
-      case 'decreasing': return <TrendingDown className="w-4 h-4 text-green-400" />;
-      case 'stable': return <Activity className="w-4 h-4 text-blue-400" />;
-      default: return <Activity className="w-4 h-4 text-gray-400" />;
-    }
-  };
-
-  const formatCurrency = (num) => {
-    if (Math.abs(num) >= 1000000000) return (num / 1000000000).toFixed(2) + 'B';
-    if (Math.abs(num) >= 1000000) return (num / 1000000).toFixed(2) + 'M';
-    if (Math.abs(num) >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num.toFixed(2);
-  };
-
-  const formatNumber = (num) => {
-    if (num >= 1000000000) return (num / 1000000000).toFixed(1) + 'B';
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num.toString();
+  const formatCurrency = (value) => {
+    if (value >= 1000000000) return `$${(value / 1000000000).toFixed(1)}B`;
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`;
+    if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
+    return `$${value.toFixed(0)}`;
   };
 
   return (
-    <div className="space-y-6">
-      {/* Trading Floor Header */}
-      <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
+    <div className="bg-black text-white p-6 font-mono">
+      <div className="mb-6">
+        {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-4">
-            <DollarSign className="w-8 h-8 text-green-400" />
-            <div>
-              <h2 className="text-2xl font-bold text-white">Financial Trading Floor & Risk Management Center</h2>
-              <div className="text-sm text-gray-400">Nasdaq • Solidus Labs • LSEG • Real-Time Market Surveillance</div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Activity className={`w-5 h-5 animate-pulse ${
-                tradingData.marketStatus === 'OPEN' ? 'text-green-400' : 'text-red-400'
-              }`} />
-              <span className={`text-sm font-semibold ${getStatusColor(tradingData.marketStatus)}`}>
-                MARKET {tradingData.marketStatus || 'UNKNOWN'}
-              </span>
-            </div>
+          <h1 className="text-2xl font-bold text-yellow-400">FINANCIAL TRADING FLOOR CONTROL</h1>
+          <div className="flex items-center text-sm text-gray-400">
+            <span className="mr-4">SESSION: {marketStatus.session}</span>
+            <span className="mr-4">NYSE: {marketStatus.nyseStatus}</span>
+            <span>{new Date(timestamp).toLocaleTimeString()} EST</span>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-400">Daily P&L</div>
-            <div className={`text-2xl font-mono font-bold ${
-              (tradingData.pnl || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-            }`}>
-              {(tradingData.pnl || 0) >= 0 ? '+' : ''}${formatCurrency(tradingData.pnl || 0)}
+        </div>
+
+        {/* Market Status Strip */}
+        <div className="bg-yellow-900/30 border border-yellow-500 rounded-lg p-3 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <DollarSign className="w-6 h-6 text-yellow-400 mr-3" />
+              <div>
+                <span className="text-yellow-400 font-bold text-lg">MARKET STATUS</span>
+                <div className="text-sm text-green-400">NYSE: {marketStatus.nyseStatus} | NASDAQ: {marketStatus.nasdaqStatus}</div>
+              </div>
             </div>
-            <div className="text-xs text-blue-400">
-              Risk Utilization: {(tradingData.riskUtilization || 73.4).toFixed(1)}%
+            <div className="flex items-center space-x-8 text-sm">
+              <div className="text-center">
+                <div className="text-gray-400">VOLUME TODAY</div>
+                <div className="text-white font-bold">{formatCurrency(marketStatus.volumeToday)}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-400">TOTAL VALUE</div>
+                <div className="text-white font-bold">{formatCurrency(marketStatus.totalValue)}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-400">ACTIVE TRADERS</div>
+                <div className="text-yellow-400 font-bold">{marketStatus.activeTraders}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-gray-400">OPEN POSITIONS</div>
+                <div className="text-cyan-400 font-bold">{marketStatus.openPositions.toLocaleString()}</div>
+              </div>
             </div>
           </div>
         </div>
-        
-        {/* Global Trading Metrics */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-slate-800/50 p-3 rounded border border-slate-600/30">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-400">Total Volume</span>
-              <BarChart3 className="w-4 h-4 text-blue-400" />
-            </div>
-            <div className="text-lg font-mono text-white">
-              {formatNumber(tradingData.totalVolume || 2847293847)}<span className="text-sm text-gray-400 ml-1">shares</span>
-            </div>
-            <div className="w-full bg-slate-700 rounded-full h-1.5 mt-2">
-              <div 
-                className="h-full rounded-full bg-blue-400 transition-all duration-300"
-                style={{ width: `${Math.min(100, ((tradingData.totalVolume || 2847293847) / 5000000000) * 100)}%` }}
-              />
-            </div>
-            <div className="text-xs text-gray-400 mt-1">daily trading</div>
-          </div>
 
-          <div className="bg-slate-800/50 p-3 rounded border border-slate-600/30">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-400">Total Value</span>
-              <DollarSign className="w-4 h-4 text-green-400" />
+        {/* Major Indices */}
+        <div className="grid grid-cols-4 gap-4 mb-6">
+          {majorIndices.map((index) => (
+            <div key={index.symbol} className="bg-gray-900 rounded border border-gray-700 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-cyan-400 font-bold text-lg">{index.symbol}</span>
+                {index.trend === 'up' ? 
+                  <TrendingUp className="w-5 h-5 text-green-400" /> : 
+                  <TrendingDown className="w-5 h-5 text-red-400" />
+                }
+              </div>
+              <div className="text-white text-2xl font-bold mb-1">{index.price.toFixed(2)}</div>
+              <div className={`text-sm ${getChangeColor(index.change)}`}>
+                {index.change >= 0 ? '+' : ''}{index.change.toFixed(2)} ({index.changePercent.toFixed(2)}%)
+              </div>
+              <div className="text-xs text-gray-400 mt-2">Vol: {index.volume}</div>
             </div>
-            <div className="text-lg font-mono text-white">
-              ${formatCurrency(tradingData.totalValue || 89472837292)}
-            </div>
-            <div className="w-full bg-slate-700 rounded-full h-1.5 mt-2">
-              <div 
-                className="h-full rounded-full bg-green-400 transition-all duration-300"
-                style={{ width: `${Math.min(100, ((tradingData.totalValue || 89472837292) / 150000000000) * 100)}%` }}
-              />
-            </div>
-            <div className="text-xs text-gray-400 mt-1">notional value</div>
-          </div>
-
-          <div className="bg-slate-800/50 p-3 rounded border border-slate-600/30">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-400">Active Traders</span>
-              <Users className="w-4 h-4 text-purple-400" />
-            </div>
-            <div className="text-lg font-mono text-white">
-              {tradingData.activeTraders || 1847}<span className="text-sm text-gray-400 ml-1">traders</span>
-            </div>
-            <div className="text-xs text-purple-400 mt-1">
-              {tradingData.surveillanceAlerts || 156} surveillance alerts
-            </div>
-          </div>
-
-          <div className="bg-slate-800/50 p-3 rounded border border-slate-600/30">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-gray-400">Risk Alerts</span>
-              <AlertTriangle className="w-4 h-4 text-red-400" />
-            </div>
-            <div className="text-lg font-mono text-white">
-              {tradingData.riskAlerts || 23}<span className="text-sm text-gray-400 ml-1">active</span>
-            </div>
-            <div className="text-xs text-red-400 mt-1">
-              requires attention
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Trading Desks */}
-        <div className="lg:col-span-2 bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Building className="w-5 h-5 text-blue-400" />
-            <h3 className="text-lg font-semibold text-white">Trading Desks Performance</h3>
-            <div className="px-2 py-1 bg-blue-400/20 text-blue-400 text-xs font-semibold rounded">
-              REAL-TIME
+        {/* Main Trading Grid */}
+        <div className="grid grid-cols-4 gap-6 mb-6">
+          {/* Top Movers */}
+          <div className="col-span-1 bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <BarChart3 className="w-5 h-5 mr-2 text-green-400" />
+                TOP MOVERS
+              </h3>
+            </div>
+            <div className="p-4 space-y-2 max-h-80 overflow-y-auto">
+              {topMovers.map((stock) => (
+                <div key={stock.symbol} className="bg-gray-800 p-2 rounded">
+                  <div className="flex justify-between items-center">
+                    <span className="text-cyan-400 font-bold">{stock.symbol}</span>
+                    <span className="text-white">${stock.price.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs">
+                    <span className={`font-bold ${getChangeColor(stock.change)}`}>
+                      {stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)}
+                    </span>
+                    <span className={getChangeColor(stock.change)}>
+                      {stock.changePercent.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-400">Vol: {stock.volume}</div>
+                </div>
+              ))}
             </div>
           </div>
-          
-          <div className="space-y-4">
-            {tradingData.tradingDesks?.map((desk, index) => (
-              <div key={index} className="border border-slate-600/30 rounded p-4 bg-slate-800/30">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <Monitor className="w-5 h-5 text-blue-400" />
-                    <div>
-                      <h4 className="text-white font-medium">{desk?.name || 'Unknown Desk'}</h4>
-                      <div className="text-xs text-gray-400">{desk?.location || 'Unknown Location'} • {desk?.traders || 0} traders</div>
-                    </div>
-                    <div className={`px-2 py-1 text-xs font-semibold rounded ${getStatusColor(desk?.status)} ${getStatusBg(desk?.status)}`}>
-                      {desk?.status?.replace('_', ' ') || 'UNKNOWN'}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className={`text-lg font-mono font-bold ${
-                      (desk?.pnl || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                      {(desk?.pnl || 0) >= 0 ? '+' : ''}${formatCurrency(desk?.pnl || 0)}
-                    </div>
-                    <div className="text-xs text-gray-400">daily P&L</div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-4 gap-4 mb-3">
-                  <div>
-                    <span className="text-xs text-gray-400">Volume:</span>
-                    <div className="text-white font-mono">{formatNumber(desk?.volume || 0)}</div>
-                    <div className="text-xs text-blue-400">shares</div>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400">Risk Used:</span>
-                    <div className="text-white font-mono">${formatCurrency(desk?.riskUsed || 0)}</div>
-                    <div className="text-xs text-purple-400">of ${formatCurrency(desk?.riskLimit || 0)}</div>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400">Latency:</span>
-                    <div className="text-white font-mono">{(desk?.avgLatency || 0).toFixed(2)}ms</div>
-                    <div className="text-xs text-green-400">{(desk?.successRate || 0).toFixed(1)}% success</div>
-                  </div>
-                  <div>
-                    <span className="text-xs text-gray-400">Alerts:</span>
-                    <div className="text-white font-mono">{desk?.alerts || 0}</div>
-                    <div className="text-xs text-red-400">active</div>
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="w-full bg-slate-700 rounded-full h-2 mr-4">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-300 ${
-                        (desk?.utilization || 0) < 70 ? 'bg-green-400' : 
-                        (desk?.utilization || 0) < 80 ? 'bg-yellow-400' : 'bg-red-400'
-                      }`}
-                      style={{ width: `${Math.min(100, desk?.utilization || 0)}%` }}
-                    />
+          {/* Trading Activity */}
+          <div className="col-span-2 bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Activity className="w-5 h-5 mr-2 text-yellow-400" />
+                REAL-TIME TRADING ACTIVITY
+              </h3>
+            </div>
+            <div className="p-4 max-h-80 overflow-y-auto">
+              {tradingActivity.map((trade, index) => (
+                <div key={index} className="flex items-center justify-between bg-gray-800 p-2 rounded mb-2 text-xs">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-blue-400 font-mono">{trade.time}</span>
+                    <span className="text-purple-400">{trade.trader}</span>
+                    <span className={`font-bold ${trade.action === 'BUY' ? 'text-green-400' : 'text-red-400'}`}>
+                      {trade.action}
+                    </span>
+                    <span className="text-cyan-400">{trade.symbol}</span>
                   </div>
-                  <div className="text-xs text-gray-400 whitespace-nowrap">
-                    Risk: {(desk?.utilization || 0).toFixed(1)}%
+                  <div className="flex items-center space-x-4">
+                    <span className="text-white">{trade.quantity}</span>
+                    <span className="text-gray-400">{trade.price}</span>
+                    <span className="text-yellow-400">{trade.value}</span>
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Risk Management */}
+          <div className="col-span-1 bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Target className="w-5 h-5 mr-2 text-red-400" />
+                RISK METRICS
+              </h3>
+            </div>
+            <div className="p-4 space-y-3">
+              <div className="space-y-2 text-xs">
+                <div className="bg-gray-800 p-2 rounded">
+                  <div className="text-gray-400">VaR (95%):</div>
+                  <div className="text-red-400 font-bold">{formatCurrency(riskMetrics.var95)}</div>
+                </div>
+                <div className="bg-gray-800 p-2 rounded">
+                  <div className="text-gray-400">Portfolio Value:</div>
+                  <div className="text-green-400 font-bold">{formatCurrency(riskMetrics.portfolioValue)}</div>
+                </div>
+                <div className="bg-gray-800 p-2 rounded">
+                  <div className="text-gray-400">Margin Used:</div>
+                  <div className={`font-bold ${riskMetrics.marginUsed > 90 ? 'text-red-400' : 'text-yellow-400'}`}>
+                    {riskMetrics.marginUsed.toFixed(1)}%
+                  </div>
+                </div>
+                <div className="bg-gray-800 p-2 rounded">
+                  <div className="text-gray-400">Beta:</div>
+                  <div className="text-cyan-400 font-bold">{riskMetrics.beta.toFixed(2)}</div>
+                </div>
+                <div className="bg-gray-800 p-2 rounded">
+                  <div className="text-gray-400">Sharpe Ratio:</div>
+                  <div className="text-blue-400 font-bold">{riskMetrics.sharpeRatio.toFixed(2)}</div>
+                </div>
+                <div className="bg-gray-800 p-2 rounded">
+                  <div className="text-gray-400">Max Drawdown:</div>
+                  <div className="text-red-400 font-bold">{riskMetrics.maxDrawdown.toFixed(2)}%</div>
                 </div>
               </div>
-            )) || <div className="text-gray-400">No trading desk data available</div>}
+            </div>
           </div>
         </div>
 
-        {/* Market Data */}
-        <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <TrendingUp className="w-5 h-5 text-green-400" />
-            <h3 className="text-lg font-semibold text-white">Live Market Data</h3>
-          </div>
-          
-          <div className="space-y-3">
-            {tradingData.marketData?.map((market, index) => (
-              <div key={index} className="border border-slate-600/30 rounded p-3 bg-slate-800/30">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-white font-medium text-sm">{market?.symbol || 'Unknown Symbol'}</span>
-                  <div className={`flex items-center space-x-1 ${
-                    (market?.changePercent || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                  }`}>
-                    {(market?.changePercent || 0) >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                    <span className="text-xs">{(market?.changePercent || 0) >= 0 ? '+' : ''}{(market?.changePercent || 0).toFixed(2)}%</span>
-                  </div>
+        {/* Bottom Grid */}
+        <div className="grid grid-cols-3 gap-6 mb-6">
+          {/* Sector Performance */}
+          <div className="bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Eye className="w-5 h-5 mr-2 text-purple-400" />
+                SECTOR PERFORMANCE
+              </h3>
+            </div>
+            <div className="p-4 space-y-2">
+              {sectorPerformance.map((sector, index) => (
+                <div key={index} className="flex justify-between items-center text-sm">
+                  <span className="text-gray-300">{sector.name}</span>
+                  <span className={`font-bold ${sector.color}`}>
+                    {sector.change >= 0 ? '+' : ''}{sector.change.toFixed(2)}%
+                  </span>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div>
-                    <span className="text-gray-400">Price:</span>
-                    <div className="text-white font-mono">{(market?.price || 0).toFixed(2)}</div>
-                  </div>
-                  <div>
-                    <span className="text-gray-400">Change:</span>
-                    <div className={`font-mono ${
-                      (market?.change || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                    }`}>
-                      {(market?.change || 0) >= 0 ? '+' : ''}{(market?.change || 0).toFixed(2)}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-gray-400">Volume:</span>
-                    <div className="text-blue-400 font-mono">{market?.volume || 'N/A'}</div>
-                  </div>
-                  <div>
-                    <span className="text-gray-400">Volatility:</span>
-                    <div className="text-purple-400 font-mono">{(market?.volatility || 0).toFixed(1)}%</div>
-                  </div>
-                </div>
-                
-                {market?.marketCap && market?.marketCap !== 'N/A' && (
-                  <div className="text-xs text-gray-400">
-                    Market Cap: {market.marketCap}
-                  </div>
-                )}
-              </div>
-            )) || <div className="text-gray-400">No market data available</div>}
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Risk Management */}
-        <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Shield className="w-5 h-5 text-red-400" />
-            <h3 className="text-lg font-semibold text-white">Risk Management Metrics</h3>
-          </div>
-          
-          <div className="space-y-4">
-            {tradingData.riskMetrics?.map((risk, index) => (
-              <div key={index} className="border border-slate-600/30 rounded p-3 bg-slate-800/30">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-red-400" />
-                    <span className="text-white font-medium text-sm">{risk?.metric || 'Unknown Metric'}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    {getTrendIcon(risk?.trend)}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
-                  <div>
-                    <span className="text-gray-400">Current:</span>
-                    <div className="text-white font-mono">
-                      {risk?.metric === 'Leverage Ratio' ? 
-                        (risk?.current || 0).toFixed(2) + 'x' : 
-                        '$' + formatCurrency(risk?.current || 0)
+          {/* Currency Rates */}
+          <div className="bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <DollarSign className="w-5 h-5 mr-2 text-green-400" />
+                FOREX RATES
+              </h3>
+            </div>
+            <div className="p-4 space-y-3">
+              {Object.entries(currencyRates).map(([pair, data]) => (
+                <div key={pair} className="bg-gray-800 p-2 rounded">
+                  <div className="flex justify-between items-center">
+                    <span className="text-cyan-400 font-bold">{pair}</span>
+                    <div className="flex items-center">
+                      {data.trend === 'up' ? 
+                        <TrendingUp className="w-4 h-4 text-green-400 mr-1" /> : 
+                        <TrendingDown className="w-4 h-4 text-red-400 mr-1" />
                       }
                     </div>
                   </div>
-                  <div>
-                    <span className="text-gray-400">Limit:</span>
-                    <div className="text-blue-400 font-mono">
-                      {risk?.metric === 'Leverage Ratio' ? 
-                        (risk?.limit || 0).toFixed(1) + 'x' : 
-                        '$' + formatCurrency(risk?.limit || 0)
-                      }
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-gray-400">Utilization:</span>
-                    <div className={`font-mono ${
-                      (risk?.utilization || 0) < 70 ? 'text-green-400' : 
-                      (risk?.utilization || 0) < 85 ? 'text-yellow-400' : 'text-red-400'
-                    }`}>
-                      {(risk?.utilization || 0).toFixed(1)}%
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-gray-400">Timeframe:</span>
-                    <div className="text-purple-400">{risk?.timeframe || 'N/A'}</div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-white">{data.rate.toFixed(4)}</span>
+                    <span className={getChangeColor(data.change)}>
+                      {data.change >= 0 ? '+' : ''}{data.change.toFixed(4)}
+                    </span>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                <div className="w-full bg-slate-700 rounded-full h-2">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-300 ${
-                      (risk?.utilization || 0) < 70 ? 'bg-green-400' : 
-                      (risk?.utilization || 0) < 85 ? 'bg-yellow-400' : 'bg-red-400'
-                    }`}
-                    style={{ width: `${Math.min(100, risk?.utilization || 0)}%` }}
-                  />
-                </div>
-
-                {risk?.confidence && risk?.confidence !== 'N/A' && (
-                  <div className="text-xs text-gray-400 mt-1">
-                    Confidence: {risk.confidence}
+          {/* Trading Desks */}
+          <div className="bg-gray-900 rounded border border-gray-700">
+            <div className="p-4 border-b border-gray-700">
+              <h3 className="font-bold text-white flex items-center">
+                <Users className="w-5 h-5 mr-2 text-blue-400" />
+                TRADING DESKS P&L
+              </h3>
+            </div>
+            <div className="p-4 space-y-2">
+              {Object.entries(tradingDesks).map(([desk, data]) => (
+                <div key={desk} className="flex justify-between items-center text-sm">
+                  <div className="flex items-center">
+                    <span className="text-white capitalize">{desk}</span>
+                    <span className="text-gray-400 ml-2">({data.traders})</span>
                   </div>
-                )}
-              </div>
-            )) || <div className="text-gray-400">No risk metrics available</div>}
+                  <span className={`font-bold ${getChangeColor(data.pnl)}`}>
+                    {formatCurrency(Math.abs(data.pnl))}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Trading Alerts & Surveillance */}
-        <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-lg p-6">
-          <div className="flex items-center space-x-2 mb-4">
-            <Eye className="w-5 h-5 text-yellow-400" />
-            <h3 className="text-lg font-semibold text-white">Surveillance & Alerts</h3>
+        {/* Alert System */}
+        <div className="bg-gray-900 rounded border border-gray-700">
+          <div className="p-4 border-b border-gray-700">
+            <h3 className="font-bold text-white flex items-center">
+              <AlertTriangle className="w-5 h-5 mr-2 text-red-400" />
+              TRADING ALERTS & RISK NOTIFICATIONS
+            </h3>
           </div>
-          
-          <div className="space-y-3 mb-4">
-            {tradingData.surveillanceEvents?.slice(0, 2).map((event, index) => (
-              <div key={index} className={`border rounded p-3 transition-all ${
-                event?.priority === 'HIGH' ? 'border-red-400/50 bg-red-400/10' :
-                event?.priority === 'MEDIUM' ? 'border-yellow-400/50 bg-yellow-400/10' :
-                'border-blue-400/50 bg-blue-400/10'
-              }`}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <Eye className="w-4 h-4 text-yellow-400" />
-                    <span className="text-xs text-gray-400 font-mono">{event?.timestamp || 'No Time'}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className={`px-2 py-1 text-xs font-semibold rounded ${getStatusColor(event?.priority)} ${getStatusBg(event?.priority)}`}>
-                      {event?.priority || 'UNKNOWN'}
+          <div className="p-4 max-h-48 overflow-y-auto">
+            {alertSystem.map((alert) => (
+              <div 
+                key={alert.id} 
+                className={`p-3 rounded border mb-2 ${getAlertColor(alert.level)} ${
+                  !alert.acknowledged ? 'animate-pulse' : 'opacity-70'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center mb-1">
+                      <span className="text-xs font-bold uppercase">{alert.level}</span>
+                      <span className="text-xs ml-2 text-gray-400">{alert.time}</span>
                     </div>
-                    <div className={`px-2 py-1 text-xs font-semibold rounded ${getStatusColor(event?.status)} ${getStatusBg(event?.status)}`}>
-                      {event?.status?.replace('_', ' ') || 'UNKNOWN'}
-                    </div>
+                    <div className="text-sm">{alert.message}</div>
                   </div>
-                </div>
-                
-                <div className="text-sm text-gray-300 mb-1">{event?.pattern || 'Unknown Pattern'}</div>
-                <div className="text-xs text-blue-400 mb-1">
-                  <strong>Trader:</strong> {event?.trader || 'Unknown'} • <strong>Desk:</strong> {event?.desk || 'Unknown'}
-                </div>
-                <div className="text-xs text-green-400">
-                  <strong>Action:</strong> {event?.action || 'No action'} • Confidence: {event?.confidence || 0}%
+                  {!alert.acknowledged && (
+                    <span className="text-xs bg-red-900 text-red-300 px-2 py-1 rounded">ACK</span>
+                  )}
                 </div>
               </div>
-            )) || <div className="text-gray-400">No surveillance events</div>}
-          </div>
-
-          <div className="space-y-3">
-            <div className="text-sm text-gray-400 mb-2">Active Trading Alerts</div>
-            {tradingData.tradingAlerts?.slice(0, 2).map((alert, index) => (
-              <div key={index} className={`border rounded p-3 transition-all ${
-                alert?.priority === 'CRITICAL' ? 'border-red-400/50 bg-red-400/10' :
-                alert?.priority === 'HIGH' ? 'border-yellow-400/50 bg-yellow-400/10' :
-                'border-blue-400/50 bg-blue-400/10'
-              }`}>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <AlertTriangle className="w-4 h-4 text-red-400" />
-                    <span className="text-xs text-gray-400 font-mono">{alert?.timestamp || 'No Time'}</span>
-                  </div>
-                  <div className={`px-2 py-1 text-xs font-semibold rounded ${getStatusColor(alert?.priority)} ${getStatusBg(alert?.priority)}`}>
-                    {alert?.priority || 'UNKNOWN'}
-                  </div>
-                </div>
-                
-                <div className="text-sm text-gray-300 mb-1">{alert?.message || 'No message'}</div>
-                <div className="text-xs text-blue-400 mb-1"><strong>Desk:</strong> {alert?.desk || 'Unknown'}</div>
-                <div className="text-xs text-green-400"><strong>Recommendation:</strong> {alert?.recommendation || 'None'}</div>
-              </div>
-            )) || <div className="text-gray-400">No trading alerts</div>}
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default FinancialTradingFloorCenter;
